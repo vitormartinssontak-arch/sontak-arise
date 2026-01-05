@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SYSTEM 2026-2027 - BALANCED EVOLUTION</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --theme-color: #be00ff;   /* Roxo Principal */
+            --flex-color: #00d2ff;    /* Azul */
+            --mand-color: #ff9500;    /* Laranja */
+            --bg-dark: #050505;
+            --text-main: #fff;
+            --success: #00ff9d;
+            --danger: #ff4444;
+            --gold-color: #ffd700;
+        }
+
+        body {
+            background-color: black;
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            background-image: linear-gradient(30deg, #0a0510 12%, transparent 12.5%, transparent 87%, #0a0510 87.5%, #0a0510), linear-gradient(150deg, #0a0510 12%, transparent 12.5%, transparent 87%, #0a0510 87.5%, #0a0510), linear-gradient(30deg, #0a0510 12%, transparent 12.5%, transparent 87%, #0a0510 87.5%, #0a0510), linear-gradient(150deg, #0a0510 12%, transparent 12.5%, transparent 87%, #0a0510 87.5%, #0a0510), linear-gradient(60deg, #120a1f 25%, transparent 25.5%, transparent 75%, #120a1f 75%, #120a1f);
+            background-size: 80px 140px;
+        }
+
+        /* --- BOOT SCREEN --- */
+        #boot-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-family: 'Share Tech Mono', monospace; overflow: hidden;
+        }
+        .boot-text { color: var(--flex-color); font-size: 16px; margin-bottom: 10px; opacity: 0; animation: fadeInText 0.5s forwards; }
+        .boot-title { font-size: 32px; color: var(--theme-color); font-weight: bold; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 20px var(--theme-color); opacity: 0; animation: glitchFade 0.8s forwards 1.5s; text-align: center; margin: 20px 0; }
+        .loader-line { width: 0%; height: 4px; background: var(--theme-color); box-shadow: 0 0 10px var(--theme-color); margin-top: 20px; animation: loadProgress 2.5s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+        .scanlines { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2)); background-size: 100% 4px; pointer-events: none; z-index: 10000; }
+        .fade-out-screen { opacity: 0; pointer-events: none; transition: opacity 0.8s ease-out; }
+
+        @keyframes loadProgress { 0% { width: 0%; } 100% { width: 80%; } }
+        @keyframes fadeInText { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes glitchFade { 0% { opacity: 0; transform: scale(0.9); } 20% { opacity: 1; transform: scale(1.1); filter: blur(2px); } 40% { opacity: 0.8; transform: scale(1); filter: blur(0); } 100% { opacity: 1; transform: scale(1); } }
+
+        /* --- APP CONTAINER --- */
+        .app-container {
+            width: 100%; max-width: 420px;
+            background: rgba(5, 5, 10, 0.95);
+            border-left: 1px solid var(--theme-color); border-right: 1px solid var(--theme-color);
+            box-shadow: 0 0 30px rgba(190, 0, 255, 0.15);
+            display: flex; flex-direction: column; height: 100%; position: relative;
+            opacity: 0; animation: showApp 1s ease forwards 3s;
+        }
+        @keyframes showApp { to { opacity: 1; } }
+
+        .header { padding: 15px 20px; border-bottom: 1px solid var(--theme-color); display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { margin: 0; font-size: 22px; color: var(--theme-color); text-shadow: 0 0 8px var(--theme-color); letter-spacing: 1px; }
+        .lvl-badge { font-size: 14px; color: #aaa; text-align: right; }
+        .lvl-number { font-size: 24px; color: var(--theme-color); font-weight: bold; }
+
+        .content-area { flex: 1; overflow-y: auto; padding: 20px; }
+
+        /* CHART & XP */
+        .chart-wrapper { position: relative; height: 260px; width: 100%; margin-bottom: 10px; }
+        .xp-box { margin-bottom: 20px; }
+        .xp-bar-bg { width: 100%; height: 8px; background: #222; border-radius: 4px; overflow: hidden; }
+        .xp-bar-fill { width: 0%; height: 100%; background: var(--theme-color); transition: width 0.5s ease; box-shadow: 0 0 10px var(--theme-color); }
+
+        /* STATS PANEL (NEW) */
+        .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 25px; text-align: center; }
+        .stat-item { background: rgba(255,255,255,0.05); padding: 5px; border-radius: 4px; border: 1px solid #333; }
+        .stat-label { font-size: 10px; font-weight: bold; color: #888; display: block; }
+        .stat-value { font-size: 16px; font-weight: bold; color: var(--theme-color); font-family: 'Share Tech Mono'; }
+
+        /* QUEST CARDS */
+        .section-title { color: var(--theme-color); border-left: 4px solid var(--theme-color); padding-left: 10px; margin: 25px 0 15px 0; font-size: 18px; font-weight: bold; text-transform: uppercase; }
+
+        .quest-card {
+            background: linear-gradient(90deg, rgba(30,30,30,0.5) 0%, transparent 100%);
+            border-left: 2px solid #444;
+            padding: 12px; margin-bottom: 8px;
+            display: flex; align-items: center; justify-content: space-between; transition: 0.3s;
+        }
+        .quest-card.active-card { border-color: #666; } 
+
+        .quest-card.type-flexible {
+            background: linear-gradient(90deg, rgba(0, 210, 255, 0.1) 0%, transparent 100%);
+            border-left-color: var(--flex-color);
+        }
+        .quest-card.type-mandatory {
+            background: linear-gradient(90deg, rgba(255, 149, 0, 0.15) 0%, transparent 100%);
+            border-left-color: var(--mand-color);
+            box-shadow: inset 5px 0 10px -5px rgba(255, 149, 0, 0.3);
+        }
+
+        .checkbox { width: 22px; height: 22px; border: 1px solid #666; margin-right: 15px; cursor: pointer; display: grid; place-items: center; flex-shrink: 0; }
+        .checked { background: var(--theme-color); border-color: var(--theme-color); box-shadow: 0 0 10px var(--theme-color); }
+        
+        .task-text { color: white; font-size: 16px; flex: 1; cursor: pointer; }
+        .task-text:hover { text-decoration: underline; color: var(--theme-color); }
+        
+        .tags-container { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+        .xp-tag { font-size:12px; background:#222; padding:3px 6px; border-radius:3px; color:#fff; border:1px solid #444; font-weight: bold;}
+        .attr-mini-tag { font-size: 9px; padding: 2px 4px; border-radius: 2px; font-weight: bold; color: black; margin-left: 3px; }
+        
+        .bg-STR { background-color: #ff4444; }
+        .bg-AGI { background-color: #00d2ff; }
+        .bg-VIT { background-color: #00ff9d; }
+        .bg-INT { background-color: #be00ff; }
+        .bg-SEN { background-color: #ffd700; }
+
+        .tag-flex { font-size:10px; background:rgba(0, 210, 255, 0.2); padding:2px 5px; border-radius:3px; color:var(--flex-color); border:1px solid var(--flex-color); margin-right: 5px; font-weight: bold; }
+        .tag-mand { font-size:10px; background:rgba(255, 149, 0, 0.2); padding:2px 5px; border-radius:3px; color:var(--mand-color); border:1px solid var(--mand-color); margin-right: 5px; font-weight: bold; }
+
+        /* EDITOR */
+        .editor-box { background: #100a16; border: 1px solid #333; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .input-label { font-size: 12px; color: var(--theme-color); margin-bottom: 5px; display: block; font-weight: bold; text-transform: uppercase; }
+        .sys-input, .sys-select { width: 100%; background: #050505; border: 1px solid #444; color: white; padding: 12px; font-family: 'Rajdhani'; font-size: 16px; outline: none; box-sizing: border-box; margin-bottom: 15px; }
+        textarea.sys-input { resize: vertical; min-height: 80px; font-family: 'Share Tech Mono', monospace; font-size: 14px; }
+        
+        .attr-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 15px; }
+        .attr-btn {
+            background: #111; border: 1px solid #333; color: #666;
+            padding: 10px 0; text-align: center; cursor: pointer;
+            font-size: 12px; font-weight: bold; transition: 0.2s;
+            border-radius: 4px;
+        }
+        .attr-btn.selected { color: black; border-color: white; box-shadow: 0 0 10px currentColor; }
+        .attr-btn[data-type="STR"].selected { background: #ff4444; box-shadow: 0 0 10px #ff4444; }
+        .attr-btn[data-type="AGI"].selected { background: #00d2ff; box-shadow: 0 0 10px #00d2ff; }
+        .attr-btn[data-type="VIT"].selected { background: #00ff9d; box-shadow: 0 0 10px #00ff9d; }
+        .attr-btn[data-type="INT"].selected { background: #be00ff; box-shadow: 0 0 10px #be00ff; }
+        .attr-btn[data-type="SEN"].selected { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
+
+        .recurrence-selector { display: flex; gap: 5px; margin-bottom: 20px; }
+        .rec-btn { flex: 1; background: #222; border: 1px solid #444; color: #888; padding: 10px 5px; font-family: 'Rajdhani'; font-weight: bold; font-size: 12px; cursor: pointer; transition: 0.3s; }
+        .rec-btn.selected-none { background: #444; color: white; border-color: #666; }
+        .rec-btn.selected-flex { background: rgba(0, 210, 255, 0.2); color: var(--flex-color); border-color: var(--flex-color); }
+        .rec-btn.selected-mand { background: rgba(255, 149, 0, 0.2); color: var(--mand-color); border-color: var(--mand-color); }
+
+        .btn-add { background: var(--theme-color); color: black; border: none; font-weight: bold; padding: 15px; width: 100%; cursor: pointer; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .btn-add:active { transform: scale(0.98); }
+        .btn-reset { background: #220000; color: var(--danger); border: 1px solid var(--danger); padding: 10px; width: 100%; margin-top: 50px; cursor: pointer; font-family: 'Rajdhani'; transition: 0.3s; }
+
+        .action-container { display: flex; gap: 10px; }
+        .action-btn { background: none; border: none; font-weight: bold; font-size: 20px; cursor: pointer; transition: transform 0.2s; }
+        .action-btn:hover { transform: scale(1.2); }
+        .btn-clone { color: var(--success); }
+        .btn-del { color: var(--danger); }
+
+        /* MENU & POPUPS */
+        .bottom-nav { height: 60px; background: #020202; border-top: 1px solid #333; display: flex; justify-content: space-around; align-items: center; flex-shrink: 0; }
+        .nav-btn { background: none; border: none; color: #666; font-family: 'Rajdhani'; font-weight: bold; font-size: 14px; text-transform: uppercase; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        .nav-btn.active { color: var(--theme-color); text-shadow: 0 0 5px var(--theme-color); }
+        .tab-view { display: none; }
+        .active-view { display: block; }
+
+        .popup-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); }
+        .popup-box { background: #000; border: 2px solid var(--theme-color); padding: 30px; text-align: center; box-shadow: 0 0 50px var(--theme-color); animation: zoomIn 0.3s; width: 80%; max-height: 80vh; overflow-y: auto; }
+        .levelup-box { background: #000; border: 2px solid var(--gold-color); padding: 40px 20px; text-align: center; box-shadow: 0 0 60px rgba(255, 215, 0, 0.5); animation: zoomIn 0.3s; width: 85%; }
+        
+        @keyframes zoomIn { from {transform: scale(0.5); opacity:0;} to {transform: scale(1); opacity:1;} }
+        @keyframes pulse { from {transform: scale(1);} to {transform: scale(1.1);} }
+        .popup-stat { font-size: 24px; font-weight: bold; color: white; text-shadow: 0 0 10px white; margin-bottom: 5px; }
+        .popup-xp { font-size: 32px; color: var(--success); font-weight: bold; text-shadow: 0 0 15px var(--success); }
+        .levelup-num { font-size: 80px; font-weight: 800; color: white; text-shadow: 0 0 30px var(--gold-color); margin: 10px 0; animation: pulse 0.8s infinite alternate; }
+
+        .success-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: none; justify-content: center; align-items: center; z-index: 200; }
+        .success-box { background: rgba(0,0,0,0.9); border: 2px solid var(--theme-color); padding: 20px 40px; text-align: center; box-shadow: 0 0 40px rgba(190, 0, 255, 0.4); animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from {transform: translateY(20px); opacity:0;} to {transform: translateY(0); opacity:1;} }
+        .success-msg { color: var(--theme-color); font-weight: bold; font-size: 18px; letter-spacing: 2px; text-transform: uppercase; }
+
+        .detail-title { font-size: 22px; color: var(--theme-color); font-weight: bold; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 10px; text-align: left;}
+        .detail-desc { font-family: 'Share Tech Mono', monospace; font-size: 14px; color: #ccc; text-align: left; white-space: pre-wrap; margin-bottom: 20px; line-height: 1.5; }
+        .btn-close { background: #333; color: white; border: 1px solid #555; padding: 10px 20px; cursor: pointer; width: 100%; font-family: 'Rajdhani'; font-weight: bold;}
+
+    </style>
+</head>
+<body>
+
+<div id="boot-screen">
+    <div class="scanlines"></div>
+    <div class="boot-text" style="animation-delay: 0.2s">SYSTEM INITIALIZING...</div>
+    <div class="boot-text" style="animation-delay: 0.8s">BALANCING EVOLUTION CURVE...</div>
+    <div class="boot-text" style="color:var(--success); animation-delay: 1.4s;">SYNCHRONIZATION COMPLETE.</div>
+    <div class="loader-line"></div>
+    <div class="boot-title">BEM-VINDO, CAÇADOR</div>
+</div>
+
+<div class="app-container">
+    
+    <div class="header">
+        <div><h1 id="page-title">SONTAK</h1></div>
+        <div class="lvl-badge">LEVEL <span class="lvl-number" id="displayLevel">1</span></div>
+    </div>
+
+    <div class="content-area">
+
+        <div id="tab-home" class="tab-view active-view">
+            <div class="xp-box">
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px; color:#aaa;">
+                    <span>XP DO JOGADOR</span> <span id="xpText">0 / 100</span>
+                </div>
+                <div class="xp-bar-bg"><div class="xp-bar-fill" id="xpBar"></div></div>
+            </div>
+
+            <div class="chart-wrapper"><canvas id="statsChart"></canvas></div>
+            
+            <div class="stats-grid">
+                <div class="stat-item"><span class="stat-label">FOR</span><span class="stat-value" id="val-STR">0</span></div>
+                <div class="stat-item"><span class="stat-label">AGI</span><span class="stat-value" id="val-AGI">0</span></div>
+                <div class="stat-item"><span class="stat-label">VIT</span><span class="stat-value" id="val-VIT">0</span></div>
+                <div class="stat-item"><span class="stat-label">INT</span><span class="stat-value" id="val-INT">0</span></div>
+                <div class="stat-item"><span class="stat-label">SEN</span><span class="stat-value" id="val-SEN">0</span></div>
+            </div>
+
+            <div class="section-title">MISSÕES PENDENTES</div>
+            <div style="font-size:12px; color:#666; margin-bottom:10px;">(Clique no texto para ver detalhes)</div>
+            <div id="home-quest-list"></div>
+        </div>
+
+        <div id="tab-editor" class="tab-view">
+            <div class="section-title">ADICIONAR NOVA MISSÃO</div>
+            
+            <div class="editor-box">
+                <label class="input-label">1. O QUE VOCÊ TEM QUE FAZER?</label>
+                <input type="text" id="newQuestInput" class="sys-input" placeholder="Ex: Ler livro de Produtividade">
+                
+                <label class="input-label">2. ATRIBUTOS (SELECIONE QUANTOS QUISER)</label>
+                <div class="attr-grid">
+                    <div class="attr-btn" data-type="STR" onclick="toggleAttr('STR')">FOR</div>
+                    <div class="attr-btn" data-type="AGI" onclick="toggleAttr('AGI')">AGI</div>
+                    <div class="attr-btn" data-type="VIT" onclick="toggleAttr('VIT')">VIT</div>
+                    <div class="attr-btn" data-type="INT" onclick="toggleAttr('INT')">INT</div>
+                    <div class="attr-btn" data-type="SEN" onclick="toggleAttr('SEN')">SEN</div>
+                </div>
+
+                <label class="input-label">3. XP TOTAL</label>
+                <select id="newQuestXP" class="sys-select">
+                    <option value="50">50 XP (Muito Fácil)</option>
+                    <option value="100">100 XP (Fácil)</option>
+                    <option value="200">200 XP (Médio)</option>
+                    <option value="300">300 XP (Bom)</option>
+                    <option value="500">500 XP (Difícil)</option>
+                    <option value="1000">1.000 XP (Muito Difícil)</option>
+                    <option value="2500">2.500 XP (Boss Semanal / 1 Level)</option>
+                    <option value="5000">5.000 XP (Boss Mensal / 2 Levels)</option>
+                </select>
+
+                <label class="input-label">4. TIPO DE MISSÃO</label>
+                <div class="recurrence-selector">
+                    <button class="rec-btn selected-none" onclick="setRecurrence('none')" id="btn-none">ÚNICA</button>
+                    <button class="rec-btn" onclick="setRecurrence('flexible')" id="btn-flex">RECORRENTE</button>
+                    <button class="rec-btn" onclick="setRecurrence('mandatory')" id="btn-mand">⚠ OBRIGATÓRIA</button>
+                </div>
+                <input type="hidden" id="recurrenceValue" value="none">
+
+                <label class="input-label">5. OBSERVAÇÕES (OPCIONAL)</label>
+                <textarea id="newQuestDesc" class="sys-input" placeholder="Detalhes..."></textarea>
+
+                <button class="btn-add" onclick="addNewQuest()">CRIAR TAREFA</button>
+            </div>
+
+            <div class="section-title">GERENCIAR LISTA</div>
+            <div id="editor-quest-list"></div>
+
+            <button class="btn-reset" onclick="hardReset()">⚠ RESETAR DADOS DO SISTEMA</button>
+        </div>
+
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-btn active" onclick="switchTab('home')">STATUS</button>
+        <button class="nav-btn" onclick="switchTab('editor')">EDITOR</button>
+    </div>
+
+    <div class="popup-overlay" id="rewardPopup" onclick="closePopup()">
+        <div class="popup-box">
+            <div style="color:var(--theme-color); font-size:24px; font-weight:bold; margin-bottom:10px;">QUEST COMPLETED!</div>
+            <div style="font-size:16px; color:#ccc; margin-bottom:5px;">EXPERIÊNCIA ADQUIRIDA:</div>
+            
+            <div class="popup-stat" id="popupStatValue" style="font-size:16px; margin-bottom:15px; line-height:1.4;"></div>
+            <div class="popup-xp" id="popupXpValue"></div>
+            
+            <div style="margin-top:20px; font-size:12px; color:#666;">(Toque para continuar)</div>
+        </div>
+    </div>
+
+    <div class="popup-overlay" id="levelUpPopup" onclick="closeLevelPopup()" style="z-index: 150;">
+        <div class="levelup-box">
+            <div style="color: var(--gold-color); font-size: 28px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--gold-color);">LEVEL UP!</div>
+            <div style="color: #ccc; font-size: 14px; margin-top:5px;">LIMITES SUPERADOS</div>
+            
+            <div class="levelup-num" id="newLevelDisplay">1</div>
+            
+            <div style="font-size:14px; color:#888;">STATUS AUMENTADOS</div>
+            <div style="margin-top:20px; font-size:12px; color:#fff; border:1px solid #555; padding:5px; display:inline-block; border-radius:5px;">TOQUE PARA CONTINUAR</div>
+        </div>
+    </div>
+
+    <div class="popup-overlay" id="detailsPopup">
+        <div class="popup-box">
+            <div class="detail-title" id="detailTitle">TÍTULO</div>
+            <div class="detail-desc" id="detailDesc">Descrição...</div>
+            <button class="btn-close" onclick="closeDetailsPopup()">FECHAR</button>
+        </div>
+    </div>
+
+    <div class="success-overlay" id="successPopup">
+        <div class="success-box">
+            <div style="font-size:30px; color:var(--theme-color);">✔</div>
+            <div class="success-msg">TAREFA REGISTRADA</div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // === DADOS INICIAIS ===
+    // 'stats' agora guardam XP TOTAL do atributo. Começam zerados ou com base pequena.
+    let playerData = { level: 1, xp: 0, stats: [0, 0, 0, 0, 0], quests: [] };
+    let chartInstance = null;
+    
+    // FIX: TETO DE XP AGORA É 2500. 
+    // Isso torna a subida de nível mais constante e gratificante.
+    const MAX_XP_REQUIREMENT = 2500; 
+
+    // Fator de escala da curva de evolução (Quanto maior, mais lento para upar o atributo)
+    // Formula: Level = Sqrt(XP / XP_FACTOR)
+    const XP_FACTOR = 100; 
+
+    let selectedAttrs = [];
+
+    document.addEventListener('DOMContentLoaded', () => { 
+        setTimeout(() => {
+            const bootScreen = document.getElementById('boot-screen');
+            bootScreen.classList.add('fade-out-screen');
+            setTimeout(() => { bootScreen.style.display = 'none'; }, 800);
+        }, 3500);
+
+        loadData(); 
+        checkDailyQuests(); 
+        initChart(); 
+        renderAll(); 
+    });
+
+    function loadData() {
+        const saved = localStorage.getItem('soloSystemV10_Infinite');
+        if (saved) playerData = JSON.parse(saved);
+        updateHeader();
+        updateStatsDisplay();
+    }
+    
+    function saveData() {
+        localStorage.setItem('soloSystemV10_Infinite', JSON.stringify(playerData));
+        updateHeader();
+        updateStatsDisplay();
+        if(chartInstance) updateChartData();
+    }
+
+    // --- CÁLCULO DE NÍVEL DE ATRIBUTO (CURVA) ---
+    function getAttrLevel(xp) {
+        return Math.floor(Math.sqrt(xp / XP_FACTOR));
+    }
+    
+    // Retorna o valor float para o gráfico ficar suave
+    function getAttrLevelFloat(xp) {
+        return Math.sqrt(xp / XP_FACTOR);
+    }
+
+    function updateStatsDisplay() {
+        const labels = ['STR', 'AGI', 'VIT', 'INT', 'SEN'];
+        playerData.stats.forEach((xp, i) => {
+            const lv = getAttrLevel(xp);
+            document.getElementById(`val-${labels[i]}`).innerText = lv;
+        });
+    }
+
+    function checkDailyQuests() {
+        const today = new Date().toDateString(); 
+        let dataChanged = false;
+
+        playerData.quests.forEach(quest => {
+            if (quest.recurrence === 'flexible' || quest.recurrence === 'mandatory') {
+                if (quest.done && quest.lastDoneDate !== today) {
+                    quest.done = false;
+                    dataChanged = true;
+                }
+            }
+        });
+
+        if (dataChanged) {
+            saveData();
+            console.log("Daily Quests Resetadas.");
+        }
+    }
+
+    function getXpNeeded(level) {
+        let needed = level * 100;
+        if (needed > MAX_XP_REQUIREMENT) needed = MAX_XP_REQUIREMENT;
+        return needed;
+    }
+
+    function updateHeader() {
+        const xpNeeded = getXpNeeded(playerData.level);
+        document.getElementById('displayLevel').innerText = playerData.level;
+        document.getElementById('xpText').innerText = `${playerData.xp} / ${xpNeeded}`;
+        let percent = (playerData.xp / xpNeeded) * 100;
+        if(percent > 100) percent = 100;
+        document.getElementById('xpBar').style.width = percent + '%';
+    }
+
+    function initChart() {
+        const ctx = document.getElementById('statsChart').getContext('2d');
+        chartInstance = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['FORÇA', 'AGILIDADE', 'VITALIDADE', 'INTELIGÊNCIA', 'SENTIDO'],
+                datasets: [{
+                    data: [0,0,0,0,0], 
+                    backgroundColor: 'rgba(190, 0, 255, 0.4)',
+                    borderColor: '#be00ff',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#be00ff'
+                }]
+            },
+            options: {
+                scales: {
+                    r: {
+                        angleLines: { color: '#333' }, grid: { color: '#333' },
+                        pointLabels: { color: '#fff', font: { family: 'Rajdhani', size: 12 } },
+                        // FIX: Agora a escala é fixa em 100
+                        ticks: { display: false }, suggestedMin: 0, suggestedMax: 100
+                    }
+                },
+                plugins: { legend: { display: false } }, maintainAspectRatio: false
+            }
+        });
+    }
+
+    // === LÓGICA DE PROGRESSÃO INFINITA (2026-2027) ===
+    function getVisualPercent(level) {
+        let percent = 0;
+
+        // Fase 1: Nível 1 ao 10 (Sobe 5% por nível) -> Max 50%
+        if (level <= 10) {
+            return level * 5; 
+        } 
+        percent = 50;
+
+        // Fase 2: Nível 11 ao 20 (Sobe 1% por nível) -> Max 60%
+        if (level <= 20) {
+            return percent + ((level - 10) * 1);
+        }
+        percent = 60;
+
+        // Fase 3: Nível 21 ao 50 (Sobe 0.4% por nível) -> Max 72%
+        if (level <= 50) {
+            return percent + ((level - 20) * 0.4);
+        }
+        percent = 72;
+
+        // Fase 4: Nível 51 ao 100 (Sobe 0.25% por nível) -> Max 84.5%
+        if (level <= 100) {
+             return percent + ((level - 50) * 0.25);
+        }
+        percent = 84.5;
+
+        // Fase 5: Nível 101 ao 200 (Sobe 0.1% por nível) -> Max 94.5%
+        if (level <= 200) {
+             return percent + ((level - 100) * 0.1);
+        }
+        percent = 94.5;
+
+        // Fase 6: Nível 201 ao 500 (Sobe 0.01% por nível) -> Max 97.5%
+        if (level <= 500) {
+            return percent + ((level - 200) * 0.01);
+        }
+        percent = 97.5;
+
+        // Fase Infinita: Nível 500+ (Crescimento microscópico só para não parar)
+        return Math.min(99.9, percent + ((level - 500) * 0.001));
+    }
+
+    function updateChartData() {
+        const realLevels = playerData.stats.map(xp => getAttrLevelFloat(xp));
+        const visualData = realLevels.map(lvl => getVisualPercent(lvl));
+        chartInstance.data.datasets[0].data = visualData;
+        chartInstance.update();
+    }
+
+    // --- GERENCIAR ATRIBUTOS ---
+    function toggleAttr(type) {
+        const btn = document.querySelector(`.attr-btn[data-type="${type}"]`);
+        if (selectedAttrs.includes(type)) {
+            selectedAttrs = selectedAttrs.filter(a => a !== type);
+            btn.classList.remove('selected');
+        } else {
+            selectedAttrs.push(type);
+            btn.classList.add('selected');
+        }
+    }
+    
+    function setRecurrence(type) {
+        document.getElementById('recurrenceValue').value = type;
+        document.querySelectorAll('.rec-btn').forEach(btn => btn.className = 'rec-btn');
+        if(type === 'none') document.getElementById('btn-none').classList.add('selected-none');
+        if(type === 'flexible') document.getElementById('btn-flex').classList.add('selected-flex');
+        if(type === 'mandatory') document.getElementById('btn-mand').classList.add('selected-mand');
+    }
+
+    function addNewQuest() {
+        const input = document.getElementById('newQuestInput');
+        const descInput = document.getElementById('newQuestDesc');
+        const xpSelect = document.getElementById('newQuestXP'); 
+        const recurrenceVal = document.getElementById('recurrenceValue').value; 
+        
+        if (input.value.trim() && selectedAttrs.length > 0) {
+            playerData.quests.push({ 
+                text: input.value.trim(), 
+                desc: descInput.value.trim(), 
+                types: [...selectedAttrs], 
+                xpValue: parseInt(xpSelect.value, 10),
+                done: false,
+                recurrence: recurrenceVal,
+                lastDoneDate: null
+            });
+            input.value = '';
+            descInput.value = '';
+            
+            selectedAttrs = [];
+            document.querySelectorAll('.attr-btn').forEach(btn => btn.classList.remove('selected'));
+            setRecurrence('none'); 
+
+            saveData(); renderAll(); showSuccessPopup();
+        } else {
+            alert("Preencha o nome da missão e selecione pelo menos 1 atributo!");
+        }
+    }
+
+    function cloneQuest(index) {
+        const original = playerData.quests[index];
+        let typesArr = original.types || [original.type];
+
+        playerData.quests.push({
+            text: original.text,
+            desc: original.desc || "", 
+            types: typesArr,
+            xpValue: original.xpValue,
+            done: false,
+            recurrence: original.recurrence, 
+            lastDoneDate: null
+        });
+        saveData();
+        renderAll();
+        showSuccessPopup();
+    }
+
+    function showSuccessPopup() {
+        const popup = document.getElementById('successPopup');
+        popup.style.display = 'flex';
+        setTimeout(() => { popup.style.display = 'none'; }, 2000);
+    }
+
+    function completeQuest(index) {
+        if (playerData.quests[index].done) return;
+        
+        const quest = playerData.quests[index];
+        quest.done = true;
+
+        if (quest.recurrence === 'flexible' || quest.recurrence === 'mandatory') {
+            quest.lastDoneDate = new Date().toDateString();
+        }
+
+        const totalXp = parseInt(quest.xpValue, 10);
+        playerData.xp += totalXp;
+
+        const typesToProcess = quest.types || [quest.type];
+        
+        const xpPerStat = Math.floor(totalXp / typesToProcess.length);
+        let rewardText = "";
+
+        typesToProcess.forEach(type => {
+            let statIndex = 0;
+            if(type === 'STR') statIndex=0;
+            if(type === 'AGI') statIndex=1;
+            if(type === 'VIT') statIndex=2;
+            if(type === 'INT') statIndex=3;
+            if(type === 'SEN') statIndex=4;
+            
+            playerData.stats[statIndex] += xpPerStat;
+            
+            rewardText += `+${xpPerStat} XP (${type})<br>`;
+        });
+        
+        let xpNeeded = getXpNeeded(playerData.level);
+        let leveledUp = false;
+        
+        while(playerData.xp >= xpNeeded) {
+            playerData.xp -= xpNeeded;
+            playerData.level++;
+            xpNeeded = getXpNeeded(playerData.level);
+            leveledUp = true;
+        }
+
+        saveData(); renderAll(); 
+        
+        showReward(rewardText, totalXp);
+
+        if(leveledUp) {
+            showLevelUpPopup(playerData.level);
+        }
+    }
+
+    function openTaskDetails(index) {
+        const quest = playerData.quests[index];
+        document.getElementById('detailTitle').innerText = quest.text;
+        const description = quest.desc && quest.desc.trim() !== "" ? quest.desc : "Nenhuma instrução adicional.";
+        document.getElementById('detailDesc').innerText = description;
+        document.getElementById('detailsPopup').style.display = 'flex';
+    }
+
+    function closeDetailsPopup() {
+        document.getElementById('detailsPopup').style.display = 'none';
+    }
+
+    function showReward(statsHtml, xpAmount) {
+        document.getElementById('popupStatValue').innerHTML = statsHtml;
+        document.getElementById('popupXpValue').innerText = `+${xpAmount} XP TOTAL`;
+        document.getElementById('rewardPopup').style.display = 'flex';
+    }
+    
+    function showLevelUpPopup(level) {
+        document.getElementById('newLevelDisplay').innerText = level;
+        document.getElementById('levelUpPopup').style.display = 'flex';
+    }
+
+    function closePopup() { document.getElementById('rewardPopup').style.display = 'none'; }
+    function closeLevelPopup() { document.getElementById('levelUpPopup').style.display = 'none'; }
+
+    function deleteQuest(index) {
+        if(confirm("Remover esta tarefa permanentemente?")) {
+            playerData.quests.splice(index, 1);
+            saveData(); renderAll();
+        }
+    }
+
+    function hardReset() {
+        if(confirm("⚠ PERIGO: ISSO APAGARÁ TODO O SEU PROGRESSO PARA SEMPRE.\n\nTem certeza que deseja continuar?")) { 
+            const password = prompt("DIGITE A SENHA DE ADMINISTRADOR PARA CONFIRMAR O RESET:");
+            if (password === "Yasuo010118*") {
+                localStorage.removeItem('soloSystemV10_Infinite'); 
+                location.reload(); 
+            } else {
+                alert("SENHA INCORRETA. ACESSO NEGADO.");
+            }
+        }
+    }
+
+    function renderAll() {
+        const homeList = document.getElementById('home-quest-list');
+        const editorList = document.getElementById('editor-quest-list');
+        homeList.innerHTML = ''; editorList.innerHTML = '';
+
+        playerData.quests.forEach((quest, index) => {
+            const typesArr = quest.types || [quest.type];
+
+            if(!quest.done) {
+                const homeItem = document.createElement('div');
+                let cardClass = 'quest-card active-card';
+                let tagHtml = '';
+                
+                if (quest.recurrence === 'flexible') {
+                    cardClass += ' type-flexible';
+                    tagHtml = `<span class="tag-flex">↻ RECORRENTE</span>`;
+                } else if (quest.recurrence === 'mandatory') {
+                    cardClass += ' type-mandatory';
+                    tagHtml = `<span class="tag-mand">⚠ OBRIGATÓRIA</span>`;
+                }
+
+                let attrsHtml = '';
+                typesArr.forEach(t => {
+                    attrsHtml += `<span class="attr-mini-tag bg-${t}">${t}</span>`;
+                });
+
+                homeItem.className = cardClass;
+                homeItem.innerHTML = `<div style="display:flex; align-items:center; width:100%;">
+                        <div class="checkbox" onclick="completeQuest(${index})"></div>
+                        <div class="task-text" onclick="openTaskDetails(${index})" title="Ver Detalhes">${tagHtml}${quest.text}</div>
+                        <div class="tags-container">
+                            <div class="xp-tag">+${quest.xpValue} XP</div>
+                            <div>${attrsHtml}</div>
+                        </div>
+                    </div>`;
+                homeList.appendChild(homeItem);
+            }
+            
+            const editorItem = document.createElement('div');
+            editorItem.className = 'quest-card';
+            editorItem.style.borderColor = quest.done ? '#00ff9d' : '#444';
+            
+            let typeLabel = '[ÚNICA]';
+            let labelColor = '#888';
+            if(quest.recurrence === 'flexible') { typeLabel = '[RECORRENTE]'; labelColor = 'var(--flex-color)'; }
+            if(quest.recurrence === 'mandatory') { typeLabel = '[OBRIGATÓRIA]'; labelColor = 'var(--mand-color)'; }
+
+            let attrsHtml = '';
+            typesArr.forEach(t => {
+                attrsHtml += `<span class="attr-mini-tag bg-${t}">${t}</span>`;
+            });
+
+            editorItem.innerHTML = `<div class="task-text" style="color:#ccc;">
+                    <span style="font-size:10px; color:${labelColor}">${typeLabel}</span> 
+                    ${quest.text} 
+                    <div style="margin-top:2px;">${attrsHtml} <span class="xp-tag">${quest.xpValue} XP</span></div>
+                </div>
+                <div class="action-container">
+                    <button class="action-btn btn-clone" onclick="cloneQuest(${index})" title="Recadastrar/Clonar">↺</button>
+                    <button class="action-btn btn-del" onclick="deleteQuest(${index})" title="Excluir">✖</button>
+                </div>`;
+            editorList.appendChild(editorItem);
+        });
+
+        if (homeList.innerHTML === '') {
+            homeList.innerHTML = '<div style="text-align:center; color:#555; margin-top:30px;">SEM MISSÕES ATIVAS.<br>DESCANSE, CAÇADOR.</div>';
+        }
+    }
+
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-view').forEach(e => e.classList.remove('active-view'));
+        document.querySelectorAll('.nav-btn').forEach(e => e.classList.remove('active'));
+        document.getElementById('tab-'+tab).classList.add('active-view');
+        if(tab === 'home' && chartInstance) chartInstance.resize();
+    }
+</script>
+
+</body>
+</html>
