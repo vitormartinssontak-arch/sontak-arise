@@ -655,7 +655,7 @@
         }
     }
     function updatePassDisplay() {
-        let visual = ""; for(let i=0; i<6; i++) { visual += (i < currentPass.length) ? "● " : "_ "; }
+        let visual = ""; for(let i=0; i<4; i++) { visual += (i < currentPass.length) ? "● " : "_ "; }
         document.getElementById('passDisplay').innerText = visual;
     }
 
