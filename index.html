@@ -3,35 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SYSTEM 2026-2027 - SONTAK CONNECTED</title>
+    
+    <title>SYSTEM 2026-2027 - SONTAK EVOLUTION</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
-        /* =========================================
-           1. VARIÁVEIS DO SISTEMA (CORES)
-           ========================================= */
+        /* ==========================================================================
+           1. DEFINIÇÃO DE VARIÁVEIS GLOBAIS (PALETA DE CORES DO SISTEMA)
+           ========================================================================== */
         :root {
-            --theme-color: #be00ff;   /* Roxo Principal (Sontak) */
-            --flex-color: #00d2ff;    /* Azul (Missões Flexíveis) */
-            --mand-color: #ff9500;    /* Laranja (Missões Obrigatórias) */
-            --bg-dark: #050505;       /* Fundo Preto Profundo */
-            --text-main: #fff;        /* Texto Branco */
-            --success: #00ff9d;       /* Verde Neon (Sucesso/XP) */
-            --danger: #ff4444;        /* Vermelho (Erro/Perigo) */
-            --gold-color: #ffd700;    /* Dourado (Level Up) */
+            /* Cor Principal (Roxo Sontak/Shadow Monarch) */
+            --theme-color: #be00ff;
+            
+            /* Cor Secundária (Azul Neon - Para Agilidade e Tecnologia) */
+            --flex-color: #00d2ff;
+            
+            /* Cor de Alerta/Obrigatório (Laranja) */
+            --mand-color: #ff9500;
+            
+            /* Fundo Profundo */
+            --bg-dark: #050505;
+            
+            /* Texto Padrão */
+            --text-main: #ffffff;
+            
+            /* Status de Sucesso (Verde Hacker) */
+            --success: #00ff9d;
+            
+            /* Status de Erro/Perigo (Vermelho) */
+            --danger: #ff4444;
+            
+            /* Cor de Level Up (Dourado) */
+            --gold-color: #ffd700;
+            
+            /* Transparência dos Paineis */
+            --panel-bg: rgba(10, 10, 18, 0.90);
         }
 
-        /* Reset Básico */
+        /* ==========================================================================
+           2. RESET E ESTRUTURA BÁSICA
+           ========================================================================== */
         * {
             box-sizing: border-box;
             outline: none;
+            -webkit-tap-highlight-color: transparent; /* Remove flash azul no mobile */
         }
 
-        /* =========================================
-           2. CONFIGURAÇÃO GERAL DA PÁGINA
-           ========================================= */
         body {
             background-color: black;
             color: var(--text-main);
@@ -40,17 +60,18 @@
             padding: 0;
             display: flex;
             justify-content: center;
-            /* Altura dinâmica para corrigir bug de rolagem no iPhone/Android */
-            height: 100vh; 
-            height: 100dvh; 
-            overflow: hidden; /* Impede a página inteira de rolar, só o miolo rola */
-            user-select: none; /* Impede selecionar texto (parece app nativo) */
-            -webkit-tap-highlight-color: transparent;
+            
+            /* Garante altura total no mobile corrigindo bugs de barra de navegação */
+            height: 100vh;
+            height: 100dvh;
+            
+            overflow: hidden; /* Impede a página inteira de rolar */
+            user-select: none; /* Impede seleção de texto (sensação de App Nativo) */
             position: relative;
             z-index: 1;
         }
 
-        /* --- IMAGEM DE FUNDO (ANIME) --- */
+        /* --- BACKGROUND DO ANIME (Camada Traseira) --- */
         body::before {
             content: "";
             position: fixed;
@@ -58,17 +79,21 @@
             left: 0; 
             width: 100%; 
             height: 100%;
-            /* SUA IMAGEM DO GITHUB AQUI */
+            
+            /* SUA IMAGEM DO GITHUB */
             background-image: url('./Fundo.jpg.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            opacity: 0.45; /* Opacidade ajustada para 45% */
-            z-index: -1;   
-            filter: grayscale(10%); /* Levemente desaturado para ficar estiloso */
+            
+            /* Opacidade 45% conforme solicitado */
+            opacity: 0.45;
+            
+            z-index: -2;   
+            filter: grayscale(10%) contrast(1.1);
         }
 
-        /* Efeito de Vinheta (Escurece as bordas) */
+        /* --- VINHETA ESCURA (Para focar a visão no centro) --- */
         body::after {
             content: "";
             position: fixed;
@@ -76,45 +101,46 @@
             left: 0; 
             width: 100%; 
             height: 100%;
-            background: radial-gradient(circle, transparent 30%, black 100%);
+            background: radial-gradient(circle, transparent 40%, #000000 100%);
             z-index: -1;
             pointer-events: none;
         }
 
-        /* =========================================
-           3. CONTAINER PRINCIPAL (LAYOUT DO APP)
-           ========================================= */
+        /* ==========================================================================
+           3. CONTAINER DO APLICATIVO (CORPO PRINCIPAL)
+           ========================================================================== */
         .app-container {
             width: 100%; 
-            max-width: 420px; /* Largura máxima estilo celular */
-            height: 100%;     /* Ocupa a altura toda */
+            max-width: 420px; /* Largura de celular */
+            height: 100%;
             
-            /* Fundo translúcido para ler o texto sobre a imagem */
-            background: rgba(5, 5, 12, 0.90); 
+            background: var(--panel-bg);
             border-left: 1px solid var(--theme-color); 
             border-right: 1px solid var(--theme-color);
-            box-shadow: 0 0 30px rgba(190, 0, 255, 0.15);
+            box-shadow: 0 0 40px rgba(190, 0, 255, 0.2);
             
-            display: none; /* Começa oculto (esperando login) */
-            flex-direction: column; /* Organiza itens em coluna (Topo, Meio, Fundo) */
+            display: none; /* Começa invisível (esperando login) */
+            flex-direction: column; /* Organiza: Header -> Conteúdo -> Footer */
             position: relative;
-            opacity: 0; 
-            animation: showApp 1s ease forwards 0.5s;
-            backdrop-filter: blur(10px); /* Borra o fundo atrás do app */
+            
+            backdrop-filter: blur(12px); /* Efeito de vidro fosco */
+            animation: slideUpFade 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
-        @keyframes showApp { 
-            to { opacity: 1; } 
+        @keyframes slideUpFade { 
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); } 
         }
 
-        /* =========================================
-           4. CABEÇALHO (FIXO)
-           ========================================= */
+        /* ==========================================================================
+           4. CABEÇALHO (FIXO NO TOPO)
+           ========================================================================== */
         .header-container {
-            flex-shrink: 0; /* Impede que o cabeçalho encolha */
+            flex-shrink: 0; /* Impede encolhimento */
             border-bottom: 1px solid var(--theme-color);
-            background: rgba(0,0,0,0.6);
+            background: rgba(0, 0, 0, 0.7);
             z-index: 20;
+            padding-bottom: 10px;
         }
 
         .header { 
@@ -126,425 +152,558 @@
 
         .header h1 { 
             margin: 0; 
-            font-size: 22px; 
+            font-size: 24px; 
             color: var(--theme-color); 
-            text-shadow: 0 0 8px var(--theme-color); 
-            letter-spacing: 1px; 
+            text-shadow: 0 0 10px var(--theme-color); 
+            letter-spacing: 2px; 
+            font-weight: 800;
         }
 
         .lvl-badge { 
             font-size: 14px; 
             color: #aaa; 
             text-align: right; 
+            font-family: 'Share Tech Mono', monospace;
         }
 
         .lvl-number { 
-            font-size: 24px; 
+            font-size: 26px; 
             color: var(--theme-color); 
             font-weight: bold; 
         }
 
-        /* CONTROLE DE MÚSICA */
+        /* Controle de Música */
         .music-controls {
             display: flex; 
             align-items: center; 
             justify-content: center;
-            padding: 5px 0 10px 0; 
+            padding-top: 5px;
             gap: 15px;
         }
 
         .music-btn {
-            background: none; 
+            background: rgba(0,0,0,0.5); 
             border: 1px solid #444; 
             color: var(--flex-color);
-            border-radius: 5px; 
-            padding: 5px 15px; 
+            border-radius: 4px; 
+            padding: 4px 12px; 
             cursor: pointer;
             font-family: 'Share Tech Mono'; 
-            font-size: 12px;
-            transition: 0.2s;
+            font-size: 11px;
+            letter-spacing: 1px;
+            transition: all 0.2s;
         }
 
         .music-btn:active { 
             background: var(--flex-color); 
             color: black; 
+            box-shadow: 0 0 10px var(--flex-color);
         }
 
         .music-status { 
             font-size: 10px; 
             color: #666; 
-            font-family: 'Share Tech Mono'; 
+            font-family: 'Share Tech Mono';
+            text-transform: uppercase; 
         }
 
-        /* =========================================
-           5. ÁREA DE CONTEÚDO (ONDE ROLA A TELA)
-           ========================================= */
+        /* ==========================================================================
+           5. ÁREA DE CONTEÚDO (ROLAGEM)
+           ========================================================================== */
         .content-area { 
-            flex: 1;          /* Ocupa todo o espaço sobrando entre header e footer */
-            overflow-y: auto; /* Habilita rolagem vertical APENAS aqui */
+            flex: 1; /* Ocupa todo o espaço disponível */
+            overflow-y: auto; /* Permite rolagem */
             padding: 20px; 
             scroll-behavior: smooth;
         }
 
-        /* Barras de XP e Gráficos */
+        /* Scrollbar estilizada */
+        .content-area::-webkit-scrollbar { width: 4px; }
+        .content-area::-webkit-scrollbar-track { background: #111; }
+        .content-area::-webkit-scrollbar-thumb { background: var(--theme-color); border-radius: 2px; }
+
+        /* Container do Gráfico */
         .chart-wrapper { 
             position: relative; 
-            height: 260px; 
+            height: 280px; 
             width: 100%; 
-            margin-bottom: 10px; 
+            margin-bottom: 20px; 
         }
 
-        .xp-box { margin-bottom: 20px; }
+        /* Caixa de XP */
+        .xp-box { margin-bottom: 25px; }
 
         .xp-bar-bg { 
             width: 100%; 
-            height: 8px; 
+            height: 10px; 
             background: #222; 
-            border-radius: 4px; 
+            border-radius: 5px; 
             overflow: hidden; 
+            border: 1px solid #333;
         }
 
         .xp-bar-fill { 
             width: 0%; 
             height: 100%; 
-            background: var(--theme-color); 
-            transition: width 0.5s ease; 
-            box-shadow: 0 0 10px var(--theme-color); 
+            background: linear-gradient(90deg, var(--theme-color), #8a00bc);
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+            box-shadow: 0 0 15px var(--theme-color); 
         }
 
-        /* Painel de Atributos */
+        /* Painel de Atributos Numéricos */
         .stats-grid { 
             display: grid; 
             grid-template-columns: repeat(5, 1fr); 
-            gap: 5px; 
-            margin-bottom: 25px; 
+            gap: 8px; 
+            margin-bottom: 30px; 
             text-align: center; 
         }
 
         .stat-item { 
-            background: rgba(255,255,255,0.05); 
-            padding: 5px; 
-            border-radius: 4px; 
+            background: rgba(255,255,255,0.03); 
+            padding: 8px 4px; 
+            border-radius: 6px; 
             border: 1px solid #333; 
+            transition: transform 0.2s;
+        }
+        
+        .stat-item:hover {
+            border-color: var(--theme-color);
+            transform: translateY(-2px);
         }
 
         .stat-label { 
-            font-size: 10px; 
+            font-size: 11px; 
             font-weight: bold; 
             color: #888; 
             display: block; 
+            margin-bottom: 2px;
         }
 
         .stat-value { 
-            font-size: 16px; 
+            font-size: 18px; 
             font-weight: bold; 
             color: var(--theme-color); 
             font-family: 'Share Tech Mono'; 
         }
 
-        /* =========================================
-           6. LISTA DE MISSÕES (CARDS)
-           ========================================= */
+        /* ==========================================================================
+           6. ELEMENTOS DE UI (Missões, Botões, Cards)
+           ========================================================================== */
         .section-title { 
             color: var(--theme-color); 
             border-left: 4px solid var(--theme-color); 
-            padding-left: 10px; 
-            margin: 25px 0 15px 0; 
+            padding-left: 12px; 
+            margin: 30px 0 15px 0; 
             font-size: 18px; 
-            font-weight: bold; 
+            font-weight: 700; 
             text-transform: uppercase; 
+            letter-spacing: 1px;
         }
 
+        /* Card de Missão */
         .quest-card {
-            background: linear-gradient(90deg, rgba(30,30,30,0.7) 0%, transparent 100%);
-            border-left: 2px solid #444;
-            padding: 12px; 
-            margin-bottom: 8px;
+            background: linear-gradient(90deg, rgba(30,30,30,0.6) 0%, rgba(10,10,10,0.3) 100%);
+            border-left: 3px solid #444;
+            padding: 15px; 
+            margin-bottom: 10px;
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            transition: 0.3s;
+            transition: all 0.3s ease;
+            border-radius: 0 6px 6px 0;
         }
 
+        .quest-card:hover { background: rgba(50,50,50,0.5); }
+
         .quest-card.type-flexible {
-            background: linear-gradient(90deg, rgba(0, 210, 255, 0.2) 0%, transparent 100%);
+            background: linear-gradient(90deg, rgba(0, 210, 255, 0.15) 0%, transparent 100%);
             border-left-color: var(--flex-color);
         }
 
         .quest-card.type-mandatory {
-            background: linear-gradient(90deg, rgba(255, 149, 0, 0.2) 0%, transparent 100%);
+            background: linear-gradient(90deg, rgba(255, 149, 0, 0.15) 0%, transparent 100%);
             border-left-color: var(--mand-color);
-            box-shadow: inset 5px 0 10px -5px rgba(255, 149, 0, 0.3);
         }
 
+        /* Checkbox Customizado */
         .checkbox { 
-            width: 22px; 
-            height: 22px; 
-            border: 1px solid #666; 
+            width: 24px; 
+            height: 24px; 
+            border: 2px solid #666; 
             margin-right: 15px; 
             cursor: pointer; 
             display: grid; 
             place-items: center; 
             flex-shrink: 0; 
+            border-radius: 4px;
+            transition: 0.2s;
         }
 
-        .checked { 
-            background: var(--theme-color); 
-            border-color: var(--theme-color); 
-            box-shadow: 0 0 10px var(--theme-color); 
-        }
-        
+        .checkbox:active { transform: scale(0.9); }
+
         .task-text { 
             color: white; 
             font-size: 16px; 
             flex: 1; 
             cursor: pointer; 
+            line-height: 1.3;
         }
 
         .tags-container { 
             display: flex; 
             flex-direction: column; 
             align-items: flex-end; 
-            gap: 2px; 
+            gap: 4px; 
         }
 
         .xp-tag { 
             font-size: 12px; 
-            background: #222; 
-            padding: 3px 6px; 
-            border-radius: 3px; 
-            color: #fff; 
-            border: 1px solid #444; 
+            background: #111; 
+            padding: 2px 6px; 
+            border-radius: 4px; 
+            color: var(--success); 
+            border: 1px solid #333; 
             font-weight: bold;
+            font-family: 'Share Tech Mono';
         }
 
         .attr-mini-tag { 
             font-size: 9px; 
-            padding: 2px 4px; 
-            border-radius: 2px; 
+            padding: 2px 5px; 
+            border-radius: 3px; 
             font-weight: bold; 
             color: black; 
             margin-left: 3px; 
+            text-transform: uppercase;
         }
         
+        /* Cores dos Atributos */
         .bg-STR { background-color: #ff4444; }
         .bg-AGI { background-color: #00d2ff; }
         .bg-VIT { background-color: #00ff9d; }
         .bg-INT { background-color: #be00ff; }
         .bg-SEN { background-color: #ffd700; }
 
-        .tag-flex { 
-            font-size: 10px; 
-            background: rgba(0, 210, 255, 0.2); 
-            padding: 2px 5px; 
-            border-radius: 3px; 
-            color: var(--flex-color); 
-            border: 1px solid var(--flex-color); 
-            margin-right: 5px; 
-            font-weight: bold; 
+        .tag-flex { font-size:10px; color:var(--flex-color); border:1px solid var(--flex-color); padding: 1px 4px; margin-right: 5px; border-radius: 3px; }
+        .tag-mand { font-size:10px; color:var(--mand-color); border:1px solid var(--mand-color); padding: 1px 4px; margin-right: 5px; border-radius: 3px; }
+
+        /* ==========================================================================
+           7. ESTANTE DE LIVROS (NOVA E MELHORADA)
+           ========================================================================== */
+        .library-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 livros por linha */
+            gap: 15px;
+            padding-bottom: 20px;
+        }
+        
+        .book-card {
+            background: rgba(30, 30, 40, 0.8);
+            border: 1px solid #444;
+            border-radius: 8px;
+            overflow: hidden;
+            text-align: center;
+            transition: 0.3s;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        
+        .book-card:hover {
+            border-color: var(--theme-color);
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(190, 0, 255, 0.4);
+        }
+        
+        .book-cover {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            opacity: 0.9;
+        }
+        
+        .book-info {
+            padding: 8px;
+            font-size: 11px;
+            color: #fff;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            background: rgba(0,0,0,0.8);
         }
 
-        .tag-mand { 
-            font-size: 10px; 
-            background: rgba(255, 149, 0, 0.2); 
-            padding: 2px 5px; 
-            border-radius: 3px; 
-            color: var(--mand-color); 
-            border: 1px solid var(--mand-color); 
-            margin-right: 5px; 
-            font-weight: bold; 
+        /* --- POPUP DE DETALHES DO LIVRO --- */
+        .book-detail-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
         }
 
-        /* =========================================
-           7. EDITOR DE MISSÕES
-           ========================================= */
+        .book-expanded-cover {
+            width: 160px;
+            border-radius: 8px;
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.3);
+            border: 2px solid #333;
+        }
+
+        .book-xp-badge {
+            background: var(--theme-color);
+            color: black;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .book-synopsis {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 13px;
+            color: #ccc;
+            line-height: 1.6;
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.4);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            width: 100%;
+        }
+
+        /* ==========================================================================
+           8. EDITOR E FORMULÁRIOS
+           ========================================================================== */
         .editor-box { 
-            background: rgba(16, 10, 22, 0.9); 
+            background: rgba(20, 20, 25, 0.95); 
             border: 1px solid #333; 
             padding: 20px; 
-            border-radius: 8px; 
-            margin-bottom: 20px; 
+            border-radius: 12px; 
+            margin-bottom: 25px; 
         }
 
         .input-label { 
             font-size: 12px; 
             color: var(--theme-color); 
-            margin-bottom: 5px; 
+            margin-bottom: 8px; 
             display: block; 
             font-weight: bold; 
             text-transform: uppercase; 
+            letter-spacing: 1px;
         }
 
         .sys-input, .sys-select { 
             width: 100%; 
-            background: #050505; 
+            background: #080808; 
             border: 1px solid #444; 
             color: white; 
-            padding: 12px; 
+            padding: 14px; 
             font-family: 'Rajdhani'; 
             font-size: 16px; 
             outline: none; 
             box-sizing: border-box; 
-            margin-bottom: 15px; 
+            margin-bottom: 20px; 
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+
+        .sys-input:focus, .sys-select:focus {
+            border-color: var(--theme-color);
+            box-shadow: 0 0 10px rgba(190, 0, 255, 0.2);
         }
 
         textarea.sys-input { 
             resize: vertical; 
-            min-height: 80px; 
+            min-height: 100px; 
             font-family: 'Share Tech Mono'; 
             font-size: 14px; 
         }
         
+        /* Botões de Atributo (Grid) */
         .attr-grid { 
             display: grid; 
             grid-template-columns: repeat(5, 1fr); 
-            gap: 5px; 
-            margin-bottom: 15px; 
+            gap: 8px; 
+            margin-bottom: 20px; 
         }
 
         .attr-btn {
             background: #111; 
             border: 1px solid #333; 
             color: #666;
-            padding: 10px 0; 
+            padding: 12px 0; 
             text-align: center; 
             cursor: pointer;
             font-size: 12px; 
             font-weight: bold; 
             transition: 0.2s;
-            border-radius: 4px;
+            border-radius: 6px;
         }
 
         .attr-btn.selected { 
             color: black; 
             border-color: white; 
-            box-shadow: 0 0 10px currentColor; 
+            box-shadow: 0 0 15px currentColor; 
+            transform: scale(1.05);
         }
-        .attr-btn[data-type="STR"].selected { background: #ff4444; box-shadow: 0 0 10px #ff4444; }
-        .attr-btn[data-type="AGI"].selected { background: #00d2ff; box-shadow: 0 0 10px #00d2ff; }
-        .attr-btn[data-type="VIT"].selected { background: #00ff9d; box-shadow: 0 0 10px #00ff9d; }
-        .attr-btn[data-type="INT"].selected { background: #be00ff; box-shadow: 0 0 10px #be00ff; }
-        .attr-btn[data-type="SEN"].selected { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
+        
+        /* Cores específicas quando selecionado */
+        .attr-btn[data-type="STR"].selected { background: #ff4444; }
+        .attr-btn[data-type="AGI"].selected { background: #00d2ff; }
+        .attr-btn[data-type="VIT"].selected { background: #00ff9d; }
+        .attr-btn[data-type="INT"].selected { background: #be00ff; }
+        .attr-btn[data-type="SEN"].selected { background: #ffd700; }
 
-        .recurrence-selector { 
-            display: flex; 
-            gap: 5px; 
-            margin-bottom: 20px; 
-        }
-
+        /* Botões de Recorrência */
+        .recurrence-selector { display: flex; gap: 8px; margin-bottom: 25px; }
+        
         .rec-btn { 
             flex: 1; 
-            background: #222; 
+            background: #111; 
             border: 1px solid #444; 
             color: #888; 
-            padding: 10px 5px; 
+            padding: 12px 5px; 
             font-family: 'Rajdhani'; 
             font-weight: bold; 
             font-size: 12px; 
             cursor: pointer; 
             transition: 0.3s; 
+            border-radius: 6px;
         }
 
-        .rec-btn.selected-none { background: #444; color: white; border-color: #666; }
+        .rec-btn.selected-none { background: #444; color: white; border-color: #fff; }
         .rec-btn.selected-flex { background: rgba(0, 210, 255, 0.2); color: var(--flex-color); border-color: var(--flex-color); }
         .rec-btn.selected-mand { background: rgba(255, 149, 0, 0.2); color: var(--mand-color); border-color: var(--mand-color); }
 
+        /* Botões de Ação Principais */
         .btn-add { 
             background: var(--theme-color); 
             color: black; 
             border: none; 
-            font-weight: bold; 
-            padding: 15px; 
+            font-weight: 800; 
+            padding: 16px; 
             width: 100%; 
             cursor: pointer; 
             font-size: 18px; 
             text-transform: uppercase; 
             letter-spacing: 1px; 
             transition: 0.3s; 
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(190, 0, 255, 0.3);
         }
+        
         .btn-add:active { transform: scale(0.98); }
 
         .btn-reset { 
-            background: #220000; 
+            background: rgba(50, 0, 0, 0.5); 
             color: var(--danger); 
             border: 1px solid var(--danger); 
-            padding: 10px; 
+            padding: 12px; 
             width: 100%; 
             margin-top: 50px; 
             cursor: pointer; 
             font-family: 'Rajdhani'; 
+            font-weight: bold;
             transition: 0.3s; 
+            border-radius: 6px;
         }
 
-        .action-container { display: flex; gap: 10px; }
-        .action-btn { background: none; border: none; font-weight: bold; font-size: 20px; cursor: pointer; transition: transform 0.2s; }
+        .btn-delete-book {
+            background: #3a1c1c; 
+            color: #ff5555; 
+            border: 1px solid #ff5555; 
+            padding: 12px; 
+            width: 100%; 
+            margin-top: 15px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border-radius: 6px;
+        }
+
+        .action-container { display: flex; gap: 15px; }
+        .action-btn { background: none; border: none; font-weight: bold; font-size: 22px; cursor: pointer; transition: transform 0.2s; }
         .action-btn:hover { transform: scale(1.2); }
         .btn-clone { color: var(--success); }
         .btn-del { color: var(--danger); }
 
-        /* =========================================
-           8. MENU INFERIOR (FIXO)
-           ========================================= */
+        /* ==========================================================================
+           9. MENU DE NAVEGAÇÃO INFERIOR
+           ========================================================================== */
         .bottom-nav { 
-            height: 60px; 
+            height: 70px; 
             background: rgba(2, 2, 2, 0.98); 
             border-top: 1px solid #333; 
             display: flex; 
             justify-content: space-around; 
             align-items: center; 
-            flex-shrink: 0; /* Garante que não suma */
-            z-index: 10;
+            flex-shrink: 0; 
+            z-index: 50;
+            padding-bottom: 5px;
         }
 
         .nav-btn { 
             background: none; 
             border: none; 
-            color: #666; 
+            color: #555; 
             font-family: 'Rajdhani'; 
             font-weight: bold; 
-            font-size: 14px; 
+            font-size: 12px; 
             text-transform: uppercase; 
             cursor: pointer; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
+            transition: 0.3s;
+            gap: 4px;
+        }
+        
+        /* Ícone simulado com texto/emoji para não precisar de lib externa */
+        .nav-btn::before {
+            content: "■";
+            font-size: 18px;
+            color: inherit;
         }
 
         .nav-btn.active { 
             color: var(--theme-color); 
-            text-shadow: 0 0 5px var(--theme-color); 
+            text-shadow: 0 0 10px var(--theme-color); 
+            transform: translateY(-2px);
         }
 
-        .tab-view { display: none; }
+        .tab-view { display: none; animation: fadeIn 0.4s; }
         .active-view { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* =========================================
-           9. TELA DE LOGIN (NEON / SONTAK)
-           ========================================= */
+        /* ==========================================================================
+           10. SISTEMA DE LOGIN (DESIGN NEON)
+           ========================================================================== */
         #login-overlay {
             position: fixed; 
             top: 0; 
             left: 0; 
             width: 100%; 
             height: 100%;
-            background: rgba(0, 0, 0, 0.6); /* Transparente para ver o fundo */
+            background: rgba(0, 0, 0, 0.6); 
             z-index: 20000;
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center;
-            backdrop-filter: blur(3px);
+            backdrop-filter: blur(4px);
         }
 
-        .login-box { width: 90%; max-width: 350px; text-align: center; }
+        .login-box { width: 90%; max-width: 360px; text-align: center; }
 
         .login-title { 
             font-family: 'Share Tech Mono'; 
             color: var(--theme-color); 
-            font-size: 28px; 
+            font-size: 32px; 
             letter-spacing: 4px; 
             margin-bottom: 5px; 
-            text-shadow: 0 0 20px var(--theme-color); 
+            text-shadow: 0 0 25px var(--theme-color); 
             animation: glitchFade 2s infinite alternate; 
         }
 
@@ -559,17 +718,17 @@
         .pass-display { 
             background: rgba(0, 0, 0, 0.8); 
             border: 2px solid var(--theme-color); 
-            height: 60px; 
+            height: 70px; 
             margin-bottom: 30px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             font-family: 'Share Tech Mono'; 
-            font-size: 30px; 
+            font-size: 36px; 
             color: #fff; 
-            letter-spacing: 12px; 
+            letter-spacing: 15px; 
             border-radius: 15px; 
-            box-shadow: 0 0 15px rgba(190, 0, 255, 0.3); 
+            box-shadow: 0 0 20px rgba(190, 0, 255, 0.3); 
         }
 
         .keypad { 
@@ -579,13 +738,12 @@
             padding: 10px; 
         }
 
-        /* Botões do Teclado (Estilo Sontak) */
         .key-btn { 
             background-color: #000; 
             border: 2px solid var(--theme-color); 
             color: #fff; 
             padding: 20px 0; 
-            font-size: 22px; 
+            font-size: 24px; 
             font-family: 'Share Tech Mono'; 
             font-weight: bold; 
             border-radius: 50%; 
@@ -602,80 +760,100 @@
             transform: scale(0.95); 
             background: var(--theme-color); 
             color: #000; 
-            box-shadow: 0 0 25px var(--theme-color); 
+            box-shadow: 0 0 30px var(--theme-color); 
         }
 
-        .key-action { border-radius: 15px; aspect-ratio: auto; }
-        .key-clear { border-color: var(--danger); color: var(--danger); box-shadow: 0 0 5px var(--danger); }
-        .key-enter { border-color: var(--success); color: var(--success); box-shadow: 0 0 5px var(--success); }
+        .key-action { border-radius: 15px; aspect-ratio: auto; font-size: 18px; }
+        .key-clear { border-color: var(--danger); color: var(--danger); box-shadow: 0 0 10px var(--danger); }
+        .key-enter { border-color: var(--success); color: var(--success); box-shadow: 0 0 10px var(--success); }
         
         .error-anim { 
             animation: shake 0.4s ease-in-out; 
             border-color: var(--danger); 
             color: var(--danger); 
-            box-shadow: 0 0 20px var(--danger); 
+            box-shadow: 0 0 30px var(--danger); 
         }
 
-        /* =========================================
-           10. TELA DE BOOT (CARREGAMENTO)
-           ========================================= */
-        #boot-screen { 
+        /* ==========================================================================
+           11. MODAIS E POPUPS
+           ========================================================================== */
+        .popup-overlay { 
             position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background-color: #000; 
-            z-index: 9999; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.85); 
             display: none; 
-            flex-direction: column; 
-            align-items: center; 
             justify-content: center; 
-            font-family: 'Share Tech Mono'; 
-            overflow: hidden; 
+            align-items: center; 
+            z-index: 100; 
+            backdrop-filter: blur(8px); 
         }
 
+        .popup-box { 
+            background: rgba(10,10,15,0.95); 
+            border: 2px solid var(--theme-color); 
+            padding: 30px; 
+            text-align: center; 
+            box-shadow: 0 0 60px var(--theme-color); 
+            animation: zoomIn 0.3s; 
+            width: 85%; 
+            max-height: 85vh; 
+            overflow-y: auto; 
+            border-radius: 12px;
+        }
+
+        /* Modal de Level Up */
+        .levelup-box { 
+            background: rgba(10,10,10,0.98); 
+            border: 3px solid var(--gold-color); 
+            padding: 40px 20px; 
+            text-align: center; 
+            box-shadow: 0 0 80px rgba(255, 215, 0, 0.6); 
+            animation: zoomIn 0.3s; 
+            width: 90%; 
+            border-radius: 20px;
+        }
+        
+        .popup-stat { font-size: 24px; font-weight: bold; color: white; margin-bottom: 5px; }
+        .popup-xp { font-size: 32px; color: var(--success); font-weight: bold; text-shadow: 0 0 15px var(--success); }
+        
+        .levelup-num { 
+            font-size: 100px; 
+            font-weight: 800; 
+            color: white; 
+            text-shadow: 0 0 40px var(--gold-color); 
+            margin: 10px 0; 
+            animation: pulse 0.8s infinite alternate; 
+        }
+
+        .btn-close { 
+            background: #333; 
+            color: white; 
+            border: 1px solid #555; 
+            padding: 12px 20px; 
+            cursor: pointer; 
+            width: 100%; 
+            font-family: 'Rajdhani'; 
+            font-weight: bold; 
+            font-size: 16px;
+            margin-top: 20px;
+            border-radius: 6px;
+        }
+
+        /* Boot Screen */
+        #boot-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; font-family: 'Share Tech Mono'; overflow: hidden; }
         .boot-text { color: var(--flex-color); font-size: 16px; margin-bottom: 10px; opacity: 0; animation: fadeInText 0.5s forwards; }
         .boot-title { font-size: 32px; color: var(--theme-color); font-weight: bold; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 20px var(--theme-color); opacity: 0; animation: glitchFade 0.8s forwards 1.5s; text-align: center; margin: 20px 0; }
         .loader-line { width: 0%; height: 4px; background: var(--theme-color); box-shadow: 0 0 10px var(--theme-color); margin-top: 20px; animation: loadProgress 2.5s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
-        .scanlines { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2)); background-size: 100% 4px; pointer-events: none; z-index: 10000; }
         .fade-out-screen { opacity: 0; pointer-events: none; transition: opacity 0.8s ease-out; }
 
-        /* =========================================
-           11. POPUPS E NOTIFICAÇÕES
-           ========================================= */
-        .popup-overlay { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); 
-        }
-        .popup-box { 
-            background: rgba(0,0,0,0.95); border: 2px solid var(--theme-color); padding: 30px; text-align: center; box-shadow: 0 0 50px var(--theme-color); animation: zoomIn 0.3s; width: 80%; max-height: 80vh; overflow-y: auto; 
-        }
-        .levelup-box { 
-            background: rgba(0,0,0,0.95); border: 2px solid var(--gold-color); padding: 40px 20px; text-align: center; box-shadow: 0 0 60px rgba(255, 215, 0, 0.5); animation: zoomIn 0.3s; width: 85%; 
-        }
-        
-        .popup-stat { font-size: 24px; font-weight: bold; color: white; text-shadow: 0 0 10px white; margin-bottom: 5px; }
-        .popup-xp { font-size: 32px; color: var(--success); font-weight: bold; text-shadow: 0 0 15px var(--success); }
-        .levelup-num { font-size: 80px; font-weight: 800; color: white; text-shadow: 0 0 30px var(--gold-color); margin: 10px 0; animation: pulse 0.8s infinite alternate; }
-
-        .success-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: none; justify-content: center; align-items: center; z-index: 200; }
-        .success-box { background: rgba(0,0,0,0.9); border: 2px solid var(--theme-color); padding: 20px 40px; text-align: center; box-shadow: 0 0 40px rgba(190, 0, 255, 0.4); animation: slideUp 0.4s ease-out; }
-        .success-msg { color: var(--theme-color); font-weight: bold; font-size: 18px; letter-spacing: 2px; text-transform: uppercase; }
-
-        .detail-title { font-size: 22px; color: var(--theme-color); font-weight: bold; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 10px; text-align: left;}
-        .detail-desc { font-family: 'Share Tech Mono'; font-size: 14px; color: #ccc; text-align: left; white-space: pre-wrap; margin-bottom: 20px; line-height: 1.5; }
-        .btn-close { background: #333; color: white; border: 1px solid #555; padding: 10px 20px; cursor: pointer; width: 100%; font-family: 'Rajdhani'; font-weight: bold;}
-
-        /* Animações Globais */
+        /* Animações Keyframes */
         @keyframes zoomIn { from {transform: scale(0.5); opacity:0;} to {transform: scale(1); opacity:1;} }
         @keyframes pulse { from {transform: scale(1);} to {transform: scale(1.1);} }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
         @keyframes loadProgress { 0% { width: 0%; } 100% { width: 80%; } }
         @keyframes fadeInText { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes glitchFade { 0% { opacity: 0; transform: scale(0.9); } 20% { opacity: 1; transform: scale(1.1); filter: blur(2px); } 40% { opacity: 0.8; transform: scale(1); filter: blur(0); } 100% { opacity: 1; transform: scale(1); } }
-        @keyframes slideUp { from {transform: translateY(20px); opacity:0;} to {transform: translateY(0); opacity:1;} }
-
     </style>
 </head>
 <body>
@@ -709,7 +887,6 @@
 </div>
 
 <div id="boot-screen">
-    <div class="scanlines"></div>
     <div class="boot-text" style="animation-delay: 0.2s">SYSTEM INITIALIZING...</div>
     <div class="boot-text" style="animation-delay: 0.8s">CONNECTING TO SONTAK DATABASE...</div>
     <div class="boot-text" style="color:var(--success); animation-delay: 1.4s;">SYNCHRONIZATION COMPLETE.</div>
@@ -773,21 +950,16 @@
                     <div class="attr-btn" data-type="SEN" onclick="toggleAttr('SEN')">SEN</div>
                 </div>
 
-                <label class="input-label">3. XP TOTAL</label>
+                <label class="input-label">3. RECOMPENSA (XP)</label>
                 <select id="newQuestXP" class="sys-select">
                     <option value="50">50 XP (Muito Fácil)</option>
                     <option value="100">100 XP (Fácil)</option>
-                    <option value="150">150 XP (Fácil)</option>
                     <option value="200">200 XP (Médio)</option>
-                    <option value="250">250 XP (Médio)</option>
-                    <option value="300">300 XP (Complexo)</option>
-                    <option value="400">400 XP (Complexo)</option>
-                    <option value="450">450 XP (Difícil)</option>
+                    <option value="300">300 XP (Bom)</option>
                     <option value="500">500 XP (Difícil)</option>
-                    <option value="750">7500 XP (Muito Difícil)</option>
                     <option value="1000">1.000 XP (Muito Difícil)</option>
-                    <option value="2500">2.500 XP (Impossível / 1 Level)</option>
-                    <option value="5000">5.000 XP (Impossível / 2 Levels)</option>
+                    <option value="2500">2.500 XP (Boss Semanal / 1 Level)</option>
+                    <option value="5000">5.000 XP (Boss Mensal / 2 Levels)</option>
                 </select>
 
                 <label class="input-label">4. TIPO DE MISSÃO</label>
@@ -810,10 +982,36 @@
             <button class="btn-reset" onclick="hardReset()">⚠ RESETAR DADOS DO SISTEMA</button>
         </div>
 
+        <div id="tab-library" class="tab-view">
+            <div class="section-title">GRIMÓRIOS ADQUIRIDOS</div>
+            
+            <div class="editor-box">
+                <label class="input-label">1. TÍTULO DO LIVRO</label>
+                <input type="text" id="bookTitle" class="sys-input" placeholder="Ex: O Hobbit">
+                
+                <label class="input-label">2. ISBN (CÓDIGO DE BARRAS)</label>
+                <div style="font-size:10px; color:#666; margin-bottom:5px;">(Necessário para Capa e Sinopse)</div>
+                <input type="text" id="bookIsbn" class="sys-input" placeholder="Ex: 9788535902778">
+                
+                <label class="input-label">3. RECOMPENSA DE LEITURA (XP)</label>
+                <select id="bookXp" class="sys-select">
+                    <option value="100">100 XP (Leitura Curta)</option>
+                    <option value="200">200 XP (Leitura Média)</option>
+                    <option value="300">300 XP (Leitura Épica)</option>
+                </select>
+                
+                <button class="btn-add" onclick="addBook()">REGISTRAR LEITURA (+XP)</button>
+            </div>
+
+            <div id="library-grid" class="library-grid">
+                </div>
+        </div>
+
     </div>
 
     <div class="bottom-nav">
         <button class="nav-btn active" onclick="switchTab('home')">STATUS</button>
+        <button class="nav-btn" onclick="switchTab('library')">GRIMÓRIO</button>
         <button class="nav-btn" onclick="switchTab('editor')">EDITOR</button>
     </div>
 
@@ -821,10 +1019,8 @@
         <div class="popup-box">
             <div style="color:var(--theme-color); font-size:24px; font-weight:bold; margin-bottom:10px;">QUEST COMPLETED!</div>
             <div style="font-size:16px; color:#ccc; margin-bottom:5px;">EXPERIÊNCIA ADQUIRIDA:</div>
-            
             <div class="popup-stat" id="popupStatValue" style="font-size:16px; margin-bottom:15px; line-height:1.4;"></div>
             <div class="popup-xp" id="popupXpValue"></div>
-            
             <div style="margin-top:20px; font-size:12px; color:#666;">(Toque para continuar)</div>
         </div>
     </div>
@@ -833,9 +1029,7 @@
         <div class="levelup-box">
             <div style="color: var(--gold-color); font-size: 28px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--gold-color);">LEVEL UP!</div>
             <div style="color: #ccc; font-size: 14px; margin-top:5px;">LIMITES SUPERADOS</div>
-            
             <div class="levelup-num" id="newLevelDisplay">1</div>
-            
             <div style="font-size:14px; color:#888;">STATUS AUMENTADOS</div>
             <div style="margin-top:20px; font-size:12px; color:#fff; border:1px solid #555; padding:5px; display:inline-block; border-radius:5px;">TOQUE PARA CONTINUAR</div>
         </div>
@@ -849,10 +1043,18 @@
         </div>
     </div>
 
+    <div class="popup-overlay" id="bookPopup">
+        <div class="popup-box">
+            <div id="bookDetailContent" class="book-detail-content">
+                </div>
+            <button class="btn-close" onclick="closeBookPopup()" style="margin-top:15px;">FECHAR</button>
+        </div>
+    </div>
+
     <div class="success-overlay" id="successPopup">
         <div class="success-box">
             <div style="font-size:30px; color:var(--theme-color);">✔</div>
-            <div class="success-msg">TAREFA REGISTRADA</div>
+            <div class="success-msg">REGISTRADO</div>
         </div>
     </div>
 
@@ -862,7 +1064,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-    // --- CONFIGURAÇÃO DO FIREBASE ---
+    // --- 1. CONFIGURAÇÃO DO FIREBASE ---
     const firebaseConfig = {
       apiKey: "AIzaSyDnTgThcU_lVdXASbg9ufMeUEE_x2uaYfQ",
       authDomain: "sontak-arise.firebaseapp.com",
@@ -877,14 +1079,14 @@
     const db = getDatabase(app);
     const userRef = ref(db, 'usuarios/vitor');
 
-    // === VARIÁVEIS GLOBAIS ===
-    let playerData = { level: 1, xp: 0, stats: [0, 0, 0, 0, 0], quests: [] };
+    // --- 2. ESTADO DO JOGO ---
+    let playerData = { level: 1, xp: 0, stats: [0, 0, 0, 0, 0], quests: [], library: [] };
     let chartInstance = null;
     const MAX_XP_REQUIREMENT = 2500; 
     const XP_FACTOR = 100; 
     let selectedAttrs = [];
     
-    // --- LÓGICA DE MÚSICA ---
+    // --- 3. SISTEMA DE ÁUDIO ---
     const bgMusic = document.getElementById("bgMusic");
     let isPlaying = false;
     
@@ -893,13 +1095,11 @@
         if (isPlaying) {
             bgMusic.pause();
             btn.innerText = "► PLAY";
-            btn.style.color = "#888";
-            btn.style.borderColor = "#444";
+            btn.style.color = "#888"; btn.style.borderColor = "#444";
         } else {
             bgMusic.play();
             btn.innerText = "❚❚ PAUSE";
-            btn.style.color = "var(--flex-color)";
-            btn.style.borderColor = "var(--flex-color)";
+            btn.style.color = "var(--flex-color)"; btn.style.borderColor = "var(--flex-color)";
         }
         isPlaying = !isPlaying;
     }
@@ -909,110 +1109,68 @@
         else bgMusic.volume += 0.2;
     }
 
-    // === LÓGICA DE LOGIN ===
+    // --- 4. SISTEMA DE LOGIN ---
     let currentPass = "";
     const CORRECT_PASS = "010118";
 
     window.pressKey = function(num) {
-        if(currentPass.length < 6) {
-            currentPass += num;
-            updatePassDisplay();
-        }
+        if(currentPass.length < 6) { currentPass += num; updatePassDisplay(); }
     }
-
     window.clearPass = function() {
-        currentPass = "";
-        updatePassDisplay();
-        document.getElementById('passDisplay').classList.remove('error-anim');
+        currentPass = ""; updatePassDisplay(); document.getElementById('passDisplay').classList.remove('error-anim');
     }
-
     window.checkPass = function() {
-        if(currentPass === CORRECT_PASS) {
-            unlockSystem();
-        } else {
+        if(currentPass === CORRECT_PASS) { unlockSystem(); } 
+        else {
             const display = document.getElementById('passDisplay');
             display.classList.add('error-anim');
-            setTimeout(() => {
-                currentPass = "";
-                updatePassDisplay();
-                display.classList.remove('error-anim');
-            }, 400);
+            setTimeout(() => { currentPass = ""; updatePassDisplay(); display.classList.remove('error-anim'); }, 400);
         }
     }
-
     function updatePassDisplay() {
-        let visual = "";
-        for(let i=0; i<6; i++) {
-            if(i < currentPass.length) visual += "● ";
-            else visual += "_ ";
-        }
+        let visual = ""; for(let i=0; i<6; i++) { visual += (i < currentPass.length) ? "● " : "_ "; }
         document.getElementById('passDisplay').innerText = visual;
     }
 
     function unlockSystem() {
-        // Toca música automaticamente ao logar
         bgMusic.volume = 0.6;
-        bgMusic.play().then(() => {
-            isPlaying = true;
-            document.getElementById('btnPlayPause').innerText = "❚❚ PAUSE";
-        }).catch(e => console.log("Audio prevented"));
-
+        bgMusic.play().then(() => { isPlaying = true; document.getElementById('btnPlayPause').innerText = "❚❚ PAUSE"; }).catch(e => console.log("Audio prevented"));
         document.getElementById('login-overlay').style.display = 'none';
         const bootScreen = document.getElementById('boot-screen');
         bootScreen.style.display = 'flex';
-
         setTimeout(() => {
             bootScreen.classList.add('fade-out-screen');
             document.getElementById('mainApp').style.display = 'flex';
+            if(chartInstance) chartInstance.resize();
             setTimeout(() => { bootScreen.style.display = 'none'; }, 800);
         }, 3500);
-
         initApp();
     }
 
+    // --- 5. INICIALIZAÇÃO DO APP ---
     function initApp() {
         initChart();
-        // Conecta ao Firebase
         onValue(userRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 playerData = data;
                 if(!playerData.quests) playerData.quests = [];
                 if(!playerData.stats) playerData.stats = [0,0,0,0,0];
-            } else {
-                saveData(); 
-            }
-            updateHeader();
-            updateStatsDisplay();
-            checkDailyQuests();
-            renderAll();
+                if(!playerData.library) playerData.library = [];
+            } else { saveData(); }
+            updateHeader(); updateStatsDisplay(); checkDailyQuests(); renderAll(); renderLibrary();
             if(chartInstance) updateChartData();
         });
     }
 
-    // === FUNÇÕES DO SISTEMA ===
+    // --- 6. FUNÇÕES PRINCIPAIS (RPG) ---
+    window.saveData = function() { set(userRef, playerData); updateHeader(); updateStatsDisplay(); if(chartInstance) updateChartData(); }
+    window.getAttrLevel = function(xp) { return Math.floor(Math.sqrt(xp / XP_FACTOR)); }
+    function getAttrLevelFloat(xp) { return Math.sqrt(xp / XP_FACTOR); }
     
-    window.saveData = function() {
-        set(userRef, playerData);
-        updateHeader();
-        updateStatsDisplay();
-        if(chartInstance) updateChartData();
-    }
-
-    window.getAttrLevel = function(xp) {
-        return Math.floor(Math.sqrt(xp / XP_FACTOR));
-    }
-    
-    function getAttrLevelFloat(xp) {
-        return Math.sqrt(xp / XP_FACTOR);
-    }
-
     window.updateStatsDisplay = function() {
         const labels = ['STR', 'AGI', 'VIT', 'INT', 'SEN'];
-        playerData.stats.forEach((xp, i) => {
-            const lv = getAttrLevel(xp);
-            document.getElementById(`val-${labels[i]}`).innerText = lv;
-        });
+        playerData.stats.forEach((xp, i) => { document.getElementById(`val-${labels[i]}`).innerText = getAttrLevel(xp); });
     }
 
     window.checkDailyQuests = function() {
@@ -1020,56 +1178,34 @@
         let dataChanged = false;
         if(!playerData.quests) return;
         playerData.quests.forEach(quest => {
-            if (quest.recurrence === 'flexible' || quest.recurrence === 'mandatory') {
-                if (quest.done && quest.lastDoneDate !== today) {
-                    quest.done = false;
-                    dataChanged = true;
-                }
+            if ((quest.recurrence === 'flexible' || quest.recurrence === 'mandatory') && quest.done && quest.lastDoneDate !== today) {
+                quest.done = false; dataChanged = true;
             }
         });
-        if (dataChanged) {
-            saveData();
-        }
+        if (dataChanged) saveData();
     }
 
-    window.getXpNeeded = function(level) {
-        let needed = level * 100;
-        if (needed > MAX_XP_REQUIREMENT) needed = MAX_XP_REQUIREMENT;
-        return needed;
-    }
+    window.getXpNeeded = function(level) { return Math.min(level * 100, MAX_XP_REQUIREMENT); }
 
     window.updateHeader = function() {
         const xpNeeded = getXpNeeded(playerData.level);
         document.getElementById('displayLevel').innerText = playerData.level;
         document.getElementById('xpText').innerText = `${playerData.xp} / ${xpNeeded}`;
-        let percent = (playerData.xp / xpNeeded) * 100;
-        if(percent > 100) percent = 100;
+        let percent = Math.min((playerData.xp / xpNeeded) * 100, 100);
         document.getElementById('xpBar').style.width = percent + '%';
     }
 
+    // --- 7. GRÁFICO (Chart.js) ---
     window.initChart = function() {
         const ctx = document.getElementById('statsChart').getContext('2d');
         chartInstance = new Chart(ctx, {
             type: 'radar',
             data: {
                 labels: ['FORÇA', 'AGILIDADE', 'VITALIDADE', 'INTELIGÊNCIA', 'SENTIDO'],
-                datasets: [{
-                    data: [0,0,0,0,0], 
-                    backgroundColor: 'rgba(190, 0, 255, 0.4)',
-                    borderColor: '#be00ff',
-                    borderWidth: 2,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#be00ff'
-                }]
+                datasets: [{ data: [0,0,0,0,0], backgroundColor: 'rgba(190, 0, 255, 0.4)', borderColor: '#be00ff', borderWidth: 2, pointBackgroundColor: '#fff', pointBorderColor: '#be00ff' }]
             },
             options: {
-                scales: {
-                    r: {
-                        angleLines: { color: '#333' }, grid: { color: '#333' },
-                        pointLabels: { color: '#fff', font: { family: 'Rajdhani', size: 12 } },
-                        ticks: { display: false }, suggestedMin: 0, suggestedMax: 100
-                    }
-                },
+                scales: { r: { angleLines: { color: '#333' }, grid: { color: '#333' }, pointLabels: { color: '#fff', font: { family: 'Rajdhani', size: 12 } }, ticks: { display: false }, suggestedMin: 0, suggestedMax: 100 } },
                 plugins: { legend: { display: false } }, maintainAspectRatio: false
             }
         });
@@ -1078,35 +1214,25 @@
     function getVisualPercent(level) {
         let percent = 0;
         if (level <= 10) return level * 5; 
-        percent = 50;
-        if (level <= 20) return percent + ((level - 10) * 1);
-        percent = 60;
-        if (level <= 50) return percent + ((level - 20) * 0.4);
-        percent = 72;
-        if (level <= 100) return percent + ((level - 50) * 0.25);
-        percent = 84.5;
-        if (level <= 200) return percent + ((level - 100) * 0.1);
-        percent = 94.5;
-        if (level <= 500) return percent + ((level - 200) * 0.01);
+        percent = 50; if (level <= 20) return percent + ((level - 10) * 1);
+        percent = 60; if (level <= 50) return percent + ((level - 20) * 0.4);
+        percent = 72; if (level <= 100) return percent + ((level - 50) * 0.25);
+        percent = 84.5; if (level <= 200) return percent + ((level - 100) * 0.1);
+        percent = 94.5; if (level <= 500) return percent + ((level - 200) * 0.01);
         return Math.min(99.9, percent + ((level - 500) * 0.001));
     }
 
     window.updateChartData = function() {
-        const realLevels = playerData.stats.map(xp => getAttrLevelFloat(xp));
-        const visualData = realLevels.map(lvl => getVisualPercent(lvl));
+        const visualData = playerData.stats.map(xp => getVisualPercent(getAttrLevelFloat(xp)));
         chartInstance.data.datasets[0].data = visualData;
         chartInstance.update();
     }
 
+    // --- 8. EDITOR DE MISSÕES ---
     window.toggleAttr = function(type) {
         const btn = document.querySelector(`.attr-btn[data-type="${type}"]`);
-        if (selectedAttrs.includes(type)) {
-            selectedAttrs = selectedAttrs.filter(a => a !== type);
-            btn.classList.remove('selected');
-        } else {
-            selectedAttrs.push(type);
-            btn.classList.add('selected');
-        }
+        if (selectedAttrs.includes(type)) { selectedAttrs = selectedAttrs.filter(a => a !== type); btn.classList.remove('selected'); } 
+        else { selectedAttrs.push(type); btn.classList.add('selected'); }
     }
     
     window.setRecurrence = function(type) {
@@ -1118,225 +1244,190 @@
     }
 
     window.addNewQuest = function() {
-        const input = document.getElementById('newQuestInput');
-        const descInput = document.getElementById('newQuestDesc');
-        const xpSelect = document.getElementById('newQuestXP'); 
-        const recurrenceVal = document.getElementById('recurrenceValue').value; 
-        
+        const input = document.getElementById('newQuestInput'); const descInput = document.getElementById('newQuestDesc');
+        const xpSelect = document.getElementById('newQuestXP'); const recurrenceVal = document.getElementById('recurrenceValue').value; 
         if (input.value.trim() && selectedAttrs.length > 0) {
             if(!playerData.quests) playerData.quests = [];
-            
-            playerData.quests.push({ 
-                text: input.value.trim(), 
-                desc: descInput.value.trim(), 
-                types: [...selectedAttrs], 
-                xpValue: parseInt(xpSelect.value, 10),
-                done: false,
-                recurrence: recurrenceVal,
-                lastDoneDate: null
-            });
-            input.value = '';
-            descInput.value = '';
-            
-            selectedAttrs = [];
+            playerData.quests.push({ text: input.value.trim(), desc: descInput.value.trim(), types: [...selectedAttrs], xpValue: parseInt(xpSelect.value, 10), done: false, recurrence: recurrenceVal, lastDoneDate: null });
+            input.value = ''; descInput.value = ''; selectedAttrs = [];
             document.querySelectorAll('.attr-btn').forEach(btn => btn.classList.remove('selected'));
-            setRecurrence('none'); 
+            setRecurrence('none'); saveData(); renderAll(); showSuccessPopup();
+        } else { alert("Preencha o nome da missão e selecione pelo menos 1 atributo!"); }
+    }
 
-            saveData(); renderAll(); showSuccessPopup();
-        } else {
-            alert("Preencha o nome da missão e selecione pelo menos 1 atributo!");
+    // --- 9. SISTEMA DE BIBLIOTECA (AVANÇADO) ---
+    window.addBook = function() {
+        const title = document.getElementById('bookTitle').value;
+        const isbn = document.getElementById('bookIsbn').value;
+        const xpVal = parseInt(document.getElementById('bookXp').value);
+        
+        if(title.trim()) {
+            if(!playerData.library) playerData.library = [];
+            playerData.library.push({ 
+                title: title, 
+                isbn: isbn, 
+                xpValue: xpVal,
+                date: new Date().toDateString() 
+            });
+            
+            // Adiciona XP
+            playerData.xp += xpVal;
+            const xpPerAttr = Math.floor(xpVal / 2);
+            playerData.stats[3] += xpPerAttr; // INT
+            playerData.stats[4] += xpPerAttr; // SEN
+            
+            let xpNeeded = getXpNeeded(playerData.level);
+            let leveledUp = false;
+            while(playerData.xp >= xpNeeded) { playerData.xp -= xpNeeded; playerData.level++; xpNeeded = getXpNeeded(playerData.level); leveledUp = true; }
+            
+            document.getElementById('bookTitle').value = ''; document.getElementById('bookIsbn').value = '';
+            saveData(); renderLibrary(); 
+            showReward(`+${xpPerAttr} INT<br>+${xpPerAttr} SEN`, xpVal);
+            if(leveledUp) showLevelUpPopup(playerData.level);
+        } else { alert("Digite o título!"); }
+    }
+
+    window.renderLibrary = function() {
+        const grid = document.getElementById('library-grid'); grid.innerHTML = '';
+        if(!playerData.library) return;
+        playerData.library.forEach((book, index) => {
+            const card = document.createElement('div'); card.className = 'book-card';
+            card.onclick = () => openBookDetails(index);
+            let imgUrl = 'https://via.placeholder.com/100x140/222/888?text=SEM+CAPA';
+            if(book.isbn) imgUrl = `https://covers.openlibrary.org/b/isbn/${book.isbn}-M.jpg`;
+            card.innerHTML = `<img src="${imgUrl}" class="book-cover" onerror="this.src='https://via.placeholder.com/100x140/000/fff?text=No+Cover'"><div class="book-info">${book.title}</div>`;
+            grid.appendChild(card);
+        });
+    }
+
+    // --- POPUP DO LIVRO + API GOOGLE BOOKS ---
+    window.openBookDetails = function(index) {
+        const book = playerData.library[index];
+        const popup = document.getElementById('bookPopup');
+        const content = document.getElementById('bookDetailContent');
+        
+        let imgUrl = 'https://via.placeholder.com/140x200/222/888?text=SEM+CAPA';
+        if(book.isbn) imgUrl = `https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg`;
+
+        content.innerHTML = `
+            <div style="font-size:20px; color:var(--theme-color); font-weight:bold; text-align:center;">${book.title}</div>
+            <img src="${imgUrl}" class="book-expanded-cover">
+            <div class="book-xp-badge">XP OBTIDO: ${book.xpValue}</div>
+            <div style="font-size:12px; color:#888;">SINOPSE (GOOGLE API):</div>
+            <div id="synopsisText" class="book-synopsis">Carregando...</div>
+            <button class="btn-delete-book" onclick="deleteBook(${index})">✖ REMOVER DO ACERVO</button>
+        `;
+        
+        popup.style.display = 'flex';
+
+        // Fetch Sinopse
+        if(book.isbn) {
+            fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${book.isbn}`)
+            .then(res => res.json())
+            .then(data => {
+                if(data.items && data.items.length > 0) {
+                    const desc = data.items[0].volumeInfo.description;
+                    document.getElementById('synopsisText').innerHTML = desc || "Sinopse não disponível.";
+                } else {
+                    document.getElementById('synopsisText').innerText = "Sinopse não encontrada.";
+                }
+            })
+            .catch(() => { document.getElementById('synopsisText').innerText = "Erro ao carregar sinopse."; });
+        } else { document.getElementById('synopsisText').innerText = "Sem ISBN cadastrado."; }
+    }
+
+    window.closeBookPopup = function() { document.getElementById('bookPopup').style.display = 'none'; }
+
+    window.deleteBook = function(index) {
+        if(confirm("Remover este livro? (O XP ganho PERMANECE no seu perfil)")) {
+            playerData.library.splice(index, 1);
+            saveData(); renderLibrary(); closeBookPopup();
         }
     }
 
+    // --- 10. AÇÕES DE CARD E MODAIS ---
     window.cloneQuest = function(index) {
         const original = playerData.quests[index];
-        let typesArr = original.types || [original.type];
-
-        playerData.quests.push({
-            text: original.text,
-            desc: original.desc || "", 
-            types: typesArr,
-            xpValue: original.xpValue,
-            done: false,
-            recurrence: original.recurrence, 
-            lastDoneDate: null
-        });
-        saveData();
-        renderAll();
-        showSuccessPopup();
+        playerData.quests.push({ text: original.text, desc: original.desc || "", types: original.types || [original.type], xpValue: original.xpValue, done: false, recurrence: original.recurrence, lastDoneDate: null });
+        saveData(); renderAll(); showSuccessPopup();
     }
 
-    window.showSuccessPopup = function() {
-        const popup = document.getElementById('successPopup');
-        popup.style.display = 'flex';
-        setTimeout(() => { popup.style.display = 'none'; }, 2000);
-    }
+    window.showSuccessPopup = function() { const popup = document.getElementById('successPopup'); popup.style.display = 'flex'; setTimeout(() => { popup.style.display = 'none'; }, 2000); }
 
     window.completeQuest = function(index) {
         if (playerData.quests[index].done) return;
-        
-        const quest = playerData.quests[index];
-        quest.done = true;
-
-        if (quest.recurrence === 'flexible' || quest.recurrence === 'mandatory') {
-            quest.lastDoneDate = new Date().toDateString();
-        }
-
-        const totalXp = parseInt(quest.xpValue, 10);
-        playerData.xp += totalXp;
-
+        const quest = playerData.quests[index]; quest.done = true;
+        if (quest.recurrence === 'flexible' || quest.recurrence === 'mandatory') quest.lastDoneDate = new Date().toDateString();
+        const totalXp = parseInt(quest.xpValue, 10); playerData.xp += totalXp;
         const typesToProcess = quest.types || [quest.type];
-        
         const xpPerStat = Math.floor(totalXp / typesToProcess.length);
         let rewardText = "";
-
         typesToProcess.forEach(type => {
-            let statIndex = 0;
-            if(type === 'STR') statIndex=0;
-            if(type === 'AGI') statIndex=1;
-            if(type === 'VIT') statIndex=2;
-            if(type === 'INT') statIndex=3;
-            if(type === 'SEN') statIndex=4;
-            
-            playerData.stats[statIndex] += xpPerStat;
-            
+            let statIndex = ['STR','AGI','VIT','INT','SEN'].indexOf(type);
+            if(statIndex > -1) playerData.stats[statIndex] += xpPerStat;
             rewardText += `+${xpPerStat} XP (${type})<br>`;
         });
-        
-        let xpNeeded = getXpNeeded(playerData.level);
-        let leveledUp = false;
-        
-        while(playerData.xp >= xpNeeded) {
-            playerData.xp -= xpNeeded;
-            playerData.level++;
-            xpNeeded = getXpNeeded(playerData.level);
-            leveledUp = true;
-        }
-
-        saveData(); renderAll(); 
-        
-        showReward(rewardText, totalXp);
-
-        if(leveledUp) {
-            showLevelUpPopup(playerData.level);
-        }
+        let xpNeeded = getXpNeeded(playerData.level); let leveledUp = false;
+        while(playerData.xp >= xpNeeded) { playerData.xp -= xpNeeded; playerData.level++; xpNeeded = getXpNeeded(playerData.level); leveledUp = true; }
+        saveData(); renderAll(); showReward(rewardText, totalXp);
+        if(leveledUp) showLevelUpPopup(playerData.level);
     }
 
     window.openTaskDetails = function(index) {
         const quest = playerData.quests[index];
         document.getElementById('detailTitle').innerText = quest.text;
-        const description = quest.desc && quest.desc.trim() !== "" ? quest.desc : "Nenhuma instrução adicional.";
-        document.getElementById('detailDesc').innerText = description;
+        document.getElementById('detailDesc').innerText = quest.desc && quest.desc.trim() !== "" ? quest.desc : "Nenhuma instrução.";
         document.getElementById('detailsPopup').style.display = 'flex';
     }
 
-    window.closeDetailsPopup = function() {
-        document.getElementById('detailsPopup').style.display = 'none';
-    }
-
-    window.showReward = function(statsHtml, xpAmount) {
-        document.getElementById('popupStatValue').innerHTML = statsHtml;
-        document.getElementById('popupXpValue').innerText = `+${xpAmount} XP TOTAL`;
-        document.getElementById('rewardPopup').style.display = 'flex';
-    }
-    
-    window.showLevelUpPopup = function(level) {
-        document.getElementById('newLevelDisplay').innerText = level;
-        document.getElementById('levelUpPopup').style.display = 'flex';
-    }
-
+    window.closeDetailsPopup = function() { document.getElementById('detailsPopup').style.display = 'none'; }
+    window.showReward = function(statsHtml, xpAmount) { document.getElementById('popupStatValue').innerHTML = statsHtml; document.getElementById('popupXpValue').innerText = `+${xpAmount} XP TOTAL`; document.getElementById('rewardPopup').style.display = 'flex'; }
+    window.showLevelUpPopup = function(level) { document.getElementById('newLevelDisplay').innerText = level; document.getElementById('levelUpPopup').style.display = 'flex'; }
     window.closePopup = function() { document.getElementById('rewardPopup').style.display = 'none'; }
     window.closeLevelPopup = function() { document.getElementById('levelUpPopup').style.display = 'none'; }
 
-    window.deleteQuest = function(index) {
-        if(confirm("Remover esta tarefa permanentemente?")) {
-            playerData.quests.splice(index, 1);
-            saveData(); renderAll();
-        }
-    }
+    window.deleteQuest = function(index) { if(confirm("Remover?")) { playerData.quests.splice(index, 1); saveData(); renderAll(); } }
 
     window.hardReset = function() {
-        if(confirm("⚠ PERIGO: ISSO APAGARÁ TODO O SEU PROGRESSO NA NUVEM PARA SEMPRE.\n\nTem certeza que deseja continuar?")) { 
-            const password = prompt("DIGITE A SENHA DE ADMINISTRADOR PARA CONFIRMAR O RESET:");
+        if(confirm("⚠ PERIGO: RESETAR TUDO?")) { 
+            const password = prompt("SENHA DE ADM:");
             if (password === "Yasuo010118*") {
-                playerData = { level: 1, xp: 0, stats: [0, 0, 0, 0, 0], quests: [] };
-                saveData(); 
-                location.reload(); 
-            } else {
-                alert("SENHA INCORRETA. ACESSO NEGADO.");
-            }
+                playerData = { level: 1, xp: 0, stats: [0, 0, 0, 0, 0], quests: [], library: [] };
+                saveData(); location.reload(); 
+            } else { alert("SENHA ERRADA."); }
         }
     }
 
     window.renderAll = function() {
-        const homeList = document.getElementById('home-quest-list');
-        const editorList = document.getElementById('editor-quest-list');
+        const homeList = document.getElementById('home-quest-list'); const editorList = document.getElementById('editor-quest-list');
         homeList.innerHTML = ''; editorList.innerHTML = '';
-
         if(!playerData.quests) return;
-
         playerData.quests.forEach((quest, index) => {
             const typesArr = quest.types || [quest.type];
-
+            let attrsHtml = ''; typesArr.forEach(t => { attrsHtml += `<span class="attr-mini-tag bg-${t}">${t}</span>`; });
+            
+            // HOME LIST
             if(!quest.done) {
                 const homeItem = document.createElement('div');
                 let cardClass = 'quest-card active-card';
                 let tagHtml = '';
-                
-                if (quest.recurrence === 'flexible') {
-                    cardClass += ' type-flexible';
-                    tagHtml = `<span class="tag-flex">↻ RECORRENTE</span>`;
-                } else if (quest.recurrence === 'mandatory') {
-                    cardClass += ' type-mandatory';
-                    tagHtml = `<span class="tag-mand">⚠ OBRIGATÓRIA</span>`;
-                }
-
-                let attrsHtml = '';
-                typesArr.forEach(t => {
-                    attrsHtml += `<span class="attr-mini-tag bg-${t}">${t}</span>`;
-                });
-
+                if (quest.recurrence === 'flexible') { cardClass += ' type-flexible'; tagHtml = `<span class="tag-flex">↻ RECORRENTE</span>`; }
+                else if (quest.recurrence === 'mandatory') { cardClass += ' type-mandatory'; tagHtml = `<span class="tag-mand">⚠ OBRIGATÓRIA</span>`; }
                 homeItem.className = cardClass;
-                homeItem.innerHTML = `<div style="display:flex; align-items:center; width:100%;">
-                        <div class="checkbox" onclick="completeQuest(${index})"></div>
-                        <div class="task-text" onclick="openTaskDetails(${index})" title="Ver Detalhes">${tagHtml}${quest.text}</div>
-                        <div class="tags-container">
-                            <div class="xp-tag">+${quest.xpValue} XP</div>
-                            <div>${attrsHtml}</div>
-                        </div>
-                    </div>`;
+                homeItem.innerHTML = `<div style="display:flex; align-items:center; width:100%;"><div class="checkbox" onclick="completeQuest(${index})"></div><div class="task-text" onclick="openTaskDetails(${index})" title="Ver Detalhes">${tagHtml}${quest.text}</div><div class="tags-container"><div class="xp-tag">+${quest.xpValue} XP</div><div>${attrsHtml}</div></div></div>`;
                 homeList.appendChild(homeItem);
             }
             
+            // EDITOR LIST
             const editorItem = document.createElement('div');
-            editorItem.className = 'quest-card';
-            editorItem.style.borderColor = quest.done ? '#00ff9d' : '#444';
-            
-            let typeLabel = '[ÚNICA]';
-            let labelColor = '#888';
+            editorItem.className = 'quest-card'; editorItem.style.borderColor = quest.done ? '#00ff9d' : '#444';
+            let typeLabel = '[ÚNICA]'; let labelColor = '#888';
             if(quest.recurrence === 'flexible') { typeLabel = '[RECORRENTE]'; labelColor = 'var(--flex-color)'; }
             if(quest.recurrence === 'mandatory') { typeLabel = '[OBRIGATÓRIA]'; labelColor = 'var(--mand-color)'; }
-
-            let attrsHtml = '';
-            typesArr.forEach(t => {
-                attrsHtml += `<span class="attr-mini-tag bg-${t}">${t}</span>`;
-            });
-
-            editorItem.innerHTML = `<div class="task-text" style="color:#ccc;">
-                    <span style="font-size:10px; color:${labelColor}">${typeLabel}</span> 
-                    ${quest.text} 
-                    <div style="margin-top:2px;">${attrsHtml} <span class="xp-tag">${quest.xpValue} XP</span></div>
-                </div>
-                <div class="action-container">
-                    <button class="action-btn btn-clone" onclick="cloneQuest(${index})" title="Recadastrar/Clonar">↺</button>
-                    <button class="action-btn btn-del" onclick="deleteQuest(${index})" title="Excluir">✖</button>
-                </div>`;
+            editorItem.innerHTML = `<div class="task-text" style="color:#ccc;"><span style="font-size:10px; color:${labelColor}">${typeLabel}</span> ${quest.text} <div style="margin-top:2px;">${attrsHtml} <span class="xp-tag">${quest.xpValue} XP</span></div></div><div class="action-container"><button class="action-btn btn-clone" onclick="cloneQuest(${index})">↺</button><button class="action-btn btn-del" onclick="deleteQuest(${index})">✖</button></div>`;
             editorList.appendChild(editorItem);
         });
-
-        if (homeList.innerHTML === '') {
-            homeList.innerHTML = '<div style="text-align:center; color:#555; margin-top:30px;">SEM MISSÕES ATIVAS.<br>DESCANSE, CAÇADOR.</div>';
-        }
+        if (homeList.innerHTML === '') homeList.innerHTML = '<div style="text-align:center; color:#555; margin-top:30px;">SEM MISSÕES ATIVAS.<br>DESCANSE, CAÇADOR.</div>';
     }
 
     window.switchTab = function(tab) {
