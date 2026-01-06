@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SONTAK SYSTEM V6</title>
+    <title>SONTAK SYSTEM FINAL</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -28,7 +28,7 @@
             font-family: 'Rajdhani', sans-serif;
             margin: 0; padding: 0;
             display: flex; justify-content: center;
-            height: 100vh; 
+            height: 100vh; height: 100dvh;
             overflow: hidden; 
             position: relative;
         }
@@ -78,7 +78,7 @@
             padding-bottom: 80px; 
         }
 
-        /* --- LOGIN --- */
+        /* --- LOGIN (FIXADO PARA NÃO QUEBRAR A LINHA) --- */
         #login-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.9); z-index: 20000;
@@ -87,12 +87,18 @@
         
         .pass-display {
             border: 2px solid var(--theme-color);
-            height: 50px; width: 200px; 
+            height: 55px; 
+            width: 260px; /* Largura controlada */
             margin-bottom: 30px;
             display: flex; align-items: center; justify-content: center;
-            font-family: 'Share Tech Mono'; font-size: 24px; color: #fff;
-            letter-spacing: 8px; 
-            border-radius: 10px;
+            font-family: 'Share Tech Mono'; 
+            font-size: 24px; /* Fonte ajustada */
+            color: #fff;
+            letter-spacing: 10px; /* Espaçamento seguro */
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(190,0,255,0.2);
+            white-space: nowrap; /* Impede quebra de linha */
+            overflow: hidden;
         }
 
         .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
@@ -101,11 +107,14 @@
             width: 70px; height: 70px; border-radius: 50%;
             font-size: 22px; font-family: 'Share Tech Mono';
             display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 10px rgba(190,0,255,0.2);
         }
-        .key-btn:active { background: var(--theme-color); color: black; }
-        .key-action { border-radius: 10px; font-size: 16px; }
+        .key-btn:active { background: var(--theme-color); color: black; transform: scale(0.95); }
+        .key-action { border-radius: 12px; font-size: 16px; }
         .key-clear { border-color: var(--danger); color: var(--danger); }
         .key-enter { border-color: var(--success); color: var(--success); }
+        .error-anim { animation: shake 0.3s; border-color: red !important; color: red !important; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
 
         /* --- GRÁFICOS E UI --- */
         .chart-wrapper { height: 250px; width: 100%; margin-bottom: 20px; }
@@ -484,14 +493,18 @@
         const q = data.quests[i];
         q.done = true;
         data.xp += q.xp;
+        
         let share = Math.floor(q.xp / q.attrs.length);
         q.attrs.forEach(a => {
             let idx = ['STR','AGI','VIT','INT','SEN'].indexOf(a);
             if(idx>-1) data.stats[idx] += share;
         });
+
         let req = Math.min(data.level*100, 2500);
         while(data.xp >= req) { data.xp -= req; data.level++; req = Math.min(data.level*100, 2500); alert("LEVEL UP!"); }
-        save(); notify("CONCLUÍDO!");
+        
+        save();
+        notify("CONCLUÍDO!");
     }
 
     window.addQuest = () => {
@@ -521,7 +534,7 @@
 
     window.delQuest = (i) => { if(confirm("Apagar?")) { data.quests.splice(i,1); save(); } }
 
-    // --- BOOKS (NEW LOGIC) ---
+    // --- BOOKS ---
     window.addBook = () => {
         const t = document.getElementById('bTitle').value;
         const c = document.getElementById('bCover').value;
@@ -533,6 +546,9 @@
                 data.xp += x;
                 let share = Math.floor(x/2);
                 data.stats[3]+=share; data.stats[4]+=share; // INT + SEN
+                
+                let req = Math.min(data.level*100, 2500);
+                while(data.xp >= req) { data.xp -= req; data.level++; req = Math.min(data.level*100, 2500); alert("LEVEL UP!"); }
             }
             save();
             document.getElementById('bTitle').value="";
@@ -548,7 +564,6 @@
         document.getElementById('modalBookCover').src = book.cover || 'https://via.placeholder.com/100x140?text=S/Capa';
         document.getElementById('modalBookXp').innerText = `XP: ${book.xpValue || 0}`;
         
-        // Configurar botão de delete
         document.getElementById('btnDeleteBook').onclick = () => {
             if(confirm("Remover este livro? (O XP ganho PERMANECE)")) {
                 data.library.splice(i, 1);
