@@ -935,7 +935,8 @@
         const b = playerData.library[i];
         const content = document.getElementById('bookDetailContent');
         const img = b.cover || 'https://via.placeholder.com/100x140?text=S/Capa';
-        content.innerHTML = `<h3 style="color:var(--theme-color)">${b.title}</h3><img src="${img}" class="book-detail-cover"><div>XP: ${b.xpValue}</div><button class="btn-delete-book" onclick="delBook(${i})">EXCLUIR</button>`;
+        // ADICIONADO CSS para quebra de linha correta no título
+        content.innerHTML = `<h3 style="color:var(--theme-color); font-size: 20px; margin-bottom: 15px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">${b.title}</h3><img src="${img}" class="book-detail-cover"><div>XP: ${b.xpValue}</div><button class="btn-delete-book" onclick="delBook(${i})">EXCLUIR</button>`;
         document.getElementById('bookPopup').style.display='flex';
     }
 
