@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SYSTEM 2026-2027 - BALANCED EVOLUTION</title>
+    
+    <title>SYSTEM 2026-2027</title>
+    <meta name="theme-color" content="#000000"> <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -21,7 +26,8 @@
         }
 
         * {
-            box-sizing: border-box; /* Garante que tamanhos respeitem bordas */
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; /* Remove clique azul no mobile */
         }
 
         body {
@@ -31,12 +37,8 @@
             margin: 0;
             display: flex;
             justify-content: center;
-            
-            /* --- FIX MOBILE HEIGHT --- */
-            /* Garante que o app ocupe APENAS a área visível, sem cortar o fundo */
             height: 100vh; 
-            height: 100dvh; /* Dynamic Viewport Height (Ignora barras do navegador) */
-            
+            height: 100dvh; 
             overflow: hidden;
             background-image: linear-gradient(30deg, #0a0510 12%, transparent 12.5%, transparent 87%, #0a0510 87.5%, #0a0510), linear-gradient(150deg, #0a0510 12%, transparent 12.5%, transparent 87%, #0a0510 87.5%, #0a0510), linear-gradient(30deg, #0a0510 12%, transparent 12.5%, transparent 87%, #0a0510 87.5%, #0a0510), linear-gradient(150deg, #0a0510 12%, transparent 12.5%, transparent 87%, #0a0510 87.5%, #0a0510), linear-gradient(60deg, #120a1f 25%, transparent 25.5%, transparent 75%, #120a1f 75%, #120a1f);
             background-size: 80px 140px;
@@ -66,7 +68,7 @@
             border-left: 1px solid var(--theme-color); border-right: 1px solid var(--theme-color);
             box-shadow: 0 0 30px rgba(190, 0, 255, 0.15);
             display: flex; flex-direction: column; 
-            height: 100%; /* Ocupa 100% do body (que já é 100dvh) */
+            height: 100%;
             position: relative;
             opacity: 0; animation: showApp 1s ease forwards 3s;
         }
@@ -74,21 +76,21 @@
 
         .header { 
             padding: 15px 20px; 
-            padding-top: max(15px, env(safe-area-inset-top)); /* Respeita o notch do iPhone */
+            padding-top: max(15px, env(safe-area-inset-top)); 
             border-bottom: 1px solid var(--theme-color); 
             display: flex; justify-content: space-between; align-items: center; 
-            flex-shrink: 0; /* Impede que o header encolha */
+            flex-shrink: 0; 
         }
         .header h1 { margin: 0; font-size: 22px; color: var(--theme-color); text-shadow: 0 0 8px var(--theme-color); letter-spacing: 1px; }
         .lvl-badge { font-size: 14px; color: #aaa; text-align: right; }
         .lvl-number { font-size: 24px; color: var(--theme-color); font-weight: bold; }
 
         .content-area { 
-            flex: 1; /* Ocupa todo o espaço restante */
-            overflow-y: auto; /* Permite rolagem */
+            flex: 1; 
+            overflow-y: auto; 
             padding: 20px; 
-            padding-bottom: 80px; /* Espaço extra no final para não cortar conteúdo */
-            -webkit-overflow-scrolling: touch; /* Rolagem suave no iOS */
+            padding-bottom: 100px; /* Mais espaço para garantir scroll total */
+            -webkit-overflow-scrolling: touch; 
         }
 
         /* CHART & XP */
@@ -97,7 +99,7 @@
         .xp-bar-bg { width: 100%; height: 8px; background: #222; border-radius: 4px; overflow: hidden; }
         .xp-bar-fill { width: 0%; height: 100%; background: var(--theme-color); transition: width 0.5s ease; box-shadow: 0 0 10px var(--theme-color); }
 
-        /* STATS PANEL (NEW) */
+        /* STATS PANEL */
         .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 25px; text-align: center; }
         .stat-item { background: rgba(255,255,255,0.05); padding: 5px; border-radius: 4px; border: 1px solid #333; }
         .stat-label { font-size: 10px; font-weight: bold; color: #888; display: block; }
@@ -189,7 +191,7 @@
             border-top: 1px solid #333; 
             display: flex; justify-content: space-around; align-items: center; 
             flex-shrink: 0; 
-            padding-bottom: env(safe-area-inset-bottom); /* Respeita a barra inferior do iPhone */
+            padding-bottom: env(safe-area-inset-bottom);
         }
         .nav-btn { background: none; border: none; color: #666; font-family: 'Rajdhani'; font-weight: bold; font-size: 14px; text-transform: uppercase; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
         .nav-btn.active { color: var(--theme-color); text-shadow: 0 0 5px var(--theme-color); }
@@ -222,8 +224,8 @@
 <div id="boot-screen">
     <div class="scanlines"></div>
     <div class="boot-text" style="animation-delay: 0.2s">SYSTEM INITIALIZING...</div>
-    <div class="boot-text" style="animation-delay: 0.8s">BALANCING EVOLUTION CURVE...</div>
-    <div class="boot-text" style="color:var(--success); animation-delay: 1.4s;">SYNCHRONIZATION COMPLETE.</div>
+    <div class="boot-text" style="animation-delay: 0.8s">UPGRADING SYSTEM UI...</div>
+    <div class="boot-text" style="color:var(--success); animation-delay: 1.4s;">MOBILE OPTIMIZATION COMPLETE.</div>
     <div class="loader-line"></div>
     <div class="boot-title">BEM-VINDO, CAÇADOR</div>
 </div>
@@ -364,16 +366,13 @@
 
 <script>
     // === DADOS INICIAIS ===
-    // 'stats' agora guardam XP TOTAL do atributo. Começam zerados ou com base pequena.
     let playerData = { level: 1, xp: 0, stats: [0, 0, 0, 0, 0], quests: [] };
     let chartInstance = null;
     
     // FIX: TETO DE XP AGORA É 2500. 
-    // Isso torna a subida de nível mais constante e gratificante.
     const MAX_XP_REQUIREMENT = 2500; 
 
-    // Fator de escala da curva de evolução (Quanto maior, mais lento para upar o atributo)
-    // Formula: Level = Sqrt(XP / XP_FACTOR)
+    // Fator de escala da curva de evolução
     const XP_FACTOR = 100; 
 
     let selectedAttrs = [];
@@ -708,8 +707,6 @@
     // === SISTEMA DE BACKUP ===
     function exportSave() {
         const dataStr = JSON.stringify(playerData);
-        // Cria uma caixa de alerta para copiar
-        // Ou melhor, usa a API de clipboard se disponível, senão prompt
         navigator.clipboard.writeText(dataStr).then(() => {
             alert("DADOS COPIADOS PARA A ÁREA DE TRANSFERÊNCIA!\n\nEnvie este código para seu outro dispositivo (WhatsApp/Email) e use o botão IMPORTAR lá.");
         }).catch(() => {
@@ -722,7 +719,6 @@
         if (dataStr) {
             try {
                 const parsed = JSON.parse(dataStr);
-                // Validação simples
                 if (parsed.stats && parsed.level) {
                     playerData = parsed;
                     saveData();
