@@ -3,53 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
     <title>SYSTEM 2026-2027 - SONTAK EVOLUTION</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
         /* ==========================================================================
-           1. DEFINIÇÃO DE VARIÁVEIS GLOBAIS (PALETA DE CORES DO SISTEMA)
+           1. VARIÁVEIS DE COR E RESET
            ========================================================================== */
         :root {
-            /* Cor Principal (Roxo Sontak/Shadow Monarch) */
-            --theme-color: #be00ff;
+            /* Identidade Visual Sontak */
+            --theme-color: #be00ff;   /* Roxo Neon Principal */
+            --theme-glow: rgba(190, 0, 255, 0.5);
             
-            /* Cor Secundária (Azul Neon - Para Agilidade e Tecnologia) */
-            --flex-color: #00d2ff;
+            --flex-color: #00d2ff;    /* Azul Ciano */
+            --mand-color: #ff9500;    /* Laranja */
             
-            /* Cor de Alerta/Obrigatório (Laranja) */
-            --mand-color: #ff9500;
+            --bg-dark: #050505;       /* Preto Fundo */
+            --panel-bg: rgba(10, 10, 15, 0.95); /* Fundo dos Painéis */
             
-            /* Fundo Profundo */
-            --bg-dark: #050505;
-            
-            /* Texto Padrão */
             --text-main: #ffffff;
             
-            /* Status de Sucesso (Verde Hacker) */
-            --success: #00ff9d;
-            
-            /* Status de Erro/Perigo (Vermelho) */
-            --danger: #ff4444;
-            
-            /* Cor de Level Up (Dourado) */
-            --gold-color: #ffd700;
-            
-            /* Transparência dos Paineis */
-            --panel-bg: rgba(10, 10, 18, 0.90);
+            /* Status */
+            --success: #00ff9d;       /* Verde Hacker */
+            --danger: #ff4444;        /* Vermelho Erro */
+            --gold-color: #ffd700;    /* Level Up */
         }
 
-        /* ==========================================================================
-           2. RESET E ESTRUTURA BÁSICA
-           ========================================================================== */
         * {
             box-sizing: border-box;
             outline: none;
-            -webkit-tap-highlight-color: transparent; /* Remove flash azul no mobile */
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -60,381 +45,253 @@
             padding: 0;
             display: flex;
             justify-content: center;
-            
-            /* Garante altura total no mobile corrigindo bugs de barra de navegação */
             height: 100vh;
-            height: 100dvh;
-            
-            overflow: hidden; /* Impede a página inteira de rolar */
-            user-select: none; /* Impede seleção de texto (sensação de App Nativo) */
+            height: 100dvh; /* Garante tela cheia no mobile */
+            overflow: hidden;
+            user-select: none;
             position: relative;
             z-index: 1;
         }
 
-        /* --- BACKGROUND DO ANIME (Camada Traseira) --- */
+        /* ==========================================================================
+           2. FUNDO E EFEITOS VISUAIS
+           ========================================================================== */
+        
+        /* Imagem de Fundo (Anime) */
         body::before {
             content: "";
             position: fixed;
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            
-            /* SUA IMAGEM DO GITHUB */
-            background-image: url('./Fundo.jpg.jpg');
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('./Fundo.jpg.jpg'); /* Seu arquivo */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            
-            /* Opacidade 45% conforme solicitado */
-            opacity: 0.45;
-            
-            z-index: -2;   
+            opacity: 0.45; /* Opacidade Solicitada */
+            z-index: -2;
             filter: grayscale(10%) contrast(1.1);
         }
 
-        /* --- VINHETA ESCURA (Para focar a visão no centro) --- */
+        /* Vinheta (Escurecer bordas) */
         body::after {
             content: "";
             position: fixed;
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            background: radial-gradient(circle, transparent 40%, #000000 100%);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 40%, black 100%);
             z-index: -1;
             pointer-events: none;
         }
 
         /* ==========================================================================
-           3. CONTAINER DO APLICATIVO (CORPO PRINCIPAL)
+           3. ESTRUTURA DO APP
            ========================================================================== */
         .app-container {
-            width: 100%; 
-            max-width: 420px; /* Largura de celular */
+            width: 100%;
+            max-width: 420px;
             height: 100%;
-            
-            background: var(--panel-bg);
-            border-left: 1px solid var(--theme-color); 
+            background: rgba(5, 5, 12, 0.92); /* Leve transparência para o fundo */
+            border-left: 1px solid var(--theme-color);
             border-right: 1px solid var(--theme-color);
-            box-shadow: 0 0 40px rgba(190, 0, 255, 0.2);
-            
-            display: none; /* Começa invisível (esperando login) */
-            flex-direction: column; /* Organiza: Header -> Conteúdo -> Footer */
+            box-shadow: 0 0 50px rgba(190, 0, 255, 0.15);
+            display: none; /* Inicia oculto */
+            flex-direction: column;
             position: relative;
-            
-            backdrop-filter: blur(12px); /* Efeito de vidro fosco */
-            animation: slideUpFade 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            backdrop-filter: blur(8px);
+            animation: appFadeIn 1s ease forwards;
         }
 
-        @keyframes slideUpFade { 
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); } 
-        }
+        @keyframes appFadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* ==========================================================================
-           4. CABEÇALHO (FIXO NO TOPO)
+           4. CABEÇALHO E MÚSICA
            ========================================================================== */
         .header-container {
-            flex-shrink: 0; /* Impede encolhimento */
+            flex-shrink: 0;
             border-bottom: 1px solid var(--theme-color);
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             z-index: 20;
             padding-bottom: 10px;
         }
 
-        .header { 
-            padding: 15px 20px 5px 20px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
+        .header {
+            padding: 15px 20px 5px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .header h1 { 
-            margin: 0; 
-            font-size: 24px; 
-            color: var(--theme-color); 
-            text-shadow: 0 0 10px var(--theme-color); 
-            letter-spacing: 2px; 
+        .header h1 {
+            margin: 0;
+            font-size: 26px;
+            color: var(--theme-color);
+            text-shadow: 0 0 10px var(--theme-color);
+            letter-spacing: 2px;
             font-weight: 800;
+            text-transform: uppercase;
         }
 
-        .lvl-badge { 
-            font-size: 14px; 
-            color: #aaa; 
-            text-align: right; 
-            font-family: 'Share Tech Mono', monospace;
+        .lvl-badge {
+            font-size: 12px;
+            color: #aaa;
+            text-align: right;
+            font-family: 'Share Tech Mono';
         }
 
-        .lvl-number { 
-            font-size: 26px; 
-            color: var(--theme-color); 
-            font-weight: bold; 
+        .lvl-number {
+            font-size: 28px;
+            color: var(--theme-color);
+            font-weight: bold;
         }
 
-        /* Controle de Música */
+        /* Controles de Música */
         .music-controls {
-            display: flex; 
-            align-items: center; 
+            display: flex;
+            align-items: center;
             justify-content: center;
-            padding-top: 5px;
             gap: 15px;
+            margin-top: 5px;
         }
 
         .music-btn {
-            background: rgba(0,0,0,0.5); 
-            border: 1px solid #444; 
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #444;
             color: var(--flex-color);
-            border-radius: 4px; 
-            padding: 4px 12px; 
+            border-radius: 6px;
+            padding: 6px 14px;
             cursor: pointer;
-            font-family: 'Share Tech Mono'; 
+            font-family: 'Share Tech Mono';
             font-size: 11px;
-            letter-spacing: 1px;
             transition: all 0.2s;
+            min-width: 40px;
         }
 
-        .music-btn:active { 
-            background: var(--flex-color); 
-            color: black; 
+        .music-btn:active {
+            background: var(--flex-color);
+            color: black;
             box-shadow: 0 0 10px var(--flex-color);
         }
 
-        .music-status { 
-            font-size: 10px; 
-            color: #666; 
-            font-family: 'Share Tech Mono';
-            text-transform: uppercase; 
-        }
+        .play-btn { width: 80px; text-align: center; }
 
         /* ==========================================================================
-           5. ÁREA DE CONTEÚDO (ROLAGEM)
+           5. ÁREA DE CONTEÚDO (SCROLL)
            ========================================================================== */
-        .content-area { 
-            flex: 1; /* Ocupa todo o espaço disponível */
-            overflow-y: auto; /* Permite rolagem */
-            padding: 20px; 
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
             scroll-behavior: smooth;
+            padding-bottom: 80px; /* Espaço para não cobrir com o menu */
         }
 
-        /* Scrollbar estilizada */
-        .content-area::-webkit-scrollbar { width: 4px; }
-        .content-area::-webkit-scrollbar-track { background: #111; }
-        .content-area::-webkit-scrollbar-thumb { background: var(--theme-color); border-radius: 2px; }
-
-        /* Container do Gráfico */
-        .chart-wrapper { 
-            position: relative; 
-            height: 280px; 
-            width: 100%; 
-            margin-bottom: 20px; 
-        }
-
-        /* Caixa de XP */
+        /* Barra de XP */
         .xp-box { margin-bottom: 25px; }
+        
+        .xp-bar-bg {
+            width: 100%;
+            height: 12px;
+            background: #222;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #444;
+        }
+        
+        .xp-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--theme-color), #9900ff);
+            transition: width 0.6s ease-out;
+            box-shadow: 0 0 15px var(--theme-color);
+        }
 
-        .xp-bar-bg { 
-            width: 100%; 
-            height: 10px; 
-            background: #222; 
-            border-radius: 5px; 
-            overflow: hidden; 
+        /* Gráfico Radar */
+        .chart-wrapper {
+            position: relative;
+            height: 280px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        /* Grid de Atributos */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.03);
+            padding: 10px 2px;
+            border-radius: 8px;
             border: 1px solid #333;
         }
 
-        .xp-bar-fill { 
-            width: 0%; 
-            height: 100%; 
-            background: linear-gradient(90deg, var(--theme-color), #8a00bc);
-            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
-            box-shadow: 0 0 15px var(--theme-color); 
-        }
-
-        /* Painel de Atributos Numéricos */
-        .stats-grid { 
-            display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            gap: 8px; 
-            margin-bottom: 30px; 
-            text-align: center; 
-        }
-
-        .stat-item { 
-            background: rgba(255,255,255,0.03); 
-            padding: 8px 4px; 
-            border-radius: 6px; 
-            border: 1px solid #333; 
-            transition: transform 0.2s;
-        }
-        
-        .stat-item:hover {
-            border-color: var(--theme-color);
-            transform: translateY(-2px);
-        }
-
-        .stat-label { 
-            font-size: 11px; 
-            font-weight: bold; 
-            color: #888; 
-            display: block; 
-            margin-bottom: 2px;
-        }
-
-        .stat-value { 
-            font-size: 18px; 
-            font-weight: bold; 
-            color: var(--theme-color); 
-            font-family: 'Share Tech Mono'; 
-        }
-
-        /* ==========================================================================
-           6. ELEMENTOS DE UI (Missões, Botões, Cards)
-           ========================================================================== */
-        .section-title { 
-            color: var(--theme-color); 
-            border-left: 4px solid var(--theme-color); 
-            padding-left: 12px; 
-            margin: 30px 0 15px 0; 
-            font-size: 18px; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-        }
-
-        /* Card de Missão */
-        .quest-card {
-            background: linear-gradient(90deg, rgba(30,30,30,0.6) 0%, rgba(10,10,10,0.3) 100%);
-            border-left: 3px solid #444;
-            padding: 15px; 
-            margin-bottom: 10px;
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            transition: all 0.3s ease;
-            border-radius: 0 6px 6px 0;
-        }
-
-        .quest-card:hover { background: rgba(50,50,50,0.5); }
-
-        .quest-card.type-flexible {
-            background: linear-gradient(90deg, rgba(0, 210, 255, 0.15) 0%, transparent 100%);
-            border-left-color: var(--flex-color);
-        }
-
-        .quest-card.type-mandatory {
-            background: linear-gradient(90deg, rgba(255, 149, 0, 0.15) 0%, transparent 100%);
-            border-left-color: var(--mand-color);
-        }
-
-        /* Checkbox Customizado */
-        .checkbox { 
-            width: 24px; 
-            height: 24px; 
-            border: 2px solid #666; 
-            margin-right: 15px; 
-            cursor: pointer; 
-            display: grid; 
-            place-items: center; 
-            flex-shrink: 0; 
-            border-radius: 4px;
-            transition: 0.2s;
-        }
-
-        .checkbox:active { transform: scale(0.9); }
-
-        .task-text { 
-            color: white; 
-            font-size: 16px; 
-            flex: 1; 
-            cursor: pointer; 
-            line-height: 1.3;
-        }
-
-        .tags-container { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: flex-end; 
-            gap: 4px; 
-        }
-
-        .xp-tag { 
-            font-size: 12px; 
-            background: #111; 
-            padding: 2px 6px; 
-            border-radius: 4px; 
-            color: var(--success); 
-            border: 1px solid #333; 
+        .stat-label {
+            font-size: 10px;
             font-weight: bold;
+            color: #888;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--theme-color);
             font-family: 'Share Tech Mono';
         }
 
-        .attr-mini-tag { 
-            font-size: 9px; 
-            padding: 2px 5px; 
-            border-radius: 3px; 
-            font-weight: bold; 
-            color: black; 
-            margin-left: 3px; 
-            text-transform: uppercase;
-        }
-        
-        /* Cores dos Atributos */
-        .bg-STR { background-color: #ff4444; }
-        .bg-AGI { background-color: #00d2ff; }
-        .bg-VIT { background-color: #00ff9d; }
-        .bg-INT { background-color: #be00ff; }
-        .bg-SEN { background-color: #ffd700; }
-
-        .tag-flex { font-size:10px; color:var(--flex-color); border:1px solid var(--flex-color); padding: 1px 4px; margin-right: 5px; border-radius: 3px; }
-        .tag-mand { font-size:10px; color:var(--mand-color); border:1px solid var(--mand-color); padding: 1px 4px; margin-right: 5px; border-radius: 3px; }
-
         /* ==========================================================================
-           7. ESTANTE DE LIVROS (NOVA E MELHORADA)
+           6. BIBLIOTECA (LAYOUT ARRUMADO)
            ========================================================================== */
         .library-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 livros por linha */
-            gap: 15px;
+            grid-template-columns: repeat(3, 1fr); /* 3 Colunas Fixas */
+            gap: 12px;
+            margin-top: 20px;
             padding-bottom: 20px;
         }
-        
+
         .book-card {
-            background: rgba(30, 30, 40, 0.8);
+            background: rgba(30, 30, 35, 0.9);
             border: 1px solid #444;
             border-radius: 8px;
             overflow: hidden;
-            text-align: center;
-            transition: 0.3s;
             position: relative;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-        
-        .book-card:hover {
-            border-color: var(--theme-color);
-            transform: translateY(-5px);
-            box-shadow: 0 0 15px rgba(190, 0, 255, 0.4);
-        }
-        
-        .book-cover {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            opacity: 0.9;
-        }
-        
-        .book-info {
-            padding: 8px;
-            font-size: 11px;
-            color: #fff;
-            font-weight: bold;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            background: rgba(0,0,0,0.8);
+            transition: transform 0.2s;
+            aspect-ratio: 2 / 3; /* Formato de livro padrão */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
         }
 
-        /* --- POPUP DE DETALHES DO LIVRO --- */
+        .book-card:active {
+            transform: scale(0.95);
+            border-color: var(--theme-color);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Placeholder se não tiver capa */
+        .book-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1a1a1a;
+            color: #666;
+            font-size: 10px;
+            text-align: center;
+            padding: 5px;
+            font-weight: bold;
+        }
+
+        /* Popup de Detalhes do Livro */
         .book-detail-content {
             display: flex;
             flex-direction: column;
@@ -444,416 +301,283 @@
         }
 
         .book-expanded-cover {
-            width: 160px;
-            border-radius: 8px;
-            box-shadow: 0 0 25px rgba(0, 210, 255, 0.3);
+            width: 140px;
+            border-radius: 6px;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.1);
             border: 2px solid #333;
         }
 
         .book-xp-badge {
             background: var(--theme-color);
             color: black;
-            padding: 5px 15px;
+            padding: 5px 12px;
             border-radius: 20px;
             font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 10px;
+            font-size: 12px;
+            box-shadow: 0 0 10px var(--theme-color);
         }
 
         .book-synopsis {
+            width: 100%;
             font-family: 'Segoe UI', sans-serif;
             font-size: 13px;
             color: #ccc;
-            line-height: 1.6;
+            line-height: 1.5;
             max-height: 200px;
             overflow-y: auto;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.3);
             padding: 15px;
             border-radius: 8px;
             border: 1px solid #333;
-            width: 100%;
         }
 
         /* ==========================================================================
-           8. EDITOR E FORMULÁRIOS
+           7. FORMULÁRIOS E EDITOR
            ========================================================================== */
-        .editor-box { 
-            background: rgba(20, 20, 25, 0.95); 
-            border: 1px solid #333; 
-            padding: 20px; 
-            border-radius: 12px; 
-            margin-bottom: 25px; 
+        .editor-box {
+            background: rgba(16, 16, 22, 0.95);
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
         }
 
-        .input-label { 
-            font-size: 12px; 
-            color: var(--theme-color); 
-            margin-bottom: 8px; 
-            display: block; 
-            font-weight: bold; 
-            text-transform: uppercase; 
+        .input-label {
+            font-size: 11px;
+            color: var(--theme-color);
+            margin-bottom: 6px;
+            display: block;
+            font-weight: bold;
+            text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        .sys-input, .sys-select { 
-            width: 100%; 
-            background: #080808; 
-            border: 1px solid #444; 
-            color: white; 
-            padding: 14px; 
-            font-family: 'Rajdhani'; 
-            font-size: 16px; 
-            outline: none; 
-            box-sizing: border-box; 
-            margin-bottom: 20px; 
+        .sys-input, .sys-select {
+            width: 100%;
+            background: #0a0a0a;
+            border: 1px solid #444;
+            color: white;
+            padding: 14px;
+            font-family: 'Rajdhani';
+            font-size: 16px;
+            outline: none;
+            box-sizing: border-box;
+            margin-bottom: 15px;
             border-radius: 6px;
             transition: 0.3s;
         }
 
         .sys-input:focus, .sys-select:focus {
             border-color: var(--theme-color);
-            box-shadow: 0 0 10px rgba(190, 0, 255, 0.2);
+            box-shadow: 0 0 15px rgba(190,0,255,0.2);
         }
 
-        textarea.sys-input { 
-            resize: vertical; 
-            min-height: 100px; 
-            font-family: 'Share Tech Mono'; 
-            font-size: 14px; 
-        }
-        
-        /* Botões de Atributo (Grid) */
-        .attr-grid { 
-            display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            gap: 8px; 
-            margin-bottom: 20px; 
-        }
-
-        .attr-btn {
-            background: #111; 
-            border: 1px solid #333; 
-            color: #666;
-            padding: 12px 0; 
-            text-align: center; 
+        .btn-add {
+            background: var(--theme-color);
+            color: black;
+            border: none;
+            font-weight: 800;
+            padding: 15px;
+            width: 100%;
             cursor: pointer;
-            font-size: 12px; 
-            font-weight: bold; 
-            transition: 0.2s;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             border-radius: 6px;
+            margin-top: 10px;
+            box-shadow: 0 0 15px rgba(190,0,255,0.25);
+            transition: transform 0.1s;
         }
 
-        .attr-btn.selected { 
-            color: black; 
-            border-color: white; 
-            box-shadow: 0 0 15px currentColor; 
-            transform: scale(1.05);
-        }
-        
-        /* Cores específicas quando selecionado */
-        .attr-btn[data-type="STR"].selected { background: #ff4444; }
-        .attr-btn[data-type="AGI"].selected { background: #00d2ff; }
-        .attr-btn[data-type="VIT"].selected { background: #00ff9d; }
-        .attr-btn[data-type="INT"].selected { background: #be00ff; }
-        .attr-btn[data-type="SEN"].selected { background: #ffd700; }
+        .btn-add:active { transform: scale(0.97); }
 
-        /* Botões de Recorrência */
-        .recurrence-selector { display: flex; gap: 8px; margin-bottom: 25px; }
-        
-        .rec-btn { 
-            flex: 1; 
-            background: #111; 
-            border: 1px solid #444; 
-            color: #888; 
-            padding: 12px 5px; 
-            font-family: 'Rajdhani'; 
-            font-weight: bold; 
-            font-size: 12px; 
-            cursor: pointer; 
-            transition: 0.3s; 
-            border-radius: 6px;
-        }
-
-        .rec-btn.selected-none { background: #444; color: white; border-color: #fff; }
-        .rec-btn.selected-flex { background: rgba(0, 210, 255, 0.2); color: var(--flex-color); border-color: var(--flex-color); }
-        .rec-btn.selected-mand { background: rgba(255, 149, 0, 0.2); color: var(--mand-color); border-color: var(--mand-color); }
-
-        /* Botões de Ação Principais */
-        .btn-add { 
-            background: var(--theme-color); 
-            color: black; 
-            border: none; 
-            font-weight: 800; 
-            padding: 16px; 
-            width: 100%; 
-            cursor: pointer; 
-            font-size: 18px; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            transition: 0.3s; 
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(190, 0, 255, 0.3);
-        }
-        
-        .btn-add:active { transform: scale(0.98); }
-
-        .btn-reset { 
-            background: rgba(50, 0, 0, 0.5); 
-            color: var(--danger); 
-            border: 1px solid var(--danger); 
-            padding: 12px; 
-            width: 100%; 
-            margin-top: 50px; 
-            cursor: pointer; 
-            font-family: 'Rajdhani'; 
+        .btn-reset {
+            background: rgba(50, 0, 0, 0.5);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            padding: 12px;
+            width: 100%;
+            margin-top: 40px;
             font-weight: bold;
-            transition: 0.3s; 
+            cursor: pointer;
             border-radius: 6px;
         }
 
-        .btn-delete-book {
-            background: #3a1c1c; 
-            color: #ff5555; 
-            border: 1px solid #ff5555; 
-            padding: 12px; 
-            width: 100%; 
-            margin-top: 15px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            border-radius: 6px;
-        }
-
-        .action-container { display: flex; gap: 15px; }
-        .action-btn { background: none; border: none; font-weight: bold; font-size: 22px; cursor: pointer; transition: transform 0.2s; }
-        .action-btn:hover { transform: scale(1.2); }
-        .btn-clone { color: var(--success); }
-        .btn-del { color: var(--danger); }
-
         /* ==========================================================================
-           9. MENU DE NAVEGAÇÃO INFERIOR
-           ========================================================================== */
-        .bottom-nav { 
-            height: 70px; 
-            background: rgba(2, 2, 2, 0.98); 
-            border-top: 1px solid #333; 
-            display: flex; 
-            justify-content: space-around; 
-            align-items: center; 
-            flex-shrink: 0; 
-            z-index: 50;
-            padding-bottom: 5px;
-        }
-
-        .nav-btn { 
-            background: none; 
-            border: none; 
-            color: #555; 
-            font-family: 'Rajdhani'; 
-            font-weight: bold; 
-            font-size: 12px; 
-            text-transform: uppercase; 
-            cursor: pointer; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            transition: 0.3s;
-            gap: 4px;
-        }
-        
-        /* Ícone simulado com texto/emoji para não precisar de lib externa */
-        .nav-btn::before {
-            content: "■";
-            font-size: 18px;
-            color: inherit;
-        }
-
-        .nav-btn.active { 
-            color: var(--theme-color); 
-            text-shadow: 0 0 10px var(--theme-color); 
-            transform: translateY(-2px);
-        }
-
-        .tab-view { display: none; animation: fadeIn 0.4s; }
-        .active-view { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* ==========================================================================
-           10. SISTEMA DE LOGIN (DESIGN NEON)
+           8. LOGIN SCREEN (CORRIGIDO PARA O PRINT)
            ========================================================================== */
         #login-overlay {
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6); 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(2, 2, 2, 0.95); /* Fundo quase preto para contraste */
             z-index: 20000;
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        .login-title {
+            font-family: 'Share Tech Mono';
+            color: var(--theme-color);
+            font-size: 28px;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px var(--theme-color);
+            text-transform: uppercase;
+        }
+
+        /* DISPLAY DE PONTOS (Estilo do print) */
+        .pass-display {
+            border: 2px solid var(--theme-color);
+            background: transparent;
+            height: 60px;
+            width: 280px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
             justify-content: center;
-            backdrop-filter: blur(4px);
+            color: white;
+            font-size: 30px;
+            letter-spacing: 15px;
+            box-shadow: 0 0 15px rgba(190,0,255,0.2);
         }
 
-        .login-box { width: 90%; max-width: 360px; text-align: center; }
-
-        .login-title { 
-            font-family: 'Share Tech Mono'; 
-            color: var(--theme-color); 
-            font-size: 32px; 
-            letter-spacing: 4px; 
-            margin-bottom: 5px; 
-            text-shadow: 0 0 25px var(--theme-color); 
-            animation: glitchFade 2s infinite alternate; 
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px; /* Espaçamento do print */
         }
 
-        .login-sub { 
-            color: #ccc; 
-            font-size: 12px; 
-            margin-bottom: 30px; 
-            letter-spacing: 2px; 
-            text-shadow: 0 0 5px black; 
+        /* BOTÃO DO TECLADO (Círculo Perfeito) */
+        .key-btn {
+            background-color: #000;
+            border: 2px solid var(--theme-color);
+            color: #fff;
+            width: 75px;
+            height: 75px; /* Tamanho fixo para ser redondo */
+            font-size: 24px;
+            font-family: 'Share Tech Mono';
+            font-weight: bold;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(190, 0, 255, 0.3);
+            transition: 0.1s;
         }
 
-        .pass-display { 
-            background: rgba(0, 0, 0, 0.8); 
-            border: 2px solid var(--theme-color); 
-            height: 70px; 
-            margin-bottom: 30px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-family: 'Share Tech Mono'; 
-            font-size: 36px; 
-            color: #fff; 
-            letter-spacing: 15px; 
-            border-radius: 15px; 
-            box-shadow: 0 0 20px rgba(190, 0, 255, 0.3); 
+        .key-btn:active {
+            background: var(--theme-color);
+            color: #000;
+            transform: scale(0.9);
         }
 
-        .keypad { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 20px; 
-            padding: 10px; 
+        /* Botão CLR (Vermelho) */
+        .key-clear {
+            border-color: var(--danger);
+            color: var(--danger);
+            box-shadow: 0 0 10px rgba(255, 68, 68, 0.3);
+            border-radius: 15px; /* Quadrado arredondado como no print */
+            font-size: 18px;
         }
 
-        .key-btn { 
-            background-color: #000; 
-            border: 2px solid var(--theme-color); 
-            color: #fff; 
-            padding: 20px 0; 
-            font-size: 24px; 
-            font-family: 'Share Tech Mono'; 
-            font-weight: bold; 
-            border-radius: 50%; 
-            cursor: pointer; 
-            transition: 0.1s; 
-            box-shadow: 0 0 10px rgba(190, 0, 255, 0.2); 
-            aspect-ratio: 1; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
+        /* Botão ENT (Verde/Azul Neon) */
+        .key-enter {
+            border-color: var(--success);
+            color: var(--success);
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+            border-radius: 15px; /* Quadrado arredondado como no print */
+            font-size: 18px;
         }
 
-        .key-btn:active { 
-            transform: scale(0.95); 
-            background: var(--theme-color); 
-            color: #000; 
-            box-shadow: 0 0 30px var(--theme-color); 
-        }
-
-        .key-action { border-radius: 15px; aspect-ratio: auto; font-size: 18px; }
-        .key-clear { border-color: var(--danger); color: var(--danger); box-shadow: 0 0 10px var(--danger); }
-        .key-enter { border-color: var(--success); color: var(--success); box-shadow: 0 0 10px var(--success); }
-        
-        .error-anim { 
-            animation: shake 0.4s ease-in-out; 
-            border-color: var(--danger); 
-            color: var(--danger); 
-            box-shadow: 0 0 30px var(--danger); 
+        /* Erro */
+        .error-anim {
+            animation: shake 0.3s;
+            border-color: var(--danger) !important;
+            color: var(--danger) !important;
         }
 
         /* ==========================================================================
-           11. MODAIS E POPUPS
+           9. MENU INFERIOR
            ========================================================================== */
-        .popup-overlay { 
-            position: fixed; 
-            top: 0; left: 0; 
-            width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.85); 
-            display: none; 
-            justify-content: center; 
-            align-items: center; 
-            z-index: 100; 
-            backdrop-filter: blur(8px); 
+        .bottom-nav {
+            height: 70px;
+            background: rgba(0, 0, 0, 0.98);
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-shrink: 0;
+            z-index: 50;
         }
 
-        .popup-box { 
-            background: rgba(10,10,15,0.95); 
-            border: 2px solid var(--theme-color); 
-            padding: 30px; 
-            text-align: center; 
-            box-shadow: 0 0 60px var(--theme-color); 
-            animation: zoomIn 0.3s; 
-            width: 85%; 
-            max-height: 85vh; 
-            overflow-y: auto; 
-            border-radius: 12px;
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #555;
+            font-family: 'Rajdhani';
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
         }
 
-        /* Modal de Level Up */
-        .levelup-box { 
-            background: rgba(10,10,10,0.98); 
-            border: 3px solid var(--gold-color); 
-            padding: 40px 20px; 
-            text-align: center; 
-            box-shadow: 0 0 80px rgba(255, 215, 0, 0.6); 
-            animation: zoomIn 0.3s; 
-            width: 90%; 
-            border-radius: 20px;
-        }
+        .nav-btn::before { content: "■"; font-size: 16px; }
+        .nav-btn.active { color: var(--theme-color); text-shadow: 0 0 10px var(--theme-color); }
+
+        /* ==========================================================================
+           10. POPUPS
+           ========================================================================== */
+        .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); }
+        .popup-box { background: #0f0f12; border: 2px solid var(--theme-color); padding: 25px; text-align: center; box-shadow: 0 0 60px var(--theme-color); width: 85%; max-height: 80vh; overflow-y: auto; border-radius: 12px; }
         
-        .popup-stat { font-size: 24px; font-weight: bold; color: white; margin-bottom: 5px; }
-        .popup-xp { font-size: 32px; color: var(--success); font-weight: bold; text-shadow: 0 0 15px var(--success); }
+        .levelup-box { background: #0f0f12; border: 2px solid var(--gold-color); padding: 40px 20px; text-align: center; box-shadow: 0 0 60px rgba(255, 215, 0, 0.5); width: 90%; border-radius: 12px; }
+        .levelup-num { font-size: 90px; color: white; text-shadow: 0 0 30px var(--gold-color); font-weight: 800; animation: pulse 1s infinite; }
+
+        .btn-close { background: #333; color: white; border: 1px solid #555; padding: 12px; width: 100%; cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 14px; }
+        .btn-delete { background: #3a1c1c; color: #ff5555; border: 1px solid #ff5555; padding: 12px; width: 100%; font-weight: bold; cursor: pointer; border-radius: 6px; margin-top: 15px; }
+
+        .section-title { color: var(--theme-color); border-left: 4px solid var(--theme-color); padding-left: 10px; margin: 25px 0 15px 0; font-size: 18px; font-weight: bold; text-transform: uppercase; }
+        .tab-view { display: none; animation: fadeIn 0.3s; } .active-view { display: block; }
         
-        .levelup-num { 
-            font-size: 100px; 
-            font-weight: 800; 
-            color: white; 
-            text-shadow: 0 0 40px var(--gold-color); 
-            margin: 10px 0; 
-            animation: pulse 0.8s infinite alternate; 
-        }
-
-        .btn-close { 
-            background: #333; 
-            color: white; 
-            border: 1px solid #555; 
-            padding: 12px 20px; 
-            cursor: pointer; 
-            width: 100%; 
-            font-family: 'Rajdhani'; 
-            font-weight: bold; 
-            font-size: 16px;
-            margin-top: 20px;
-            border-radius: 6px;
-        }
-
-        /* Boot Screen */
-        #boot-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; font-family: 'Share Tech Mono'; overflow: hidden; }
-        .boot-text { color: var(--flex-color); font-size: 16px; margin-bottom: 10px; opacity: 0; animation: fadeInText 0.5s forwards; }
-        .boot-title { font-size: 32px; color: var(--theme-color); font-weight: bold; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 20px var(--theme-color); opacity: 0; animation: glitchFade 0.8s forwards 1.5s; text-align: center; margin: 20px 0; }
-        .loader-line { width: 0%; height: 4px; background: var(--theme-color); box-shadow: 0 0 10px var(--theme-color); margin-top: 20px; animation: loadProgress 2.5s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
-        .fade-out-screen { opacity: 0; pointer-events: none; transition: opacity 0.8s ease-out; }
-
-        /* Animações Keyframes */
-        @keyframes zoomIn { from {transform: scale(0.5); opacity:0;} to {transform: scale(1); opacity:1;} }
-        @keyframes pulse { from {transform: scale(1);} to {transform: scale(1.1);} }
+        /* Animações */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-        @keyframes loadProgress { 0% { width: 0%; } 100% { width: 80%; } }
-        @keyframes fadeInText { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes glitchFade { 0% { opacity: 0; transform: scale(0.9); } 20% { opacity: 1; transform: scale(1.1); filter: blur(2px); } 40% { opacity: 0.8; transform: scale(1); filter: blur(0); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes glitchFade { 0% { opacity: 0.8; } 50% { opacity: 1; text-shadow: 0 0 30px var(--theme-color); } 100% { opacity: 0.8; } }
+
+        /* Quest Card Styles */
+        .quest-card { background: linear-gradient(90deg, rgba(30,30,30,0.7) 0%, transparent 100%); border-left: 3px solid #444; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; border-radius: 0 6px 6px 0; }
+        .checkbox { width: 24px; height: 24px; border: 2px solid #666; margin-right: 15px; cursor: pointer; display: grid; place-items: center; flex-shrink: 0; border-radius: 4px; }
+        .task-text { color: white; font-size: 15px; flex: 1; }
+        .tags-container { display: flex; flex-direction: column; align-items: flex-end; }
+        .xp-tag { font-size: 11px; background: #111; padding: 2px 6px; border: 1px solid #333; color: var(--success); font-weight: bold; border-radius: 4px; }
+        
+        /* Boot Screen */
+        #boot-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; font-family: 'Share Tech Mono'; }
+        .loader-line { width: 0%; height: 4px; background: var(--theme-color); box-shadow: 0 0 15px var(--theme-color); margin-top: 20px; animation: loadProgress 2.5s forwards; }
+        @keyframes loadProgress { to { width: 80%; } }
+        .fade-out-screen { opacity: 0; pointer-events: none; transition: opacity 0.8s ease-out; }
+        
+        /* Botões de Filtro/Atributo */
+        .attr-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 15px; }
+        .attr-btn { background: #111; border: 1px solid #333; color: #666; padding: 10px 0; text-align: center; cursor: pointer; font-size: 11px; font-weight: bold; border-radius: 4px; }
+        .attr-btn.selected { color: black; border-color: white; transform: scale(1.05); }
+        .attr-btn[data-type="STR"].selected { background: #ff4444; } .attr-btn[data-type="AGI"].selected { background: #00d2ff; }
+        .attr-btn[data-type="VIT"].selected { background: #00ff9d; } .attr-btn[data-type="INT"].selected { background: #be00ff; }
+        .attr-btn[data-type="SEN"].selected { background: #ffd700; }
+        
+        .recurrence-selector { display: flex; gap: 5px; margin-bottom: 20px; }
+        .rec-btn { flex: 1; background: #111; border: 1px solid #444; color: #888; padding: 10px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 4px; }
+        .rec-btn.selected-none { background: #444; color: white; }
+        .rec-btn.selected-flex { background: rgba(0,210,255,0.2); border-color: var(--flex-color); color: var(--flex-color); }
+        .rec-btn.selected-mand { background: rgba(255,149,0,0.2); border-color: var(--mand-color); color: var(--mand-color); }
+        
+        .action-container { display: flex; gap: 10px; }
+        .action-btn { background: none; border: none; font-size: 18px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -865,9 +589,10 @@
 <div id="login-overlay">
     <div class="login-box">
         <div class="login-title">SONTAK SECURITY</div>
-        <div class="login-sub">ACESSO RESTRITO - INSIRA AS CREDENCIAIS</div>
-
-        <div class="pass-display" id="passDisplay">_ _ _ _ _ _</div>
+        <div style="color:#888; font-size:12px; margin-bottom:30px; letter-spacing:2px; font-family:'Rajdhani';">ACESSO RESTRITO - INSIRA CREDENCIAIS</div>
+        
+        <div class="pass-display" id="passDisplay">
+            </div>
 
         <div class="keypad">
             <button class="key-btn" onclick="pressKey(1)">1</button>
@@ -887,11 +612,10 @@
 </div>
 
 <div id="boot-screen">
-    <div class="boot-text" style="animation-delay: 0.2s">SYSTEM INITIALIZING...</div>
-    <div class="boot-text" style="animation-delay: 0.8s">CONNECTING TO SONTAK DATABASE...</div>
-    <div class="boot-text" style="color:var(--success); animation-delay: 1.4s;">SYNCHRONIZATION COMPLETE.</div>
+    <div style="color:var(--flex-color); font-family:'Share Tech Mono'; margin-bottom:10px;">SYSTEM INITIALIZING...</div>
+    <div style="color:var(--success); font-family:'Share Tech Mono'; margin-bottom:20px;">CONNECTING TO DATABASE...</div>
     <div class="loader-line"></div>
-    <div class="boot-title">BEM-VINDO, CAÇADOR</div>
+    <div style="margin-top:20px; font-size:24px; color:var(--theme-color); font-weight:bold; letter-spacing:3px;">BEM-VINDO, CAÇADOR</div>
 </div>
 
 <div class="app-container" id="mainApp">
@@ -903,9 +627,9 @@
         </div>
         
         <div class="music-controls">
-            <button class="music-btn" onclick="toggleMusic()" id="btnPlayPause">❚❚ PAUSE</button>
-            <div class="music-status">AUDIO SYSTEM</div>
-            <button class="music-btn" onclick="changeVolume()">VOL ↺</button>
+            <button class="music-btn" onclick="changeVolume(-0.1)">VOL -</button>
+            <button class="music-btn play-btn" onclick="toggleMusic()" id="btnPlayPause">▶ PLAY</button>
+            <button class="music-btn" onclick="changeVolume(0.1)">VOL +</button>
         </div>
     </div>
 
@@ -914,7 +638,7 @@
         <div id="tab-home" class="tab-view active-view">
             <div class="xp-box">
                 <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px; color:#aaa;">
-                    <span>XP DO JOGADOR</span> <span id="xpText">0 / 100</span>
+                    <span>XP ATUAL</span> <span id="xpText">0 / 100</span>
                 </div>
                 <div class="xp-bar-bg"><div class="xp-bar-fill" id="xpBar"></div></div>
             </div>
@@ -930,18 +654,41 @@
             </div>
 
             <div class="section-title">MISSÕES PENDENTES</div>
-            <div style="font-size:12px; color:#666; margin-bottom:10px;">(Clique no texto para ver detalhes)</div>
             <div id="home-quest-list"></div>
         </div>
 
-        <div id="tab-editor" class="tab-view">
-            <div class="section-title">ADICIONAR NOVA MISSÃO</div>
+        <div id="tab-library" class="tab-view">
+            <div class="section-title">GRIMÓRIOS ADQUIRIDOS</div>
             
             <div class="editor-box">
-                <label class="input-label">1. O QUE VOCÊ TEM QUE FAZER?</label>
-                <input type="text" id="newQuestInput" class="sys-input" placeholder="Ex: Ler livro de Produtividade">
+                <label class="input-label">REGISTRAR LIVRO (GOOGLE BOOKS API)</label>
+                <input type="text" id="bookIsbn" class="sys-input" placeholder="ISBN (Ex: 9788535902778)">
+                <div style="font-size:10px; color:#666; margin-top:-10px; margin-bottom:10px;">*Use ISBN para capa automática. Se falhar, use título manual.</div>
                 
-                <label class="input-label">2. ATRIBUTOS (SELECIONE QUANTOS QUISER)</label>
+                <input type="text" id="bookTitleInput" class="sys-input" placeholder="Título Manual (Opcional)">
+                
+                <label class="input-label">RECOMPENSA</label>
+                <select id="bookXp" class="sys-select">
+                    <option value="0">0 XP (Já lido)</option>
+                    <option value="100">100 XP (Curto)</option>
+                    <option value="200">200 XP (Médio)</option>
+                    <option value="300">300 XP (Épico)</option>
+                </select>
+                
+                <button class="btn-add" id="btnAddBook" onclick="fetchAndAddBook()">BUSCAR E REGISTRAR</button>
+            </div>
+
+            <div id="library-grid" class="library-grid">
+                </div>
+        </div>
+
+        <div id="tab-editor" class="tab-view">
+            <div class="section-title">CRIAR NOVA MISSÃO</div>
+            <div class="editor-box">
+                <label class="input-label">NOME DA TAREFA</label>
+                <input type="text" id="newQuestInput" class="sys-input" placeholder="Ex: Treino de Força">
+                
+                <label class="input-label">ATRIBUTOS ASSOCIADOS</label>
                 <div class="attr-grid">
                     <div class="attr-btn" data-type="STR" onclick="toggleAttr('STR')">FOR</div>
                     <div class="attr-btn" data-type="AGI" onclick="toggleAttr('AGI')">AGI</div>
@@ -950,7 +697,7 @@
                     <div class="attr-btn" data-type="SEN" onclick="toggleAttr('SEN')">SEN</div>
                 </div>
 
-                <label class="input-label">3. RECOMPENSA (XP)</label>
+                <label class="input-label">XP</label>
                 <select id="newQuestXP" class="sys-select">
                     <option value="50">50 XP (Muito Fácil)</option>
                     <option value="100">100 XP (Fácil)</option>
@@ -958,53 +705,24 @@
                     <option value="300">300 XP (Bom)</option>
                     <option value="500">500 XP (Difícil)</option>
                     <option value="1000">1.000 XP (Muito Difícil)</option>
-                    <option value="2500">2.500 XP (Boss Semanal / 1 Level)</option>
-                    <option value="5000">5.000 XP (Boss Mensal / 2 Levels)</option>
+                    <option value="2500">2.500 XP (Boss Semanal)</option>
                 </select>
 
-                <label class="input-label">4. TIPO DE MISSÃO</label>
+                <label class="input-label">RECORRÊNCIA</label>
                 <div class="recurrence-selector">
                     <button class="rec-btn selected-none" onclick="setRecurrence('none')" id="btn-none">ÚNICA</button>
                     <button class="rec-btn" onclick="setRecurrence('flexible')" id="btn-flex">RECORRENTE</button>
-                    <button class="rec-btn" onclick="setRecurrence('mandatory')" id="btn-mand">⚠ OBRIGATÓRIA</button>
+                    <button class="rec-btn" onclick="setRecurrence('mandatory')" id="btn-mand">OBRIGATÓRIA</button>
                 </div>
                 <input type="hidden" id="recurrenceValue" value="none">
 
-                <label class="input-label">5. OBSERVAÇÕES (OPCIONAL)</label>
-                <textarea id="newQuestDesc" class="sys-input" placeholder="Detalhes..."></textarea>
-
-                <button class="btn-add" onclick="addNewQuest()">CRIAR TAREFA</button>
+                <button class="btn-add" onclick="addNewQuest()">ADICIONAR AO SISTEMA</button>
             </div>
-
+            
             <div class="section-title">GERENCIAR LISTA</div>
             <div id="editor-quest-list"></div>
-
-            <button class="btn-reset" onclick="hardReset()">⚠ RESETAR DADOS DO SISTEMA</button>
-        </div>
-
-        <div id="tab-library" class="tab-view">
-            <div class="section-title">GRIMÓRIOS ADQUIRIDOS</div>
             
-            <div class="editor-box">
-                <label class="input-label">1. TÍTULO DO LIVRO</label>
-                <input type="text" id="bookTitle" class="sys-input" placeholder="Ex: O Hobbit">
-                
-                <label class="input-label">2. ISBN (CÓDIGO DE BARRAS)</label>
-                <div style="font-size:10px; color:#666; margin-bottom:5px;">(Necessário para Capa e Sinopse)</div>
-                <input type="text" id="bookIsbn" class="sys-input" placeholder="Ex: 9788535902778">
-                
-                <label class="input-label">3. RECOMPENSA DE LEITURA (XP)</label>
-                <select id="bookXp" class="sys-select">
-                    <option value="100">100 XP (Leitura Curta)</option>
-                    <option value="200">200 XP (Leitura Média)</option>
-                    <option value="300">300 XP (Leitura Épica)</option>
-                </select>
-                
-                <button class="btn-add" onclick="addBook()">REGISTRAR LEITURA (+XP)</button>
-            </div>
-
-            <div id="library-grid" class="library-grid">
-                </div>
+            <button class="btn-reset" onclick="hardReset()">⚠ RESETAR TUDO</button>
         </div>
 
     </div>
@@ -1017,44 +735,27 @@
 
     <div class="popup-overlay" id="rewardPopup" onclick="closePopup()">
         <div class="popup-box">
-            <div style="color:var(--theme-color); font-size:24px; font-weight:bold; margin-bottom:10px;">QUEST COMPLETED!</div>
-            <div style="font-size:16px; color:#ccc; margin-bottom:5px;">EXPERIÊNCIA ADQUIRIDA:</div>
-            <div class="popup-stat" id="popupStatValue" style="font-size:16px; margin-bottom:15px; line-height:1.4;"></div>
+            <div style="color:var(--theme-color); font-size:24px; font-weight:bold;">MISSÃO CUMPRIDA</div>
+            <div style="font-size:14px; color:#aaa; margin-bottom:10px;">RECOMPENSA OBTIDA</div>
+            <div class="popup-stat" id="popupStatValue"></div>
             <div class="popup-xp" id="popupXpValue"></div>
             <div style="margin-top:20px; font-size:12px; color:#666;">(Toque para continuar)</div>
         </div>
     </div>
 
-    <div class="popup-overlay" id="levelUpPopup" onclick="closeLevelPopup()" style="z-index: 150;">
+    <div class="popup-overlay" id="levelUpPopup" onclick="closeLevelPopup()">
         <div class="levelup-box">
-            <div style="color: var(--gold-color); font-size: 28px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--gold-color);">LEVEL UP!</div>
-            <div style="color: #ccc; font-size: 14px; margin-top:5px;">LIMITES SUPERADOS</div>
+            <div style="color: var(--gold-color); font-size: 24px; font-weight: bold; letter-spacing: 2px;">LEVEL UP!</div>
+            <div style="color: #ccc; font-size: 14px;">LIMITES SUPERADOS</div>
             <div class="levelup-num" id="newLevelDisplay">1</div>
-            <div style="font-size:14px; color:#888;">STATUS AUMENTADOS</div>
-            <div style="margin-top:20px; font-size:12px; color:#fff; border:1px solid #555; padding:5px; display:inline-block; border-radius:5px;">TOQUE PARA CONTINUAR</div>
-        </div>
-    </div>
-
-    <div class="popup-overlay" id="detailsPopup">
-        <div class="popup-box">
-            <div class="detail-title" id="detailTitle">TÍTULO</div>
-            <div class="detail-desc" id="detailDesc">Descrição...</div>
-            <button class="btn-close" onclick="closeDetailsPopup()">FECHAR</button>
+            <div style="margin-top:20px; font-size:12px; color:#fff; border:1px solid #555; padding:5px; display:inline-block; border-radius:5px;">CONTINUAR</div>
         </div>
     </div>
 
     <div class="popup-overlay" id="bookPopup">
         <div class="popup-box">
-            <div id="bookDetailContent" class="book-detail-content">
-                </div>
-            <button class="btn-close" onclick="closeBookPopup()" style="margin-top:15px;">FECHAR</button>
-        </div>
-    </div>
-
-    <div class="success-overlay" id="successPopup">
-        <div class="success-box">
-            <div style="font-size:30px; color:var(--theme-color);">✔</div>
-            <div class="success-msg">REGISTRADO</div>
+            <div id="bookDetailContent" class="book-detail-content"></div>
+            <button class="btn-close" onclick="closeBookPopup()" style="margin-top:20px;">FECHAR</button>
         </div>
     </div>
 
@@ -1064,7 +765,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-    // --- 1. CONFIGURAÇÃO DO FIREBASE ---
+    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
       apiKey: "AIzaSyDnTgThcU_lVdXASbg9ufMeUEE_x2uaYfQ",
       authDomain: "sontak-arise.firebaseapp.com",
@@ -1079,363 +780,331 @@
     const db = getDatabase(app);
     const userRef = ref(db, 'usuarios/vitor');
 
-    // --- 2. ESTADO DO JOGO ---
+    // --- VARIÁVEIS GLOBAIS ---
     let playerData = { level: 1, xp: 0, stats: [0, 0, 0, 0, 0], quests: [], library: [] };
     let chartInstance = null;
-    const MAX_XP_REQUIREMENT = 2500; 
+    const MAX_XP = 2500; 
     const XP_FACTOR = 100; 
     let selectedAttrs = [];
-    
-    // --- 3. SISTEMA DE ÁUDIO ---
     const bgMusic = document.getElementById("bgMusic");
     let isPlaying = false;
-    
+
+    // --- MÚSICA ---
     window.toggleMusic = function() {
         const btn = document.getElementById('btnPlayPause');
-        if (isPlaying) {
-            bgMusic.pause();
-            btn.innerText = "► PLAY";
-            btn.style.color = "#888"; btn.style.borderColor = "#444";
-        } else {
-            bgMusic.play();
-            btn.innerText = "❚❚ PAUSE";
-            btn.style.color = "var(--flex-color)"; btn.style.borderColor = "var(--flex-color)";
-        }
+        if (isPlaying) { bgMusic.pause(); btn.innerText = "▶ PLAY"; btn.style.color = "#888"; }
+        else { bgMusic.play(); btn.innerText = "❚❚ PAUSE"; btn.style.color = "var(--flex-color)"; }
         isPlaying = !isPlaying;
     }
-
-    window.changeVolume = function() {
-        if(bgMusic.volume >= 0.9) bgMusic.volume = 0.2;
-        else bgMusic.volume += 0.2;
+    window.changeVolume = function(delta) {
+        let newVol = bgMusic.volume + delta;
+        if(newVol > 1) newVol = 1; if(newVol < 0) newVol = 0;
+        bgMusic.volume = newVol;
     }
 
-    // --- 4. SISTEMA DE LOGIN ---
-    let currentPass = "";
-    const CORRECT_PASS = "010118";
-
-    window.pressKey = function(num) {
-        if(currentPass.length < 6) { currentPass += num; updatePassDisplay(); }
-    }
-    window.clearPass = function() {
-        currentPass = ""; updatePassDisplay(); document.getElementById('passDisplay').classList.remove('error-anim');
-    }
+    // --- LOGIN ---
+    let pass = ""; const REAL_PASS = "010118";
+    window.pressKey = function(n) { if(pass.length < 6) { pass += n; updatePass(); } }
+    window.clearPass = function() { pass = ""; updatePass(); }
     window.checkPass = function() {
-        if(currentPass === CORRECT_PASS) { unlockSystem(); } 
-        else {
-            const display = document.getElementById('passDisplay');
-            display.classList.add('error-anim');
-            setTimeout(() => { currentPass = ""; updatePassDisplay(); display.classList.remove('error-anim'); }, 400);
+        if(pass === REAL_PASS) {
+            document.getElementById('login-overlay').style.display='none';
+            const boot = document.getElementById('boot-screen');
+            boot.style.display='flex';
+            
+            // Tenta tocar música
+            bgMusic.volume = 0.5;
+            bgMusic.play().then(()=>{ isPlaying=true; document.getElementById('btnPlayPause').innerText="❚❚ PAUSE"; }).catch(()=>{});
+
+            setTimeout(() => {
+                boot.classList.add('fade-out-screen');
+                document.getElementById('mainApp').style.display='flex';
+                initApp();
+                setTimeout(() => boot.style.display='none', 800);
+            }, 3000);
+        } else {
+            const d = document.getElementById('passDisplay');
+            d.style.borderColor='var(--danger)'; d.style.color='var(--danger)';
+            setTimeout(() => { pass=""; updatePass(); d.style.borderColor='var(--theme-color)'; d.style.color='white'; }, 400);
         }
     }
-    function updatePassDisplay() {
-        let visual = ""; for(let i=0; i<6; i++) { visual += (i < currentPass.length) ? "● " : "_ "; }
-        document.getElementById('passDisplay').innerText = visual;
+    function updatePass() {
+        let v = ""; for(let i=0; i<6; i++) { v += (i < pass.length) ? "● " : "  "; }
+        document.getElementById('passDisplay').innerText = v;
     }
 
-    function unlockSystem() {
-        bgMusic.volume = 0.6;
-        bgMusic.play().then(() => { isPlaying = true; document.getElementById('btnPlayPause').innerText = "❚❚ PAUSE"; }).catch(e => console.log("Audio prevented"));
-        document.getElementById('login-overlay').style.display = 'none';
-        const bootScreen = document.getElementById('boot-screen');
-        bootScreen.style.display = 'flex';
-        setTimeout(() => {
-            bootScreen.classList.add('fade-out-screen');
-            document.getElementById('mainApp').style.display = 'flex';
-            if(chartInstance) chartInstance.resize();
-            setTimeout(() => { bootScreen.style.display = 'none'; }, 800);
-        }, 3500);
-        initApp();
-    }
-
-    // --- 5. INICIALIZAÇÃO DO APP ---
+    // --- INICIALIZAÇÃO ---
     function initApp() {
         initChart();
-        onValue(userRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                playerData = data;
+        onValue(userRef, (snap) => {
+            const val = snap.val();
+            if(val) {
+                playerData = val;
                 if(!playerData.quests) playerData.quests = [];
-                if(!playerData.stats) playerData.stats = [0,0,0,0,0];
                 if(!playerData.library) playerData.library = [];
+                if(!playerData.stats) playerData.stats = [0,0,0,0,0];
             } else { saveData(); }
-            updateHeader(); updateStatsDisplay(); checkDailyQuests(); renderAll(); renderLibrary();
-            if(chartInstance) updateChartData();
+            updateUI();
         });
     }
 
-    // --- 6. FUNÇÕES PRINCIPAIS (RPG) ---
-    window.saveData = function() { set(userRef, playerData); updateHeader(); updateStatsDisplay(); if(chartInstance) updateChartData(); }
-    window.getAttrLevel = function(xp) { return Math.floor(Math.sqrt(xp / XP_FACTOR)); }
-    function getAttrLevelFloat(xp) { return Math.sqrt(xp / XP_FACTOR); }
-    
-    window.updateStatsDisplay = function() {
-        const labels = ['STR', 'AGI', 'VIT', 'INT', 'SEN'];
-        playerData.stats.forEach((xp, i) => { document.getElementById(`val-${labels[i]}`).innerText = getAttrLevel(xp); });
-    }
-
-    window.checkDailyQuests = function() {
-        const today = new Date().toDateString(); 
-        let dataChanged = false;
-        if(!playerData.quests) return;
-        playerData.quests.forEach(quest => {
-            if ((quest.recurrence === 'flexible' || quest.recurrence === 'mandatory') && quest.done && quest.lastDoneDate !== today) {
-                quest.done = false; dataChanged = true;
-            }
-        });
-        if (dataChanged) saveData();
-    }
-
-    window.getXpNeeded = function(level) { return Math.min(level * 100, MAX_XP_REQUIREMENT); }
-
-    window.updateHeader = function() {
-        const xpNeeded = getXpNeeded(playerData.level);
+    // --- LÓGICA DE DADOS & UI ---
+    function updateUI() {
+        // Header
+        const xpReq = Math.min(playerData.level * 100, MAX_XP);
         document.getElementById('displayLevel').innerText = playerData.level;
-        document.getElementById('xpText').innerText = `${playerData.xp} / ${xpNeeded}`;
-        let percent = Math.min((playerData.xp / xpNeeded) * 100, 100);
-        document.getElementById('xpBar').style.width = percent + '%';
-    }
+        document.getElementById('xpText').innerText = `${playerData.xp} / ${xpReq}`;
+        document.getElementById('xpBar').style.width = Math.min((playerData.xp / xpReq)*100, 100) + "%";
 
-    // --- 7. GRÁFICO (Chart.js) ---
-    window.initChart = function() {
-        const ctx = document.getElementById('statsChart').getContext('2d');
-        chartInstance = new Chart(ctx, {
-            type: 'radar',
-            data: {
-                labels: ['FORÇA', 'AGILIDADE', 'VITALIDADE', 'INTELIGÊNCIA', 'SENTIDO'],
-                datasets: [{ data: [0,0,0,0,0], backgroundColor: 'rgba(190, 0, 255, 0.4)', borderColor: '#be00ff', borderWidth: 2, pointBackgroundColor: '#fff', pointBorderColor: '#be00ff' }]
-            },
-            options: {
-                scales: { r: { angleLines: { color: '#333' }, grid: { color: '#333' }, pointLabels: { color: '#fff', font: { family: 'Rajdhani', size: 12 } }, ticks: { display: false }, suggestedMin: 0, suggestedMax: 100 } },
-                plugins: { legend: { display: false } }, maintainAspectRatio: false
-            }
+        // Stats & Chart
+        const labels = ['STR','AGI','VIT','INT','SEN'];
+        const visualData = [];
+        playerData.stats.forEach((xp, i) => {
+            const lvl = Math.floor(Math.sqrt(xp / XP_FACTOR));
+            document.getElementById(`val-${labels[i]}`).innerText = lvl;
+            let percent = 0;
+            if(lvl <= 10) percent = lvl * 5;
+            else if(lvl <= 20) percent = 50 + (lvl-10);
+            else percent = 60 + ((lvl-20)*0.5);
+            visualData.push(Math.min(percent, 100));
         });
-    }
-
-    function getVisualPercent(level) {
-        let percent = 0;
-        if (level <= 10) return level * 5; 
-        percent = 50; if (level <= 20) return percent + ((level - 10) * 1);
-        percent = 60; if (level <= 50) return percent + ((level - 20) * 0.4);
-        percent = 72; if (level <= 100) return percent + ((level - 50) * 0.25);
-        percent = 84.5; if (level <= 200) return percent + ((level - 100) * 0.1);
-        percent = 94.5; if (level <= 500) return percent + ((level - 200) * 0.01);
-        return Math.min(99.9, percent + ((level - 500) * 0.001));
-    }
-
-    window.updateChartData = function() {
-        const visualData = playerData.stats.map(xp => getVisualPercent(getAttrLevelFloat(xp)));
         chartInstance.data.datasets[0].data = visualData;
         chartInstance.update();
+
+        // Listas
+        renderQuests();
+        renderLibrary();
     }
 
-    // --- 8. EDITOR DE MISSÕES ---
-    window.toggleAttr = function(type) {
-        const btn = document.querySelector(`.attr-btn[data-type="${type}"]`);
-        if (selectedAttrs.includes(type)) { selectedAttrs = selectedAttrs.filter(a => a !== type); btn.classList.remove('selected'); } 
-        else { selectedAttrs.push(type); btn.classList.add('selected'); }
+    // --- RENDERIZADORES ---
+    function renderQuests() {
+        const homeList = document.getElementById('home-quest-list');
+        const editorList = document.getElementById('editor-quest-list');
+        homeList.innerHTML = ""; editorList.innerHTML = "";
+
+        playerData.quests.forEach((q, i) => {
+            // Home (Só pendentes e não deletadas)
+            if(!q.done) {
+                let border = "3px solid #444";
+                if(q.recurrence === 'flexible') border = "3px solid var(--flex-color)";
+                if(q.recurrence === 'mandatory') border = "3px solid var(--mand-color)";
+                
+                homeList.innerHTML += `
+                <div class="quest-card" style="border-left:${border}">
+                    <div class="checkbox" onclick="completeQuest(${i})"></div>
+                    <div class="task-text">${q.text}</div>
+                    <div class="tags-container">
+                        <div class="xp-tag">+${q.xpValue} XP</div>
+                    </div>
+                </div>`;
+            }
+            // Editor
+            editorList.innerHTML += `
+            <div class="quest-card">
+                <div class="task-text" style="color:#aaa">${q.text} (${q.xpValue} XP)</div>
+                <div class="action-container">
+                    <button class="action-btn" style="color:var(--danger)" onclick="deleteQuest(${i})">✖</button>
+                </div>
+            </div>`;
+        });
+        if(homeList.innerHTML === "") homeList.innerHTML = "<div style='text-align:center; color:#555; margin-top:20px;'>NENHUMA MISSÃO ATIVA</div>";
     }
-    
-    window.setRecurrence = function(type) {
-        document.getElementById('recurrenceValue').value = type;
-        document.querySelectorAll('.rec-btn').forEach(btn => btn.className = 'rec-btn');
-        if(type === 'none') document.getElementById('btn-none').classList.add('selected-none');
-        if(type === 'flexible') document.getElementById('btn-flex').classList.add('selected-flex');
-        if(type === 'mandatory') document.getElementById('btn-mand').classList.add('selected-mand');
+
+    function renderLibrary() {
+        const grid = document.getElementById('library-grid');
+        grid.innerHTML = "";
+        playerData.library.forEach((book, i) => {
+            let cover = book.cover || 'https://via.placeholder.com/100x150/222/888?text=Sem+Capa';
+            grid.innerHTML += `
+            <div class="book-card" onclick="showBookDetails(${i})">
+                ${book.cover ? `<img src="${book.cover}" class="book-cover">` : `<div class="book-placeholder">${book.title}</div>`}
+                ${book.cover ? '' : ''}
+            </div>`;
+        });
+    }
+
+    // --- FUNÇÕES DE MISSÃO ---
+    window.completeQuest = function(i) {
+        const q = playerData.quests[i];
+        q.done = true;
+        if(q.recurrence !== 'none') q.lastDoneDate = new Date().toDateString();
+        
+        playerData.xp += q.xpValue;
+        const xpShare = Math.floor(q.xpValue / q.types.length);
+        q.types.forEach(t => {
+            const idx = ['STR','AGI','VIT','INT','SEN'].indexOf(t);
+            if(idx > -1) playerData.stats[idx] += xpShare;
+        });
+        
+        checkLevelUp();
+        saveData();
+        showReward("XP Adicionado aos Atributos", q.xpValue);
     }
 
     window.addNewQuest = function() {
-        const input = document.getElementById('newQuestInput'); const descInput = document.getElementById('newQuestDesc');
-        const xpSelect = document.getElementById('newQuestXP'); const recurrenceVal = document.getElementById('recurrenceValue').value; 
-        if (input.value.trim() && selectedAttrs.length > 0) {
-            if(!playerData.quests) playerData.quests = [];
-            playerData.quests.push({ text: input.value.trim(), desc: descInput.value.trim(), types: [...selectedAttrs], xpValue: parseInt(xpSelect.value, 10), done: false, recurrence: recurrenceVal, lastDoneDate: null });
-            input.value = ''; descInput.value = ''; selectedAttrs = [];
-            document.querySelectorAll('.attr-btn').forEach(btn => btn.classList.remove('selected'));
-            setRecurrence('none'); saveData(); renderAll(); showSuccessPopup();
-        } else { alert("Preencha o nome da missão e selecione pelo menos 1 atributo!"); }
-    }
-
-    // --- 9. SISTEMA DE BIBLIOTECA (AVANÇADO) ---
-    window.addBook = function() {
-        const title = document.getElementById('bookTitle').value;
-        const isbn = document.getElementById('bookIsbn').value;
-        const xpVal = parseInt(document.getElementById('bookXp').value);
+        const txt = document.getElementById('newQuestInput').value;
+        const xp = parseInt(document.getElementById('newQuestXP').value);
+        const rec = document.getElementById('recurrenceValue').value;
         
-        if(title.trim()) {
-            if(!playerData.library) playerData.library = [];
-            playerData.library.push({ 
-                title: title, 
-                isbn: isbn, 
-                xpValue: xpVal,
-                date: new Date().toDateString() 
-            });
-            
-            // Adiciona XP
-            playerData.xp += xpVal;
-            const xpPerAttr = Math.floor(xpVal / 2);
-            playerData.stats[3] += xpPerAttr; // INT
-            playerData.stats[4] += xpPerAttr; // SEN
-            
-            let xpNeeded = getXpNeeded(playerData.level);
-            let leveledUp = false;
-            while(playerData.xp >= xpNeeded) { playerData.xp -= xpNeeded; playerData.level++; xpNeeded = getXpNeeded(playerData.level); leveledUp = true; }
-            
-            document.getElementById('bookTitle').value = ''; document.getElementById('bookIsbn').value = '';
-            saveData(); renderLibrary(); 
-            showReward(`+${xpPerAttr} INT<br>+${xpPerAttr} SEN`, xpVal);
-            if(leveledUp) showLevelUpPopup(playerData.level);
-        } else { alert("Digite o título!"); }
+        if(txt && selectedAttrs.length > 0) {
+            playerData.quests.push({ text: txt, types: [...selectedAttrs], xpValue: xp, recurrence: rec, done: false });
+            selectedAttrs = []; document.querySelectorAll('.attr-btn').forEach(b => b.classList.remove('selected'));
+            document.getElementById('newQuestInput').value = "";
+            saveData();
+            showSuccess();
+        } else { alert("Preencha nome e atributos!"); }
     }
 
-    window.renderLibrary = function() {
-        const grid = document.getElementById('library-grid'); grid.innerHTML = '';
-        if(!playerData.library) return;
-        playerData.library.forEach((book, index) => {
-            const card = document.createElement('div'); card.className = 'book-card';
-            card.onclick = () => openBookDetails(index);
-            let imgUrl = 'https://via.placeholder.com/100x140/222/888?text=SEM+CAPA';
-            if(book.isbn) imgUrl = `https://covers.openlibrary.org/b/isbn/${book.isbn}-M.jpg`;
-            card.innerHTML = `<img src="${imgUrl}" class="book-cover" onerror="this.src='https://via.placeholder.com/100x140/000/fff?text=No+Cover'"><div class="book-info">${book.title}</div>`;
-            grid.appendChild(card);
+    window.deleteQuest = function(i) { if(confirm("Deletar?")) { playerData.quests.splice(i,1); saveData(); } }
+
+    window.toggleAttr = function(t) {
+        const btn = document.querySelector(`.attr-btn[data-type="${t}"]`);
+        if(selectedAttrs.includes(t)) { selectedAttrs = selectedAttrs.filter(x=>x!==t); btn.classList.remove('selected'); }
+        else { selectedAttrs.push(t); btn.classList.add('selected'); }
+    }
+    
+    window.setRecurrence = function(t) {
+        document.getElementById('recurrenceValue').value = t;
+        document.querySelectorAll('.rec-btn').forEach(b => {
+            b.className = 'rec-btn';
+            if(b.innerText.includes(t.toUpperCase()) || (t==='none' && b.innerText==='ÚNICA')) b.classList.add('selected-'+t);
         });
     }
 
-    // --- POPUP DO LIVRO + API GOOGLE BOOKS ---
-    window.openBookDetails = function(index) {
-        const book = playerData.library[index];
-        const popup = document.getElementById('bookPopup');
-        const content = document.getElementById('bookDetailContent');
-        
-        let imgUrl = 'https://via.placeholder.com/140x200/222/888?text=SEM+CAPA';
-        if(book.isbn) imgUrl = `https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg`;
+    // --- FUNÇÕES DE BIBLIOTECA (GOOGLE API) ---
+    window.fetchAndAddBook = function() {
+        const isbn = document.getElementById('bookIsbn').value.trim();
+        const manualTitle = document.getElementById('bookTitleInput').value.trim();
+        const xpVal = parseInt(document.getElementById('bookXp').value);
+        const btn = document.getElementById('btnAddBook');
 
-        content.innerHTML = `
-            <div style="font-size:20px; color:var(--theme-color); font-weight:bold; text-align:center;">${book.title}</div>
-            <img src="${imgUrl}" class="book-expanded-cover">
-            <div class="book-xp-badge">XP OBTIDO: ${book.xpValue}</div>
-            <div style="font-size:12px; color:#888;">SINOPSE (GOOGLE API):</div>
-            <div id="synopsisText" class="book-synopsis">Carregando...</div>
-            <button class="btn-delete-book" onclick="deleteBook(${index})">✖ REMOVER DO ACERVO</button>
-        `;
-        
-        popup.style.display = 'flex';
+        if(!isbn && !manualTitle) { alert("Digite ISBN ou Título!"); return; }
 
-        // Fetch Sinopse
-        if(book.isbn) {
-            fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${book.isbn}`)
-            .then(res => res.json())
+        btn.innerText = "BUSCANDO...";
+
+        if(isbn) {
+            // Busca na Google Books API (langRestrict=pt)
+            fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&langRestrict=pt`)
+            .then(r => r.json())
             .then(data => {
+                let bookData = {
+                    title: manualTitle || "Livro Sem Título",
+                    cover: "",
+                    desc: "Sinopse não disponível.",
+                    xpValue: xpVal
+                };
+
                 if(data.items && data.items.length > 0) {
-                    const desc = data.items[0].volumeInfo.description;
-                    document.getElementById('synopsisText').innerHTML = desc || "Sinopse não disponível.";
+                    const info = data.items[0].volumeInfo;
+                    bookData.title = info.title;
+                    if(info.imageLinks) bookData.cover = info.imageLinks.thumbnail.replace('http:', 'https:');
+                    if(info.description) bookData.desc = info.description;
+                } else if(manualTitle) {
+                    alert("ISBN não encontrado, usando dados manuais.");
                 } else {
-                    document.getElementById('synopsisText').innerText = "Sinopse não encontrada.";
+                    alert("Livro não encontrado.");
+                    btn.innerText = "BUSCAR E REGISTRAR";
+                    return;
                 }
+                
+                saveBook(bookData);
+                btn.innerText = "BUSCAR E REGISTRAR";
             })
-            .catch(() => { document.getElementById('synopsisText').innerText = "Erro ao carregar sinopse."; });
-        } else { document.getElementById('synopsisText').innerText = "Sem ISBN cadastrado."; }
+            .catch(() => { alert("Erro de conexão."); btn.innerText = "BUSCAR E REGISTRAR"; });
+        } else {
+            saveBook({ title: manualTitle, cover: "", desc: "Adicionado manualmente.", xpValue: xpVal });
+            btn.innerText = "BUSCAR E REGISTRAR";
+        }
+    }
+
+    function saveBook(book) {
+        playerData.library.push(book);
+        
+        if(book.xpValue > 0) {
+            playerData.xp += book.xpValue;
+            const share = Math.floor(book.xpValue / 2);
+            playerData.stats[3] += share; // INT
+            playerData.stats[4] += share; // SEN
+            checkLevelUp();
+            showReward(`+${share} INT / +${share} SEN`, book.xpValue);
+        } else {
+            showSuccess();
+        }
+
+        document.getElementById('bookIsbn').value = "";
+        document.getElementById('bookTitleInput').value = "";
+        saveData();
+    }
+
+    window.showBookDetails = function(i) {
+        const b = playerData.library[i];
+        const content = document.getElementById('bookDetailContent');
+        const cover = b.cover || 'https://via.placeholder.com/150x220/333/888?text=Sem+Capa';
+        
+        content.innerHTML = `
+            <div style="text-align:center;">
+                <img src="${cover}" class="book-expanded-cover">
+                <h3 style="color:var(--theme-color); margin:10px 0;">${b.title}</h3>
+                <div class="book-xp-badge">XP: ${b.xpValue}</div>
+            </div>
+            <div style="margin-top:15px; font-size:12px; color:#888;">SINOPSE:</div>
+            <div class="book-synopsis">${b.desc}</div>
+            <button class="btn-delete" onclick="removeBook(${i})">REMOVER DO ACERVO</button>
+        `;
+        document.getElementById('bookPopup').style.display = 'flex';
+    }
+
+    window.removeBook = function(i) {
+        if(confirm("Remover livro? (XP permanece)")) {
+            playerData.library.splice(i, 1);
+            saveData();
+            closeBookPopup();
+        }
     }
 
     window.closeBookPopup = function() { document.getElementById('bookPopup').style.display = 'none'; }
 
-    window.deleteBook = function(index) {
-        if(confirm("Remover este livro? (O XP ganho PERMANECE no seu perfil)")) {
-            playerData.library.splice(index, 1);
-            saveData(); renderLibrary(); closeBookPopup();
+    // --- UTILITÁRIOS ---
+    function checkLevelUp() {
+        let req = Math.min(playerData.level * 100, MAX_XP);
+        while(playerData.xp >= req) {
+            playerData.xp -= req;
+            playerData.level++;
+            req = Math.min(playerData.level * 100, MAX_XP);
+            document.getElementById('newLevelDisplay').innerText = playerData.level;
+            document.getElementById('levelUpPopup').style.display = 'flex';
         }
     }
 
-    // --- 10. AÇÕES DE CARD E MODAIS ---
-    window.cloneQuest = function(index) {
-        const original = playerData.quests[index];
-        playerData.quests.push({ text: original.text, desc: original.desc || "", types: original.types || [original.type], xpValue: original.xpValue, done: false, recurrence: original.recurrence, lastDoneDate: null });
-        saveData(); renderAll(); showSuccessPopup();
+    window.saveData = function() { set(userRef, playerData); updateUI(); }
+    window.showSuccess = function() { const p = document.getElementById('successPopup'); p.style.display='flex'; setTimeout(()=>p.style.display='none', 1500); }
+    window.showReward = function(txt, xp) { document.getElementById('popupStatValue').innerHTML=txt; document.getElementById('popupXpValue').innerText=`+${xp} XP`; document.getElementById('rewardPopup').style.display='flex'; }
+    window.closePopup = function() { document.getElementById('rewardPopup').style.display='none'; }
+    window.closeLevelPopup = function() { document.getElementById('levelUpPopup').style.display='none'; }
+    
+    window.switchTab = function(t) {
+        document.querySelectorAll('.tab-view').forEach(e => e.style.display='none');
+        document.getElementById('tab-'+t).style.display='block';
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+        if(t==='home' && chartInstance) chartInstance.resize();
     }
-
-    window.showSuccessPopup = function() { const popup = document.getElementById('successPopup'); popup.style.display = 'flex'; setTimeout(() => { popup.style.display = 'none'; }, 2000); }
-
-    window.completeQuest = function(index) {
-        if (playerData.quests[index].done) return;
-        const quest = playerData.quests[index]; quest.done = true;
-        if (quest.recurrence === 'flexible' || quest.recurrence === 'mandatory') quest.lastDoneDate = new Date().toDateString();
-        const totalXp = parseInt(quest.xpValue, 10); playerData.xp += totalXp;
-        const typesToProcess = quest.types || [quest.type];
-        const xpPerStat = Math.floor(totalXp / typesToProcess.length);
-        let rewardText = "";
-        typesToProcess.forEach(type => {
-            let statIndex = ['STR','AGI','VIT','INT','SEN'].indexOf(type);
-            if(statIndex > -1) playerData.stats[statIndex] += xpPerStat;
-            rewardText += `+${xpPerStat} XP (${type})<br>`;
-        });
-        let xpNeeded = getXpNeeded(playerData.level); let leveledUp = false;
-        while(playerData.xp >= xpNeeded) { playerData.xp -= xpNeeded; playerData.level++; xpNeeded = getXpNeeded(playerData.level); leveledUp = true; }
-        saveData(); renderAll(); showReward(rewardText, totalXp);
-        if(leveledUp) showLevelUpPopup(playerData.level);
-    }
-
-    window.openTaskDetails = function(index) {
-        const quest = playerData.quests[index];
-        document.getElementById('detailTitle').innerText = quest.text;
-        document.getElementById('detailDesc').innerText = quest.desc && quest.desc.trim() !== "" ? quest.desc : "Nenhuma instrução.";
-        document.getElementById('detailsPopup').style.display = 'flex';
-    }
-
-    window.closeDetailsPopup = function() { document.getElementById('detailsPopup').style.display = 'none'; }
-    window.showReward = function(statsHtml, xpAmount) { document.getElementById('popupStatValue').innerHTML = statsHtml; document.getElementById('popupXpValue').innerText = `+${xpAmount} XP TOTAL`; document.getElementById('rewardPopup').style.display = 'flex'; }
-    window.showLevelUpPopup = function(level) { document.getElementById('newLevelDisplay').innerText = level; document.getElementById('levelUpPopup').style.display = 'flex'; }
-    window.closePopup = function() { document.getElementById('rewardPopup').style.display = 'none'; }
-    window.closeLevelPopup = function() { document.getElementById('levelUpPopup').style.display = 'none'; }
-
-    window.deleteQuest = function(index) { if(confirm("Remover?")) { playerData.quests.splice(index, 1); saveData(); renderAll(); } }
 
     window.hardReset = function() {
-        if(confirm("⚠ PERIGO: RESETAR TUDO?")) { 
-            const password = prompt("SENHA DE ADM:");
-            if (password === "Yasuo010118*") {
-                playerData = { level: 1, xp: 0, stats: [0, 0, 0, 0, 0], quests: [], library: [] };
-                saveData(); location.reload(); 
-            } else { alert("SENHA ERRADA."); }
+        if(prompt("SENHA ADM:") === "Yasuo010118*") {
+            set(userRef, { level:1, xp:0, stats:[0,0,0,0,0], quests:[], library:[] });
+            location.reload();
         }
     }
 
-    window.renderAll = function() {
-        const homeList = document.getElementById('home-quest-list'); const editorList = document.getElementById('editor-quest-list');
-        homeList.innerHTML = ''; editorList.innerHTML = '';
-        if(!playerData.quests) return;
-        playerData.quests.forEach((quest, index) => {
-            const typesArr = quest.types || [quest.type];
-            let attrsHtml = ''; typesArr.forEach(t => { attrsHtml += `<span class="attr-mini-tag bg-${t}">${t}</span>`; });
-            
-            // HOME LIST
-            if(!quest.done) {
-                const homeItem = document.createElement('div');
-                let cardClass = 'quest-card active-card';
-                let tagHtml = '';
-                if (quest.recurrence === 'flexible') { cardClass += ' type-flexible'; tagHtml = `<span class="tag-flex">↻ RECORRENTE</span>`; }
-                else if (quest.recurrence === 'mandatory') { cardClass += ' type-mandatory'; tagHtml = `<span class="tag-mand">⚠ OBRIGATÓRIA</span>`; }
-                homeItem.className = cardClass;
-                homeItem.innerHTML = `<div style="display:flex; align-items:center; width:100%;"><div class="checkbox" onclick="completeQuest(${index})"></div><div class="task-text" onclick="openTaskDetails(${index})" title="Ver Detalhes">${tagHtml}${quest.text}</div><div class="tags-container"><div class="xp-tag">+${quest.xpValue} XP</div><div>${attrsHtml}</div></div></div>`;
-                homeList.appendChild(homeItem);
-            }
-            
-            // EDITOR LIST
-            const editorItem = document.createElement('div');
-            editorItem.className = 'quest-card'; editorItem.style.borderColor = quest.done ? '#00ff9d' : '#444';
-            let typeLabel = '[ÚNICA]'; let labelColor = '#888';
-            if(quest.recurrence === 'flexible') { typeLabel = '[RECORRENTE]'; labelColor = 'var(--flex-color)'; }
-            if(quest.recurrence === 'mandatory') { typeLabel = '[OBRIGATÓRIA]'; labelColor = 'var(--mand-color)'; }
-            editorItem.innerHTML = `<div class="task-text" style="color:#ccc;"><span style="font-size:10px; color:${labelColor}">${typeLabel}</span> ${quest.text} <div style="margin-top:2px;">${attrsHtml} <span class="xp-tag">${quest.xpValue} XP</span></div></div><div class="action-container"><button class="action-btn btn-clone" onclick="cloneQuest(${index})">↺</button><button class="action-btn btn-del" onclick="deleteQuest(${index})">✖</button></div>`;
-            editorList.appendChild(editorItem);
-        });
-        if (homeList.innerHTML === '') homeList.innerHTML = '<div style="text-align:center; color:#555; margin-top:30px;">SEM MISSÕES ATIVAS.<br>DESCANSE, CAÇADOR.</div>';
-    }
-
-    window.switchTab = function(tab) {
-        document.querySelectorAll('.tab-view').forEach(e => e.classList.remove('active-view'));
-        document.querySelectorAll('.nav-btn').forEach(e => e.classList.remove('active'));
-        document.getElementById('tab-'+tab).classList.add('active-view');
-        if(tab === 'home' && chartInstance) chartInstance.resize();
-    }
+    // EXPOR PARA HTML
+    window.fetchAndAddBook = window.fetchAndAddBook;
+    window.showBookDetails = window.showBookDetails;
+    window.removeBook = window.removeBook;
+    window.closeBookPopup = window.closeBookPopup;
+    window.changeVolume = window.changeVolume;
+    window.completeQuest = window.completeQuest;
+    window.deleteQuest = window.deleteQuest;
 </script>
 
 </body>
