@@ -3,281 +3,423 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SONTAK SYSTEM V7.1</title>
+    <title>SYSTEM 2026-2027 - SONTAK CONNECTED</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
+        /* =========================================
+           1. VARIÁVEIS DO SISTEMA (CORES)
+           ========================================= */
         :root {
-            --theme-color: #be00ff;
-            --flex-color: #00d2ff;
-            --mand-color: #ff9500;
-            --bg-dark: #050505;
-            --text-main: #fff;
-            --success: #00ff9d;
-            --danger: #ff4444;
-            --gold-color: #ffd700;
+            --theme-color: #be00ff;   /* Roxo Principal (Sontak) */
+            --flex-color: #00d2ff;    /* Azul (Missões Flexíveis) */
+            --mand-color: #ff9500;    /* Laranja (Missões Obrigatórias) */
+            --bg-dark: #050505;       /* Fundo Preto Profundo */
+            --text-main: #fff;        /* Texto Branco */
+            --success: #00ff9d;       /* Verde Neon (Sucesso/XP) */
+            --danger: #ff4444;        /* Vermelho (Erro/Perigo) */
+            --gold-color: #ffd700;    /* Dourado (Level Up) */
         }
 
-        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        /* Reset Básico */
+        * {
+            box-sizing: border-box;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
 
+        /* =========================================
+           2. CONFIGURAÇÃO GERAL DA PÁGINA
+           ========================================= */
         body {
             background-color: black;
             color: var(--text-main);
             font-family: 'Rajdhani', sans-serif;
-            margin: 0; padding: 0;
-            display: flex; justify-content: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
             height: 100vh; 
+            height: 100dvh; 
             overflow: hidden; 
+            user-select: none; 
             position: relative;
+            z-index: 1;
         }
 
-        /* FUNDO */
+        /* --- IMAGEM DE FUNDO (ANIME) --- */
         body::before {
-            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            content: "";
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
             background-image: url('./Fundo.jpg.jpg');
-            background-size: cover; background-position: center; 
-            opacity: 0.45; z-index: -2; filter: grayscale(20%);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.45; 
+            z-index: -1;   
+            filter: grayscale(10%); 
         }
 
-        /* CONTAINER PRINCIPAL */
+        /* Efeito de Vinheta */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 30%, black 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* =========================================
+           3. CONTAINER PRINCIPAL
+           ========================================= */
         .app-container {
-            width: 100%; max-width: 420px; height: 100%;
-            background: rgba(5, 5, 10, 0.95);
+            width: 100%; 
+            max-width: 420px; 
+            height: 100%;     
+            background: rgba(5, 5, 12, 0.90); 
+            border-left: 1px solid var(--theme-color); 
+            border-right: 1px solid var(--theme-color);
+            box-shadow: 0 0 30px rgba(190, 0, 255, 0.15);
             display: none; 
-            flex-direction: column;
+            flex-direction: column; 
             position: relative;
-            border-left: 1px solid #333; border-right: 1px solid #333;
+            opacity: 0; 
+            animation: showApp 1s ease forwards 0.5s;
+            backdrop-filter: blur(10px); 
         }
 
-        /* --- HEADER --- */
+        @keyframes showApp { to { opacity: 1; } }
+
+        /* =========================================
+           4. CABEÇALHO (FIXO)
+           ========================================= */
         .header-container {
-            flex-shrink: 0;
-            background: rgba(0,0,0,0.9);
+            flex-shrink: 0; 
             border-bottom: 1px solid var(--theme-color);
-            padding-bottom: 10px;
-            z-index: 10;
+            background: rgba(0,0,0,0.6);
+            z-index: 20;
         }
-        .header { padding: 15px 20px 5px; display: flex; justify-content: space-between; align-items: center; }
-        .header h1 { margin: 0; font-size: 24px; color: var(--theme-color); letter-spacing: 2px; }
+
+        .header { 
+            padding: 15px 20px 5px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+
+        .header h1 { 
+            margin: 0; 
+            font-size: 22px; 
+            color: var(--theme-color); 
+            text-shadow: 0 0 8px var(--theme-color); 
+            letter-spacing: 1px; 
+        }
+
+        .lvl-badge { font-size: 14px; color: #aaa; text-align: right; }
         .lvl-number { font-size: 24px; color: var(--theme-color); font-weight: bold; }
 
-        .music-controls { display: flex; justify-content: center; gap: 15px; margin-top: 5px; }
-        .music-btn {
-            background: #111; border: 1px solid #444; color: var(--flex-color);
-            border-radius: 4px; padding: 5px 15px; font-family: 'Share Tech Mono'; font-size: 12px;
-        }
-        .music-btn:active { background: var(--flex-color); color: black; }
-
-        /* --- ÁREA DE CONTEÚDO --- */
-        .content-area {
-            flex: 1; 
-            overflow-y: auto; 
-            padding: 20px;
-            padding-bottom: 80px; 
-        }
-
-        /* --- LOGIN (AJUSTADO PARA 4 DÍGITOS) --- */
-        #login-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9); z-index: 20000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        
-        .pass-display {
-            border: 2px solid var(--theme-color);
-            height: 50px; 
-            width: 220px; 
-            margin-bottom: 30px;
-            display: flex; align-items: center; justify-content: center;
-            font-family: 'Share Tech Mono'; font-size: 28px; color: #fff;
-            letter-spacing: 12px; 
-            border-radius: 10px;
-            white-space: nowrap; 
-        }
-
-        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .key-btn {
-            background: #000; border: 2px solid var(--theme-color); color: #fff;
-            width: 70px; height: 70px; border-radius: 50%;
-            font-size: 22px; font-family: 'Share Tech Mono';
-            display: flex; align-items: center; justify-content: center;
-        }
-        .key-btn:active { background: var(--theme-color); color: black; }
-        .key-action { border-radius: 10px; font-size: 16px; }
-        .key-clear { border-color: var(--danger); color: var(--danger); }
-        .key-enter { border-color: var(--success); color: var(--success); }
-
-        /* --- GRÁFICOS E UI --- */
-        .chart-wrapper { height: 250px; width: 100%; margin-bottom: 20px; }
-        
-        .xp-box { margin-bottom: 20px; }
-        .xp-bar-bg { width: 100%; height: 10px; background: #222; border: 1px solid #444; border-radius: 5px; }
-        .xp-bar-fill { height: 100%; width: 0%; background: var(--theme-color); transition: width 0.3s; }
-
-        .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 20px; text-align: center; }
-        .stat-item { background: #111; border: 1px solid #333; padding: 5px; border-radius: 5px; }
-        .stat-label { font-size: 10px; color: #888; display: block; }
-        .stat-value { font-size: 16px; color: var(--theme-color); font-weight: bold; }
-
-        /* --- LISTAS (CORES DIFERENCIADAS) --- */
-        .quest-card {
-            background: #111; border-left: 3px solid #444; padding: 15px; margin-bottom: 10px;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        /* COR: ÚNICA (Roxo) */
-        .quest-card.type-unique { border-color: var(--theme-color); background: rgba(190, 0, 255, 0.05); }
-        /* COR: RECORRENTE (Azul) */
-        .quest-card.type-flexible { border-color: var(--flex-color); background: rgba(0, 210, 255, 0.05); }
-        /* COR: OBRIGATÓRIA (Laranja) */
-        .quest-card.type-mandatory { border-color: var(--mand-color); background: rgba(255, 149, 0, 0.05); }
-        
-        .checkbox { width: 25px; height: 25px; border: 2px solid #666; margin-right: 15px; display: grid; place-items: center; }
-        .task-text { color: white; font-size: 16px; flex: 1; }
-        .xp-tag { font-size: 12px; color: var(--success); font-weight: bold; }
-
-        /* --- BIBLIOTECA --- */
-        .library-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-bottom: 20px; }
-        .book-card {
-            background: #151515; border: 1px solid #333; border-radius: 5px; overflow: hidden;
-            text-align: center; position: relative; min-height: 140px; cursor: pointer;
-        }
-        .book-cover { width: 100%; height: 140px; object-fit: cover; }
-        .book-title-overlay {
-            position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.8);
-            color: white; font-size: 10px; padding: 5px;
-        }
-        
-        /* --- EDITOR --- */
-        .editor-box { background: #111; padding: 15px; border: 1px solid #333; margin-bottom: 20px; border-radius: 8px; }
-        .sys-input, .sys-select { 
-            width: 100%; background: #000; border: 1px solid #444; color: white; padding: 12px; margin-bottom: 10px; 
-        }
-        .btn-add { 
-            width: 100%; background: var(--theme-color); color: black; border: none; padding: 15px; font-weight: bold; margin-top: 10px; 
-        }
-        
-        .attr-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px; }
-        .attr-btn { background: #222; border: 1px solid #444; color: #888; padding: 10px 0; text-align: center; font-size: 11px; }
-        .attr-btn.selected { color: white; border-color: white; background: var(--theme-color); } 
-
-        .recurrence-selector { display: flex; gap: 5px; margin-bottom: 15px; }
-        .rec-btn { flex: 1; background: #222; border: 1px solid #444; color: #888; padding: 10px; font-size: 11px; }
-        .rec-btn.active-rec { background: var(--flex-color); color: black; } 
-
-        /* --- BOTÕES DE AÇÃO NA LISTA --- */
-        .action-container { display: flex; gap: 10px; }
-        .action-btn { background: none; border: none; font-size: 18px; cursor: pointer; }
-        .btn-clone { color: var(--success); }
-        .btn-del { color: var(--danger); }
-
-        /* --- MENU INFERIOR (MELHORADO) --- */
-        .bottom-nav {
-            height: 60px; background: #0a0a0a; border-top: 1px solid #333;
-            display: flex; 
-            justify-content: space-between; /* Distribui */
-            align-items: stretch; /* Estica altura */
-            flex-shrink: 0; z-index: 50;
-        }
-        .nav-btn { 
-            background: none; 
-            border: none; 
-            color: #555; 
-            font-weight: bold; 
-            font-size: 12px;
-            flex: 1; /* Ocupa espaço igual */
-            height: 100%; /* Área clicável total */
+        /* CONTROLE DE MÚSICA (SEPARADO) */
+        .music-controls {
             display: flex; 
             align-items: center; 
             justify-content: center;
-            flex-direction: column;
+            padding: 5px 0 10px 0; 
+            gap: 15px;
         }
-        .nav-btn.active { color: var(--theme-color); background: rgba(190, 0, 255, 0.05); }
+
+        .music-btn {
+            background: none; 
+            border: 1px solid #444; 
+            color: var(--flex-color);
+            border-radius: 5px; 
+            padding: 5px 15px; 
+            cursor: pointer;
+            font-family: 'Share Tech Mono'; 
+            font-size: 12px;
+            transition: 0.2s;
+        }
+
+        .music-btn:active { background: var(--flex-color); color: black; }
+        .music-status { font-size: 10px; color: #666; font-family: 'Share Tech Mono'; }
+
+        /* =========================================
+           5. CONTEÚDO (SCROLL)
+           ========================================= */
+        .content-area { 
+            flex: 1;          
+            overflow-y: auto; 
+            padding: 20px; 
+            scroll-behavior: smooth;
+            padding-bottom: 80px; 
+        }
+
+        /* GRÁFICOS */
+        .chart-wrapper { position: relative; height: 260px; width: 100%; margin-bottom: 10px; }
+        .xp-box { margin-bottom: 20px; }
+        .xp-bar-bg { width: 100%; height: 8px; background: #222; border-radius: 4px; overflow: hidden; border: 1px solid #333; }
+        .xp-bar-fill { width: 0%; height: 100%; background: var(--theme-color); transition: width 0.5s ease; box-shadow: 0 0 10px var(--theme-color); }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 25px; text-align: center; }
+        .stat-item { background: rgba(255,255,255,0.05); padding: 5px; border-radius: 4px; border: 1px solid #333; }
+        .stat-label { font-size: 10px; font-weight: bold; color: #888; display: block; }
+        .stat-value { font-size: 16px; font-weight: bold; color: var(--theme-color); font-family: 'Share Tech Mono'; }
+
+        /* =========================================
+           6. LISTA DE MISSÕES
+           ========================================= */
+        .section-title { 
+            color: var(--theme-color); 
+            border-left: 4px solid var(--theme-color); 
+            padding-left: 10px; 
+            margin: 25px 0 15px 0; 
+            font-size: 18px; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+        }
+
+        .quest-card {
+            background: linear-gradient(90deg, rgba(30,30,30,0.7) 0%, transparent 100%);
+            border-left: 2px solid #444;
+            padding: 12px; 
+            margin-bottom: 8px;
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            transition: 0.3s;
+        }
+
+        /* CORES RESTAURADAS */
+        .quest-card.type-flexible {
+            background: linear-gradient(90deg, rgba(0, 210, 255, 0.2) 0%, transparent 100%);
+            border-left-color: var(--flex-color);
+        }
+
+        .quest-card.type-mandatory {
+            background: linear-gradient(90deg, rgba(255, 149, 0, 0.2) 0%, transparent 100%);
+            border-left-color: var(--mand-color);
+            box-shadow: inset 5px 0 10px -5px rgba(255, 149, 0, 0.3);
+        }
+
+        .checkbox { width: 22px; height: 22px; border: 1px solid #666; margin-right: 15px; cursor: pointer; display: grid; place-items: center; flex-shrink: 0; }
+        .checked { background: var(--theme-color); border-color: var(--theme-color); box-shadow: 0 0 10px var(--theme-color); }
+        .task-text { color: white; font-size: 16px; flex: 1; cursor: pointer; }
+        
+        .tags-container { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+        .xp-tag { font-size: 12px; background: #222; padding: 3px 6px; border-radius: 3px; color: #fff; border: 1px solid #444; font-weight: bold; }
+        .attr-mini-tag { font-size: 9px; padding: 2px 4px; border-radius: 2px; font-weight: bold; color: black; margin-left: 3px; }
+        
+        .bg-STR { background-color: #ff4444; } .bg-AGI { background-color: #00d2ff; } .bg-VIT { background-color: #00ff9d; } .bg-INT { background-color: #be00ff; } .bg-SEN { background-color: #ffd700; }
+        .tag-flex { font-size: 10px; background: rgba(0, 210, 255, 0.2); padding: 2px 5px; border-radius: 3px; color: var(--flex-color); border: 1px solid var(--flex-color); margin-right: 5px; font-weight: bold; }
+        .tag-mand { font-size: 10px; background: rgba(255, 149, 0, 0.2); padding: 2px 5px; border-radius: 3px; color: var(--mand-color); border: 1px solid var(--mand-color); margin-right: 5px; font-weight: bold; }
+
+        /* =========================================
+           7. EDITOR E FORMULÁRIOS
+           ========================================= */
+        .editor-box { background: rgba(16, 10, 22, 0.9); border: 1px solid #333; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .input-label { font-size: 12px; color: var(--theme-color); margin-bottom: 5px; display: block; font-weight: bold; text-transform: uppercase; }
+        .sys-input, .sys-select { width: 100%; background: #050505; border: 1px solid #444; color: white; padding: 12px; font-family: 'Rajdhani'; font-size: 16px; outline: none; box-sizing: border-box; margin-bottom: 15px; }
+        textarea.sys-input { resize: vertical; min-height: 80px; font-family: 'Share Tech Mono'; font-size: 14px; }
+        
+        .attr-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 15px; }
+        .attr-btn { background: #111; border: 1px solid #333; color: #666; padding: 10px 0; text-align: center; cursor: pointer; font-size: 12px; font-weight: bold; transition: 0.2s; border-radius: 4px; }
+        .attr-btn.selected { color: black; border-color: white; box-shadow: 0 0 10px currentColor; }
+        .attr-btn[data-type="STR"].selected { background: #ff4444; } .attr-btn[data-type="AGI"].selected { background: #00d2ff; } .attr-btn[data-type="VIT"].selected { background: #00ff9d; } .attr-btn[data-type="INT"].selected { background: #be00ff; } .attr-btn[data-type="SEN"].selected { background: #ffd700; }
+
+        .recurrence-selector { display: flex; gap: 5px; margin-bottom: 20px; }
+        .rec-btn { flex: 1; background: #222; border: 1px solid #444; color: #888; padding: 10px 5px; font-family: 'Rajdhani'; font-weight: bold; font-size: 12px; cursor: pointer; transition: 0.3s; }
+        .rec-btn.selected-none { background: #444; color: white; border-color: #666; }
+        .rec-btn.selected-flex { background: rgba(0, 210, 255, 0.2); color: var(--flex-color); border-color: var(--flex-color); }
+        .rec-btn.selected-mand { background: rgba(255, 149, 0, 0.2); color: var(--mand-color); border-color: var(--mand-color); }
+
+        .btn-add { background: var(--theme-color); color: black; border: none; font-weight: bold; padding: 15px; width: 100%; cursor: pointer; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .btn-add:active { transform: scale(0.98); }
+        .btn-reset { background: #220000; color: var(--danger); border: 1px solid var(--danger); padding: 10px; width: 100%; margin-top: 50px; cursor: pointer; font-family: 'Rajdhani'; transition: 0.3s; }
+
+        .action-container { display: flex; gap: 10px; }
+        .action-btn { background: none; border: none; font-weight: bold; font-size: 20px; cursor: pointer; transition: transform 0.2s; }
+        .action-btn:hover { transform: scale(1.2); }
+        .btn-clone { color: var(--success); }
+        .btn-del { color: var(--danger); }
+
+        /* =========================================
+           8. MENU INFERIOR (BOTÕES GRANDES)
+           ========================================= */
+        .bottom-nav { 
+            height: 60px; 
+            background: rgba(2, 2, 2, 0.98); 
+            border-top: 1px solid #333; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: stretch; /* Estica para ocupar altura */
+            flex-shrink: 0; z-index: 10;
+        }
+
+        .nav-btn { 
+            background: none; 
+            border: none; 
+            color: #666; 
+            font-family: 'Rajdhani'; 
+            font-weight: bold; 
+            font-size: 14px; 
+            text-transform: uppercase; 
+            cursor: pointer; 
+            flex: 1; /* Ocupa largura igual */
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+        }
+
+        .nav-btn.active { 
+            color: var(--theme-color); 
+            text-shadow: 0 0 5px var(--theme-color); 
+            background: rgba(190, 0, 255, 0.05);
+        }
 
         .tab-view { display: none; }
         .active-view { display: block; }
 
-        /* BOOT */
-        #boot-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        
-        /* NOTIFICAÇÃO E MODAIS */
-        #notify { 
-            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-            background: var(--theme-color); color: black; padding: 10px 20px;
-            font-weight: bold; border-radius: 20px; display: none; z-index: 100;
+        /* =========================================
+           9. TELA DE LOGIN (FIX CORREÇÃO)
+           ========================================= */
+        #login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); z-index: 20000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            backdrop-filter: blur(3px);
         }
 
-        /* MODAL DE LIVRO */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 30000;
-            display: none; justify-content: center; align-items: center;
+        .login-box { width: 90%; max-width: 350px; text-align: center; }
+        .login-title { font-family: 'Share Tech Mono'; color: var(--theme-color); font-size: 28px; letter-spacing: 4px; margin-bottom: 5px; text-shadow: 0 0 20px var(--theme-color); animation: glitchFade 2s infinite alternate; }
+        .login-sub { color: #ccc; font-size: 12px; margin-bottom: 30px; letter-spacing: 2px; text-shadow: 0 0 5px black; }
+
+        /* CORREÇÃO DA SENHA: Menos letter-spacing e fonte menor */
+        .pass-display { 
+            background: rgba(0, 0, 0, 0.8); 
+            border: 2px solid var(--theme-color); 
+            height: 60px; 
+            margin-bottom: 30px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-family: 'Share Tech Mono'; 
+            font-size: 24px; /* Diminuído de 30px */
+            color: #fff; 
+            letter-spacing: 5px; /* Diminuído de 12px */
+            border-radius: 15px; 
+            box-shadow: 0 0 15px rgba(190, 0, 255, 0.3); 
+            white-space: nowrap; /* Impede quebra */
         }
-        .modal-content {
-            background: #111; border: 2px solid var(--theme-color); padding: 20px;
-            width: 85%; max-width: 350px; text-align: center; border-radius: 10px;
-            box-shadow: 0 0 30px rgba(190,0,255,0.3);
-        }
-        .modal-img { width: 100%; max-width: 200px; border-radius: 5px; margin-bottom: 15px; box-shadow: 0 0 15px rgba(255,255,255,0.1); }
-        .btn-delete-book {
-            background: #330000; color: #ff5555; border: 1px solid #ff5555;
-            width: 100%; padding: 12px; font-weight: bold; margin-top: 15px;
-        }
-        .btn-close-modal {
-            background: #222; color: #fff; border: 1px solid #444;
-            width: 100%; padding: 10px; margin-top: 10px;
-        }
+
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 10px; }
+        .key-btn { background-color: #000; border: 2px solid var(--theme-color); color: #fff; padding: 20px 0; font-size: 22px; font-family: 'Share Tech Mono'; font-weight: bold; border-radius: 50%; cursor: pointer; transition: 0.1s; box-shadow: 0 0 10px rgba(190, 0, 255, 0.2); aspect-ratio: 1; display: flex; align-items: center; justify-content: center; }
+        .key-btn:active { transform: scale(0.95); background: var(--theme-color); color: #000; box-shadow: 0 0 25px var(--theme-color); }
+        .key-action { border-radius: 15px; aspect-ratio: auto; }
+        .key-clear { border-color: var(--danger); color: var(--danger); }
+        .key-enter { border-color: var(--success); color: var(--success); }
+        .error-anim { animation: shake 0.4s ease-in-out; border-color: var(--danger); color: var(--danger); box-shadow: 0 0 20px var(--danger); }
+
+        /* =========================================
+           10. POPUPS E LIVROS
+           ========================================= */
+        #boot-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; font-family: 'Share Tech Mono'; overflow: hidden; }
+        .boot-text { color: var(--flex-color); font-size: 16px; margin-bottom: 10px; opacity: 0; animation: fadeInText 0.5s forwards; }
+        .boot-title { font-size: 32px; color: var(--theme-color); font-weight: bold; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 20px var(--theme-color); opacity: 0; animation: glitchFade 0.8s forwards 1.5s; text-align: center; margin: 20px 0; }
+        .loader-line { width: 0%; height: 4px; background: var(--theme-color); box-shadow: 0 0 10px var(--theme-color); margin-top: 20px; animation: loadProgress 2.5s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+        .scanlines { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2)); background-size: 100% 4px; pointer-events: none; z-index: 10000; }
+        .fade-out-screen { opacity: 0; pointer-events: none; transition: opacity 0.8s ease-out; }
+
+        .popup-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); }
+        .popup-box { background: rgba(0,0,0,0.95); border: 2px solid var(--theme-color); padding: 30px; text-align: center; box-shadow: 0 0 50px var(--theme-color); animation: zoomIn 0.3s; width: 80%; max-height: 80vh; overflow-y: auto; }
+        .levelup-box { background: rgba(0,0,0,0.95); border: 2px solid var(--gold-color); padding: 40px 20px; text-align: center; box-shadow: 0 0 60px rgba(255, 215, 0, 0.5); animation: zoomIn 0.3s; width: 85%; }
+        
+        .popup-stat { font-size: 24px; font-weight: bold; color: white; text-shadow: 0 0 10px white; margin-bottom: 5px; }
+        .popup-xp { font-size: 32px; color: var(--success); font-weight: bold; text-shadow: 0 0 15px var(--success); }
+        .levelup-num { font-size: 80px; font-weight: 800; color: white; text-shadow: 0 0 30px var(--gold-color); margin: 10px 0; animation: pulse 0.8s infinite alternate; }
+
+        .success-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: none; justify-content: center; align-items: center; z-index: 200; }
+        .success-box { background: rgba(0,0,0,0.9); border: 2px solid var(--theme-color); padding: 20px 40px; text-align: center; box-shadow: 0 0 40px rgba(190, 0, 255, 0.4); animation: slideUp 0.4s ease-out; }
+        .success-msg { color: var(--theme-color); font-weight: bold; font-size: 18px; letter-spacing: 2px; text-transform: uppercase; }
+
+        .detail-title { font-size: 22px; color: var(--theme-color); font-weight: bold; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 10px; text-align: left;}
+        .detail-desc { font-family: 'Share Tech Mono'; font-size: 14px; color: #ccc; text-align: left; white-space: pre-wrap; margin-bottom: 20px; line-height: 1.5; }
+        .btn-close { background: #333; color: white; border: 1px solid #555; padding: 10px 20px; cursor: pointer; width: 100%; font-family: 'Rajdhani'; font-weight: bold;}
+
+        /* ESTILO DA BIBLIOTECA */
+        .library-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding-bottom: 20px; }
+        .book-card { background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 8px; overflow: hidden; text-align: center; transition: 0.3s; position: relative; height: 160px; }
+        .book-cover { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+        .book-info { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.8); color: #fff; font-size: 10px; padding: 5px; }
+        
+        .book-detail-cover { width: 150px; border: 2px solid #444; border-radius: 5px; margin-bottom: 15px; }
+        .btn-delete-book { background: #330000; color: #ff5555; border: 1px solid red; width: 100%; padding: 10px; margin-top: 15px; font-weight: bold; cursor: pointer; }
+
+        /* Animações Globais */
+        @keyframes zoomIn { from {transform: scale(0.5); opacity:0;} to {transform: scale(1); opacity:1;} }
+        @keyframes pulse { from {transform: scale(1);} to {transform: scale(1.1);} }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        @keyframes loadProgress { 0% { width: 0%; } 100% { width: 80%; } }
+        @keyframes fadeInText { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes glitchFade { 0% { opacity: 0; transform: scale(0.9); } 20% { opacity: 1; transform: scale(1.1); filter: blur(2px); } 40% { opacity: 0.8; transform: scale(1); filter: blur(0); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes slideUp { from {transform: translateY(20px); opacity:0;} to {transform: translateY(0); opacity:1;} }
 
     </style>
 </head>
 <body>
 
-<audio id="bgMusic" loop><source src="./music.mp3.mp3" type="audio/mpeg"></audio>
+<audio id="bgMusic" loop>
+    <source src="./music.mp3.mp3" type="audio/mpeg">
+</audio>
 
 <div id="login-overlay">
-    <div style="font-family:'Share Tech Mono'; color:var(--theme-color); font-size:24px; margin-bottom:10px;">SONTAK SECURITY</div>
-    
-    <div class="pass-display" id="passDisplay">_ _ _ _</div>
-    
-    <div class="keypad">
-        <div class="key-btn" onclick="pk(1)">1</div><div class="key-btn" onclick="pk(2)">2</div><div class="key-btn" onclick="pk(3)">3</div>
-        <div class="key-btn" onclick="pk(4)">4</div><div class="key-btn" onclick="pk(5)">5</div><div class="key-btn" onclick="pk(6)">6</div>
-        <div class="key-btn" onclick="pk(7)">7</div><div class="key-btn" onclick="pk(8)">8</div><div class="key-btn" onclick="pk(9)">9</div>
-        <div class="key-btn key-action key-clear" onclick="clp()">C</div>
-        <div class="key-btn" onclick="pk(0)">0</div>
-        <div class="key-btn key-action key-enter" onclick="chp()">OK</div>
+    <div class="login-box">
+        <div class="login-title">SONTAK SECURITY</div>
+        <div class="login-sub">ACESSO RESTRITO - INSIRA AS CREDENCIAIS</div>
+        <div class="pass-display" id="passDisplay">_ _ _ _ _ _</div>
+        <div class="keypad">
+            <button class="key-btn" onclick="pressKey(1)">1</button>
+            <button class="key-btn" onclick="pressKey(2)">2</button>
+            <button class="key-btn" onclick="pressKey(3)">3</button>
+            <button class="key-btn" onclick="pressKey(4)">4</button>
+            <button class="key-btn" onclick="pressKey(5)">5</button>
+            <button class="key-btn" onclick="pressKey(6)">6</button>
+            <button class="key-btn" onclick="pressKey(7)">7</button>
+            <button class="key-btn" onclick="pressKey(8)">8</button>
+            <button class="key-btn" onclick="pressKey(9)">9</button>
+            <button class="key-btn key-action key-clear" onclick="clearPass()">CLR</button>
+            <button class="key-btn" onclick="pressKey(0)">0</button>
+            <button class="key-btn key-action key-enter" onclick="checkPass()">ENT</button>
+        </div>
     </div>
 </div>
 
 <div id="boot-screen">
-    <div style="color:var(--success); font-family:'Share Tech Mono';">INITIALIZING SYSTEM...</div>
-</div>
-
-<div id="notify">SALVO!</div>
-
-<div id="bookModal" class="modal-overlay" onclick="closeBookModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <h3 id="modalBookTitle" style="color:var(--theme-color); margin-top:0;">TITULO</h3>
-        <img id="modalBookCover" src="" class="modal-img">
-        <div id="modalBookXp" style="color:#aaa; font-size:12px;">XP: 0</div>
-        
-        <button class="btn-delete-book" id="btnDeleteBook">EXCLUIR DO ACERVO</button>
-        <button class="btn-close-modal" onclick="closeBookModal()">FECHAR</button>
-    </div>
+    <div class="scanlines"></div>
+    <div class="boot-text" style="animation-delay: 0.2s">SYSTEM INITIALIZING...</div>
+    <div class="boot-text" style="animation-delay: 0.8s">CONNECTING TO SONTAK DATABASE...</div>
+    <div class="boot-text" style="color:var(--success); animation-delay: 1.4s;">SYNCHRONIZATION COMPLETE.</div>
+    <div class="loader-line"></div>
+    <div class="boot-title">BEM-VINDO, CAÇADOR</div>
 </div>
 
 <div class="app-container" id="mainApp">
     
     <div class="header-container">
         <div class="header">
-            <h1>SONTAK</h1>
-            <div class="lvl-number">LVL <span id="displayLevel">1</span></div>
+            <div><h1 id="page-title">SONTAK</h1></div>
+            <div class="lvl-badge">LEVEL <span class="lvl-number" id="displayLevel">1</span></div>
         </div>
         <div class="music-controls">
-            <div class="music-btn" onclick="vol(-0.1)">VOL -</div>
-            <div class="music-btn" onclick="mus()" id="btnMus">PLAY</div>
-            <div class="music-btn" onclick="vol(0.1)">VOL +</div>
+            <button class="music-btn" onclick="changeVolume(-0.1)">VOL -</button>
+            <button class="music-btn" onclick="toggleMusic()" id="btnPlayPause">❚❚ PAUSE</button>
+            <button class="music-btn" onclick="changeVolume(0.1)">VOL +</button>
         </div>
     </div>
 
@@ -285,96 +427,138 @@
 
         <div id="tab-home" class="tab-view active-view">
             <div class="xp-box">
-                <div style="display:flex; justify-content:space-between; font-size:12px; color:#aaa; margin-bottom:5px;">
-                    <span>XP ATUAL</span> <span id="xpText">0 / 100</span>
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px; color:#aaa;">
+                    <span>XP DO JOGADOR</span> <span id="xpText">0 / 100</span>
                 </div>
                 <div class="xp-bar-bg"><div class="xp-bar-fill" id="xpBar"></div></div>
             </div>
-            
             <div class="chart-wrapper"><canvas id="statsChart"></canvas></div>
-            
             <div class="stats-grid">
-                <div class="stat-item"><span class="stat-label">FOR</span><span id="val-STR" class="stat-value">0</span></div>
-                <div class="stat-item"><span class="stat-label">AGI</span><span id="val-AGI" class="stat-value">0</span></div>
-                <div class="stat-item"><span class="stat-label">VIT</span><span id="val-VIT" class="stat-value">0</span></div>
-                <div class="stat-item"><span class="stat-label">INT</span><span id="val-INT" class="stat-value">0</span></div>
-                <div class="stat-item"><span class="stat-label">SEN</span><span id="val-SEN" class="stat-value">0</span></div>
+                <div class="stat-item"><span class="stat-label">FOR</span><span class="stat-value" id="val-STR">0</span></div>
+                <div class="stat-item"><span class="stat-label">AGI</span><span class="stat-value" id="val-AGI">0</span></div>
+                <div class="stat-item"><span class="stat-label">VIT</span><span class="stat-value" id="val-VIT">0</span></div>
+                <div class="stat-item"><span class="stat-label">INT</span><span class="stat-value" id="val-INT">0</span></div>
+                <div class="stat-item"><span class="stat-label">SEN</span><span class="stat-value" id="val-SEN">0</span></div>
             </div>
-
-            <div style="color:var(--theme-color); font-weight:bold; margin:20px 0 10px;">MISSÕES ATIVAS</div>
+            <div class="section-title">MISSÕES PENDENTES</div>
             <div id="home-quest-list"></div>
         </div>
 
         <div id="tab-library" class="tab-view">
-            <div style="color:var(--theme-color); font-weight:bold; margin-bottom:10px;">BIBLIOTECA</div>
-            
+            <div class="section-title">GRIMÓRIOS ADQUIRIDOS</div>
             <div class="editor-box">
-                <input type="text" id="bTitle" class="sys-input" placeholder="Nome do Livro">
-                <input type="text" id="bCover" class="sys-input" placeholder="Link da Imagem (Google)">
+                <label class="input-label">NOME DO LIVRO</label>
+                <input type="text" id="bTitle" class="sys-input" placeholder="Título do Livro">
+                <label class="input-label">LINK DA CAPA (GOOGLE IMAGENS)</label>
+                <input type="text" id="bCover" class="sys-input" placeholder="Link da imagem">
+                <label class="input-label">RECOMPENSA XP</label>
                 <select id="bXp" class="sys-select">
-                    <option value="0">0 XP (Apenas registrar)</option>
+                    <option value="0">0 XP (Lido Anteriormente)</option>
                     <option value="100">100 XP (Curto)</option>
                     <option value="200">200 XP (Médio)</option>
-                    <option value="300">300 XP (Longo)</option>
+                    <option value="300">300 XP (Épico)</option>
                 </select>
-                <button class="btn-add" onclick="addBook()">ADICIONAR LIVRO</button>
+                <button class="btn-add" onclick="addBook()">ADICIONAR AO ACERVO</button>
             </div>
-
             <div id="library-grid" class="library-grid"></div>
         </div>
 
         <div id="tab-editor" class="tab-view">
-            <div style="color:var(--theme-color); font-weight:bold; margin-bottom:10px;">NOVA MISSÃO</div>
-            
+            <div class="section-title">ADICIONAR NOVA MISSÃO</div>
             <div class="editor-box">
-                <input type="text" id="qTitle" class="sys-input" placeholder="Descrição">
-                
-                <div style="font-size:12px; color:#888; margin-bottom:5px;">ATRIBUTOS:</div>
+                <label class="input-label">DESCRIÇÃO</label>
+                <input type="text" id="newQuestInput" class="sys-input" placeholder="Ex: Ler livro">
+                <label class="input-label">ATRIBUTOS</label>
                 <div class="attr-grid">
-                    <div class="attr-btn" onclick="tgAttr('STR', this)">FOR</div>
-                    <div class="attr-btn" onclick="tgAttr('AGI', this)">AGI</div>
-                    <div class="attr-btn" onclick="tgAttr('VIT', this)">VIT</div>
-                    <div class="attr-btn" onclick="tgAttr('INT', this)">INT</div>
-                    <div class="attr-btn" onclick="tgAttr('SEN', this)">SEN</div>
+                    <div class="attr-btn" data-type="STR" onclick="toggleAttr('STR')">FOR</div>
+                    <div class="attr-btn" data-type="AGI" onclick="toggleAttr('AGI')">AGI</div>
+                    <div class="attr-btn" data-type="VIT" onclick="toggleAttr('VIT')">VIT</div>
+                    <div class="attr-btn" data-type="INT" onclick="toggleAttr('INT')">INT</div>
+                    <div class="attr-btn" data-type="SEN" onclick="toggleAttr('SEN')">SEN</div>
                 </div>
-
-                <select id="qXp" class="sys-select">
+                <label class="input-label">RECOMPENSA (XP)</label>
+                <select id="newQuestXP" class="sys-select">
                     <option value="50">50 XP</option>
                     <option value="100">100 XP</option>
                     <option value="200">200 XP</option>
+                    <option value="300">300 XP</option>
                     <option value="500">500 XP</option>
-                    <option value="1000">1000 XP</option>
+                    <option value="1000">1.000 XP</option>
+                    <option value="2500">2.500 XP</option>
                 </select>
-
+                <label class="input-label">TIPO</label>
                 <div class="recurrence-selector">
-                    <div class="rec-btn" id="rec-none" onclick="setRec('none')">ÚNICA</div>
-                    <div class="rec-btn" id="rec-flexible" onclick="setRec('flexible')">RECORRENTE</div>
-                    <div class="rec-btn" id="rec-mandatory" onclick="setRec('mandatory')">OBRIGATÓRIA</div>
+                    <button class="rec-btn selected-none" onclick="setRecurrence('none')" id="btn-none">ÚNICA</button>
+                    <button class="rec-btn" onclick="setRecurrence('flexible')" id="btn-flex">RECORRENTE</button>
+                    <button class="rec-btn" onclick="setRecurrence('mandatory')" id="btn-mand">⚠ OBRIGATÓRIA</button>
                 </div>
-
-                <button class="btn-add" onclick="addQuest()">CRIAR</button>
+                <input type="hidden" id="recurrenceValue" value="none">
+                <label class="input-label">DETALHES (OPCIONAL)</label>
+                <textarea id="newQuestDesc" class="sys-input" placeholder="Detalhes..."></textarea>
+                <button class="btn-add" onclick="addNewQuest()">CRIAR TAREFA</button>
             </div>
-
-            <div style="color:var(--theme-color); font-weight:bold; margin:20px 0 10px;">GERENCIAR</div>
+            <div class="section-title">GERENCIAR LISTA</div>
             <div id="editor-quest-list"></div>
-            
-            <button onclick="resetAll()" style="background:#330000; color:red; border:1px solid red; width:100%; padding:10px; margin-top:30px;">RESETAR TUDO</button>
+            <button class="btn-reset" onclick="hardReset()">⚠ RESETAR DADOS</button>
         </div>
 
     </div>
 
     <div class="bottom-nav">
-        <button class="nav-btn active" onclick="tab('home', this)">STATUS</button>
-        <button class="nav-btn" onclick="tab('library', this)">GRIMÓRIO</button>
-        <button class="nav-btn" onclick="tab('editor', this)">EDITOR</button>
+        <button class="nav-btn active" onclick="switchTab('home')">STATUS</button>
+        <button class="nav-btn" onclick="switchTab('library')">GRIMÓRIO</button>
+        <button class="nav-btn" onclick="switchTab('editor')">EDITOR</button>
+    </div>
+
+    <div class="popup-overlay" id="rewardPopup" onclick="closePopup()">
+        <div class="popup-box">
+            <div style="color:var(--theme-color); font-size:24px; font-weight:bold; margin-bottom:10px;">QUEST COMPLETED!</div>
+            <div style="font-size:16px; color:#ccc; margin-bottom:5px;">EXPERIÊNCIA ADQUIRIDA:</div>
+            <div class="popup-stat" id="popupStatValue" style="font-size:16px; margin-bottom:15px; line-height:1.4;"></div>
+            <div class="popup-xp" id="popupXpValue"></div>
+            <div style="margin-top:20px; font-size:12px; color:#666;">(Toque para continuar)</div>
+        </div>
+    </div>
+    
+    <div class="popup-overlay" id="levelUpPopup" onclick="closeLevelPopup()" style="z-index: 150;">
+        <div class="levelup-box">
+            <div style="color: var(--gold-color); font-size: 28px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--gold-color);">LEVEL UP!</div>
+            <div style="color: #ccc; font-size: 14px; margin-top:5px;">LIMITES SUPERADOS</div>
+            <div class="levelup-num" id="newLevelDisplay">1</div>
+            <div style="font-size:14px; color:#888;">STATUS AUMENTADOS</div>
+            <div style="margin-top:20px; font-size:12px; color:#fff; border:1px solid #555; padding:5px; display:inline-block; border-radius:5px;">TOQUE PARA CONTINUAR</div>
+        </div>
+    </div>
+    
+    <div class="popup-overlay" id="detailsPopup">
+        <div class="popup-box">
+            <div class="detail-title" id="detailTitle">TÍTULO</div>
+            <div class="detail-desc" id="detailDesc">Descrição...</div>
+            <button class="btn-close" onclick="closeDetailsPopup()">FECHAR</button>
+        </div>
+    </div>
+
+    <div class="popup-overlay" id="bookPopup">
+        <div class="popup-box">
+            <div id="bookDetailContent"></div>
+            <button class="btn-close" onclick="document.getElementById('bookPopup').style.display='none'">FECHAR</button>
+        </div>
+    </div>
+
+    <div class="success-overlay" id="successPopup">
+        <div class="success-box">
+            <div style="font-size:30px; color:var(--theme-color);">✔</div>
+            <div class="success-msg">REGISTRADO</div>
+        </div>
     </div>
 
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
+    // CONFIG FIREBASE
     const firebaseConfig = {
       apiKey: "AIzaSyDnTgThcU_lVdXASbg9ufMeUEE_x2uaYfQ",
       authDomain: "sontak-arise.firebaseapp.com",
@@ -389,276 +573,316 @@
     const db = getDatabase(app);
     const userRef = ref(db, 'usuarios/vitor');
 
-    let data = { level: 1, xp: 0, stats: [0,0,0,0,0], quests: [], library: [] };
-    let chart;
-    let selAttrs = [];
-    let selRec = 'none';
-    let isPlay = false;
-    const aud = document.getElementById('bgMusic');
-
-    // --- AUDIO ---
-    window.mus = () => {
-        if(isPlay) { aud.pause(); document.getElementById('btnMus').innerText="PLAY"; }
-        else { aud.play(); document.getElementById('btnMus').innerText="PAUSE"; }
-        isPlay = !isPlay;
-    }
-    window.vol = (v) => {
-        let n = aud.volume + v;
-        if(n>1) n=1; if(n<0) n=0;
-        aud.volume = n;
-    }
-
-    // --- LOGIN ---
-    let p = "";
-    window.pk = (n) => { if(p.length<4) { p+=n; uPass(); } }
-    window.clp = () => { p=""; uPass(); }
-    window.chp = () => {
-        if(p==="0706") {
-            document.getElementById('login-overlay').style.display='none';
-            document.getElementById('boot-screen').style.display='flex';
-            aud.volume=0.5; aud.play().then(()=>{isPlay=true; document.getElementById('btnMus').innerText="PAUSE";}).catch(()=>{});
-            setTimeout(()=>{
-                document.getElementById('boot-screen').style.display='none';
-                document.getElementById('mainApp').style.display='flex';
-                initApp();
-            }, 2500);
+    // DADOS
+    let playerData = { level: 1, xp: 0, stats: [0, 0, 0, 0, 0], quests: [], library: [] };
+    let chartInstance = null;
+    const MAX_XP_REQUIREMENT = 2500; 
+    const XP_FACTOR = 100; 
+    let selectedAttrs = [];
+    
+    // MÚSICA
+    const bgMusic = document.getElementById("bgMusic");
+    let isPlaying = false;
+    
+    window.toggleMusic = function() {
+        const btn = document.getElementById('btnPlayPause');
+        if (isPlaying) {
+            bgMusic.pause();
+            btn.innerText = "► PLAY";
+            btn.style.color = "#888"; btn.style.borderColor = "#444";
         } else {
-            p=""; uPass(); alert("SENHA INCORRETA");
+            bgMusic.play();
+            btn.innerText = "❚❚ PAUSE";
+            btn.style.color = "var(--flex-color)"; btn.style.borderColor = "var(--flex-color)";
+        }
+        isPlaying = !isPlaying;
+    }
+
+    window.changeVolume = function(delta) {
+        let newVol = bgMusic.volume + delta;
+        if(newVol > 1) newVol = 1; if(newVol < 0) newVol = 0;
+        bgMusic.volume = newVol;
+    }
+
+    // LOGIN
+    let currentPass = "";
+    const CORRECT_PASS = "010118";
+
+    window.pressKey = function(num) {
+        if(currentPass.length < 6) { currentPass += num; updatePassDisplay(); }
+    }
+    window.clearPass = function() {
+        currentPass = ""; updatePassDisplay(); document.getElementById('passDisplay').classList.remove('error-anim');
+    }
+    window.checkPass = function() {
+        if(currentPass === CORRECT_PASS) { unlockSystem(); } 
+        else {
+            const display = document.getElementById('passDisplay');
+            display.classList.add('error-anim');
+            setTimeout(() => { currentPass = ""; updatePassDisplay(); display.classList.remove('error-anim'); }, 400);
         }
     }
-    function uPass() {
-        let s=""; for(let i=0;i<4;i++) s += (i<p.length) ? "● " : "_ ";
-        document.getElementById('passDisplay').innerText = s;
+    function updatePassDisplay() {
+        let visual = ""; for(let i=0; i<6; i++) { visual += (i < currentPass.length) ? "● " : "_ "; }
+        document.getElementById('passDisplay').innerText = visual;
     }
 
-    // --- APP LOGIC ---
+    function unlockSystem() {
+        bgMusic.volume = 0.6;
+        bgMusic.play().then(() => { isPlaying = true; document.getElementById('btnPlayPause').innerText = "❚❚ PAUSE"; }).catch(e => console.log("Audio prevented"));
+        document.getElementById('login-overlay').style.display = 'none';
+        const bootScreen = document.getElementById('boot-screen');
+        bootScreen.style.display = 'flex';
+        setTimeout(() => {
+            bootScreen.classList.add('fade-out-screen');
+            document.getElementById('mainApp').style.display = 'flex';
+            if(chartInstance) chartInstance.resize();
+            setTimeout(() => { bootScreen.style.display = 'none'; }, 800);
+        }, 3500);
+        initApp();
+    }
+
     function initApp() {
         initChart();
-        onValue(userRef, (snap) => {
-            const v = snap.val();
-            if(v) {
-                data = v;
-                if(!data.quests) data.quests=[];
-                if(!data.library) data.library=[];
-                if(!data.stats) data.stats=[0,0,0,0,0];
-            } else save();
-            render();
+        onValue(userRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                playerData = data;
+                if(!playerData.quests) playerData.quests = [];
+                if(!playerData.stats) playerData.stats = [0,0,0,0,0];
+                if(!playerData.library) playerData.library = [];
+            } else { saveData(); }
+            updateHeader(); updateStatsDisplay(); checkDailyQuests(); renderAll(); renderLibrary();
+            if(chartInstance) updateChartData();
         });
     }
 
-    function save() { set(userRef, data); render(); }
+    // LÓGICA GERAL
+    window.saveData = function() { set(userRef, playerData); updateHeader(); updateStatsDisplay(); if(chartInstance) updateChartData(); }
+    window.getAttrLevel = function(xp) { return Math.floor(Math.sqrt(xp / XP_FACTOR)); }
+    function getAttrLevelFloat(xp) { return Math.sqrt(xp / XP_FACTOR); }
+    
+    window.updateStatsDisplay = function() {
+        const labels = ['STR', 'AGI', 'VIT', 'INT', 'SEN'];
+        playerData.stats.forEach((xp, i) => { document.getElementById(`val-${labels[i]}`).innerText = getAttrLevel(xp); });
+    }
 
-    function render() {
-        // XP
-        let req = Math.min(data.level*100, 2500);
-        document.getElementById('displayLevel').innerText = data.level;
-        document.getElementById('xpText').innerText = `${data.xp} / ${req}`;
-        document.getElementById('xpBar').style.width = Math.min((data.xp/req)*100, 100)+"%";
-
-        // Stats
-        const lbs = ['STR','AGI','VIT','INT','SEN'];
-        const vData = [];
-        data.stats.forEach((x, i) => {
-            const l = Math.floor(Math.sqrt(x/100));
-            document.getElementById(`val-${lbs[i]}`).innerText = l;
-            vData.push(Math.min(l*5, 100));
-        });
-        chart.data.datasets[0].data = vData;
-        chart.update();
-
-        // Quests Home (CORES APLICADAS AQUI)
-        const hl = document.getElementById('home-quest-list');
-        hl.innerHTML = "";
-        data.quests.forEach((q, i) => {
-            if(!q.done) {
-                let cl = "type-unique"; // Default
-                if(q.rec==='flexible') cl = "type-flexible";
-                if(q.rec==='mandatory') cl = "type-mandatory";
-                
-                hl.innerHTML += `
-                <div class="quest-card ${cl}">
-                    <div class="checkbox" onclick="doneQuest(${i})"></div>
-                    <div class="task-text">${q.text}</div>
-                    <div class="xp-tag">+${q.xp}</div>
-                </div>`;
+    window.checkDailyQuests = function() {
+        const today = new Date().toDateString(); 
+        let dataChanged = false;
+        if(!playerData.quests) return;
+        playerData.quests.forEach(quest => {
+            if ((quest.recurrence === 'flexible' || quest.recurrence === 'mandatory') && quest.done && quest.lastDoneDate !== today) {
+                quest.done = false; dataChanged = true;
             }
         });
-
-        // Quests Editor
-        const el = document.getElementById('editor-quest-list');
-        el.innerHTML = "";
-        data.quests.forEach((q, i) => {
-            el.innerHTML += `
-            <div class="quest-card">
-                <div class="task-text" style="color:#888">${q.text}</div>
-                <div class="action-container">
-                    <button class="action-btn btn-clone" onclick="cloneQuest(${i})">↺</button>
-                    <button class="action-btn btn-del" onclick="delQuest(${i})">✖</button>
-                </div>
-            </div>`;
-        });
-
-        // Library
-        const lib = document.getElementById('library-grid');
-        lib.innerHTML = "";
-        data.library.forEach((b, i) => {
-            let img = b.cover || 'https://via.placeholder.com/100x140?text=S/Capa';
-            lib.innerHTML += `
-            <div class="book-card" onclick="openBookDetails(${i})">
-                <img src="${img}" class="book-cover">
-                <div class="book-title-overlay">${b.title}</div>
-            </div>`;
-        });
+        if (dataChanged) saveData();
     }
 
-    // --- ACTIONS ---
-    window.doneQuest = (i) => {
-        const q = data.quests[i];
-        q.done = true;
-        data.xp += q.xp;
-        let share = Math.floor(q.xp / q.attrs.length);
-        q.attrs.forEach(a => {
-            let idx = ['STR','AGI','VIT','INT','SEN'].indexOf(a);
-            if(idx>-1) data.stats[idx] += share;
-        });
-        let req = Math.min(data.level*100, 2500);
-        while(data.xp >= req) { data.xp -= req; data.level++; req = Math.min(data.level*100, 2500); alert("LEVEL UP!"); }
-        save(); notify("CONCLUÍDO!");
+    window.getXpNeeded = function(level) { return Math.min(level * 100, MAX_XP_REQUIREMENT); }
+
+    window.updateHeader = function() {
+        const xpNeeded = getXpNeeded(playerData.level);
+        document.getElementById('displayLevel').innerText = playerData.level;
+        document.getElementById('xpText').innerText = `${playerData.xp} / ${xpNeeded}`;
+        let percent = Math.min((playerData.xp / xpNeeded) * 100, 100);
+        document.getElementById('xpBar').style.width = percent + '%';
     }
 
-    window.addQuest = () => {
-        const t = document.getElementById('qTitle').value;
-        const x = parseInt(document.getElementById('qXp').value);
-        if(t && selAttrs.length>0) {
-            data.quests.push({ text:t, xp:x, attrs:[...selAttrs], rec:selRec, done:false });
-            save();
-            document.getElementById('qTitle').value="";
-            selAttrs=[]; selRec='none';
-            document.querySelectorAll('.attr-btn').forEach(b=>b.classList.remove('selected'));
-            document.querySelectorAll('.rec-btn').forEach(b=>b.classList.remove('active-rec'));
-            notify("CRIADO!");
-        } else alert("Preencha nome e atributos");
-    }
-
-    // NOVA FUNÇÃO DE CLONE
-    window.cloneQuest = (i) => {
-        const original = data.quests[i];
-        data.quests.push({
-            text: original.text,
-            xp: original.xp,
-            attrs: [...original.attrs],
-            rec: original.rec,
-            done: false
-        });
-        save();
-        notify("TAREFA CLONADA!");
-    }
-
-    window.tgAttr = (a, el) => {
-        if(selAttrs.includes(a)) { selAttrs = selAttrs.filter(x=>x!==a); el.classList.remove('selected'); }
-        else { selAttrs.push(a); el.classList.add('selected'); }
-    }
-
-    window.setRec = (r) => {
-        selRec = r;
-        document.querySelectorAll('.rec-btn').forEach(b=>b.classList.remove('active-rec'));
-        document.getElementById('rec-'+r).classList.add('active-rec');
-    }
-
-    window.delQuest = (i) => { if(confirm("Apagar?")) { data.quests.splice(i,1); save(); } }
-
-    // --- BOOKS ---
-    window.addBook = () => {
-        const t = document.getElementById('bTitle').value;
-        const c = document.getElementById('bCover').value;
-        const x = parseInt(document.getElementById('bXp').value);
-        
-        if(t) {
-            data.library.push({ title:t, cover:c, xpValue: x });
-            if(x > 0) {
-                data.xp += x;
-                let share = Math.floor(x/2);
-                data.stats[3]+=share; data.stats[4]+=share; // INT + SEN
-                
-                let req = Math.min(data.level*100, 2500);
-                while(data.xp >= req) { data.xp -= req; data.level++; req = Math.min(data.level*100, 2500); alert("LEVEL UP!"); }
-            }
-            save();
-            document.getElementById('bTitle').value="";
-            document.getElementById('bCover').value="";
-            notify("LIVRO ADD!");
-        }
-    }
-
-    // Modal Details Logic
-    window.openBookDetails = (i) => {
-        const book = data.library[i];
-        document.getElementById('modalBookTitle').innerText = book.title;
-        document.getElementById('modalBookCover').src = book.cover || 'https://via.placeholder.com/100x140?text=S/Capa';
-        document.getElementById('modalBookXp').innerText = `XP: ${book.xpValue || 0}`;
-        
-        document.getElementById('btnDeleteBook').onclick = () => {
-            if(confirm("Remover este livro? (O XP ganho PERMANECE)")) {
-                data.library.splice(i, 1);
-                save();
-                window.closeBookModal();
-            }
-        };
-        
-        document.getElementById('bookModal').style.display = 'flex';
-    }
-
-    window.closeBookModal = () => {
-        document.getElementById('bookModal').style.display = 'none';
-    }
-
-    // --- TABS & CHART ---
-    window.tab = (t, el) => {
-        document.querySelectorAll('.tab-view').forEach(x=>x.style.display='none');
-        document.getElementById('tab-'+t).style.display='block';
-        document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-        el.classList.add('active');
-        if(t==='home' && chart) chart.resize();
-    }
-
-    function initChart() {
+    window.initChart = function() {
         const ctx = document.getElementById('statsChart').getContext('2d');
-        chart = new Chart(ctx, {
+        chartInstance = new Chart(ctx, {
             type: 'radar',
             data: {
-                labels: ['FOR', 'AGI', 'VIT', 'INT', 'SEN'],
-                datasets: [{ data: [0,0,0,0,0], backgroundColor: 'rgba(190, 0, 255, 0.4)', borderColor: '#be00ff', borderWidth: 2, pointBackgroundColor: '#fff' }]
+                labels: ['FORÇA', 'AGILIDADE', 'VITALIDADE', 'INTELIGÊNCIA', 'SENTIDO'],
+                datasets: [{ data: [0,0,0,0,0], backgroundColor: 'rgba(190, 0, 255, 0.4)', borderColor: '#be00ff', borderWidth: 2, pointBackgroundColor: '#fff', pointBorderColor: '#be00ff' }]
             },
             options: {
-                scales: { r: { angleLines: { color: '#333' }, grid: { color: '#333' }, pointLabels: { color: '#fff' }, ticks: { display: false }, suggestedMin: 0, suggestedMax: 100 } },
+                scales: { r: { angleLines: { color: '#333' }, grid: { color: '#333' }, pointLabels: { color: '#fff', font: { family: 'Rajdhani', size: 12 } }, ticks: { display: false }, suggestedMin: 0, suggestedMax: 100 } },
                 plugins: { legend: { display: false } }, maintainAspectRatio: false
             }
         });
     }
 
-    window.resetAll = () => {
-        if(prompt("SENHA ADM:")==="Yasuo010118*") {
-            set(userRef, { level:1, xp:0, stats:[0,0,0,0,0], quests:[], library:[] });
-            location.reload();
+    function getVisualPercent(level) {
+        let percent = 0;
+        if (level <= 10) return level * 5; 
+        percent = 50; if (level <= 20) return percent + ((level - 10) * 1);
+        percent = 60; if (level <= 50) return percent + ((level - 20) * 0.4);
+        percent = 72; if (level <= 100) return percent + ((level - 50) * 0.25);
+        percent = 84.5; if (level <= 200) return percent + ((level - 100) * 0.1);
+        percent = 94.5; if (level <= 500) return percent + ((level - 200) * 0.01);
+        return Math.min(99.9, percent + ((level - 500) * 0.001));
+    }
+
+    window.updateChartData = function() {
+        const visualData = playerData.stats.map(xp => getVisualPercent(getAttrLevelFloat(xp)));
+        chartInstance.data.datasets[0].data = visualData;
+        chartInstance.update();
+    }
+
+    window.toggleAttr = function(type) {
+        const btn = document.querySelector(`.attr-btn[data-type="${type}"]`);
+        if (selectedAttrs.includes(type)) { selectedAttrs = selectedAttrs.filter(a => a !== type); btn.classList.remove('selected'); } 
+        else { selectedAttrs.push(type); btn.classList.add('selected'); }
+    }
+    
+    window.setRecurrence = function(type) {
+        document.getElementById('recurrenceValue').value = type;
+        document.querySelectorAll('.rec-btn').forEach(btn => btn.className = 'rec-btn');
+        if(type === 'none') document.getElementById('btn-none').classList.add('selected-none');
+        if(type === 'flexible') document.getElementById('btn-flex').classList.add('selected-flex');
+        if(type === 'mandatory') document.getElementById('btn-mand').classList.add('selected-mand');
+    }
+
+    window.addNewQuest = function() {
+        const input = document.getElementById('newQuestInput'); const descInput = document.getElementById('newQuestDesc');
+        const xpSelect = document.getElementById('newQuestXP'); const recurrenceVal = document.getElementById('recurrenceValue').value; 
+        if (input.value.trim() && selectedAttrs.length > 0) {
+            if(!playerData.quests) playerData.quests = [];
+            playerData.quests.push({ text: input.value.trim(), desc: descInput.value.trim(), types: [...selectedAttrs], xpValue: parseInt(xpSelect.value, 10), done: false, recurrence: recurrenceVal, lastDoneDate: null });
+            input.value = ''; descInput.value = ''; selectedAttrs = [];
+            document.querySelectorAll('.attr-btn').forEach(btn => btn.classList.remove('selected'));
+            setRecurrence('none'); saveData(); renderAll(); showSuccessPopup();
+        } else { alert("Preencha o nome da missão e selecione pelo menos 1 atributo!"); }
+    }
+
+    window.cloneQuest = function(index) {
+        const original = playerData.quests[index];
+        playerData.quests.push({ text: original.text, desc: original.desc || "", types: original.types || [original.type], xpValue: original.xpValue, done: false, recurrence: original.recurrence, lastDoneDate: null });
+        saveData(); renderAll(); showSuccessPopup();
+    }
+
+    window.showSuccessPopup = function() { const popup = document.getElementById('successPopup'); popup.style.display = 'flex'; setTimeout(() => { popup.style.display = 'none'; }, 2000); }
+
+    window.completeQuest = function(index) {
+        if (playerData.quests[index].done) return;
+        const quest = playerData.quests[index]; quest.done = true;
+        if (quest.recurrence === 'flexible' || quest.recurrence === 'mandatory') quest.lastDoneDate = new Date().toDateString();
+        const totalXp = parseInt(quest.xpValue, 10); playerData.xp += totalXp;
+        const typesToProcess = quest.types || [quest.type];
+        const xpPerStat = Math.floor(totalXp / typesToProcess.length);
+        let rewardText = "";
+        typesToProcess.forEach(type => {
+            let statIndex = ['STR','AGI','VIT','INT','SEN'].indexOf(type);
+            if(statIndex > -1) playerData.stats[statIndex] += xpPerStat;
+            rewardText += `+${xpPerStat} XP (${type})<br>`;
+        });
+        let xpNeeded = getXpNeeded(playerData.level); let leveledUp = false;
+        while(playerData.xp >= xpNeeded) { playerData.xp -= xpNeeded; playerData.level++; xpNeeded = getXpNeeded(playerData.level); leveledUp = true; }
+        saveData(); renderAll(); showReward(rewardText, totalXp);
+        if(leveledUp) showLevelUpPopup(playerData.level);
+    }
+
+    window.openTaskDetails = function(index) {
+        const quest = playerData.quests[index];
+        document.getElementById('detailTitle').innerText = quest.text;
+        document.getElementById('detailDesc').innerText = quest.desc && quest.desc.trim() !== "" ? quest.desc : "Nenhuma instrução.";
+        document.getElementById('detailsPopup').style.display = 'flex';
+    }
+
+    window.closeDetailsPopup = function() { document.getElementById('detailsPopup').style.display = 'none'; }
+    window.showReward = function(statsHtml, xpAmount) { document.getElementById('popupStatValue').innerHTML = statsHtml; document.getElementById('popupXpValue').innerText = `+${xpAmount} XP TOTAL`; document.getElementById('rewardPopup').style.display = 'flex'; }
+    window.showLevelUpPopup = function(level) { document.getElementById('newLevelDisplay').innerText = level; document.getElementById('levelUpPopup').style.display = 'flex'; }
+    window.closePopup = function() { document.getElementById('rewardPopup').style.display = 'none'; }
+    window.closeLevelPopup = function() { document.getElementById('levelUpPopup').style.display = 'none'; }
+
+    window.deleteQuest = function(index) { if(confirm("Remover?")) { playerData.quests.splice(index, 1); saveData(); renderAll(); } }
+
+    window.hardReset = function() {
+        if(confirm("⚠ PERIGO: RESETAR TUDO?")) { 
+            const password = prompt("SENHA DE ADM:");
+            if (password === "Yasuo010118*") {
+                playerData = { level: 1, xp: 0, stats: [0, 0, 0, 0, 0], quests: [], library: [] };
+                saveData(); location.reload(); 
+            } else { alert("SENHA ERRADA."); }
         }
     }
 
-    function notify(msg) {
-        const n = document.getElementById('notify');
-        n.innerText = msg; n.style.display='block';
-        setTimeout(()=>n.style.display='none', 2000);
+    window.renderAll = function() {
+        const homeList = document.getElementById('home-quest-list'); const editorList = document.getElementById('editor-quest-list');
+        homeList.innerHTML = ''; editorList.innerHTML = '';
+        if(!playerData.quests) return;
+        playerData.quests.forEach((quest, index) => {
+            const typesArr = quest.types || [quest.type];
+            let attrsHtml = ''; typesArr.forEach(t => { attrsHtml += `<span class="attr-mini-tag bg-${t}">${t}</span>`; });
+            
+            // HOME LIST
+            if(!quest.done) {
+                const homeItem = document.createElement('div');
+                let cardClass = 'quest-card active-card';
+                let tagHtml = '';
+                if (quest.recurrence === 'flexible') { cardClass += ' type-flexible'; tagHtml = `<span class="tag-flex">↻ RECORRENTE</span>`; }
+                else if (quest.recurrence === 'mandatory') { cardClass += ' type-mandatory'; tagHtml = `<span class="tag-mand">⚠ OBRIGATÓRIA</span>`; }
+                homeItem.className = cardClass;
+                homeItem.innerHTML = `<div style="display:flex; align-items:center; width:100%;"><div class="checkbox" onclick="completeQuest(${index})"></div><div class="task-text" onclick="openTaskDetails(${index})" title="Ver Detalhes">${tagHtml}${quest.text}</div><div class="tags-container"><div class="xp-tag">+${quest.xpValue} XP</div><div>${attrsHtml}</div></div></div>`;
+                homeList.appendChild(homeItem);
+            }
+            
+            // EDITOR LIST
+            const editorItem = document.createElement('div');
+            editorItem.className = 'quest-card'; editorItem.style.borderColor = quest.done ? '#00ff9d' : '#444';
+            let typeLabel = '[ÚNICA]'; let labelColor = '#888';
+            if(quest.recurrence === 'flexible') { typeLabel = '[RECORRENTE]'; labelColor = 'var(--flex-color)'; }
+            if(quest.recurrence === 'mandatory') { typeLabel = '[OBRIGATÓRIA]'; labelColor = 'var(--mand-color)'; }
+            editorItem.innerHTML = `<div class="task-text" style="color:#ccc;"><span style="font-size:10px; color:${labelColor}">${typeLabel}</span> ${quest.text} <div style="margin-top:2px;">${attrsHtml} <span class="xp-tag">${quest.xpValue} XP</span></div></div><div class="action-container"><button class="action-btn btn-clone" onclick="cloneQuest(${index})">↺</button><button class="action-btn btn-del" onclick="deleteQuest(${index})">✖</button></div>`;
+            editorList.appendChild(editorItem);
+        });
+        if (homeList.innerHTML === '') homeList.innerHTML = '<div style="text-align:center; color:#555; margin-top:30px;">SEM MISSÕES ATIVAS.<br>DESCANSE, CAÇADOR.</div>';
     }
 
-    // EXPOSE
-    window.pk = window.pk; window.clp = window.clp; window.chp = window.chp;
-    window.vol = window.vol; window.mus = window.mus;
-    window.tab = window.tab; window.doneQuest = window.doneQuest;
-    window.addQuest = window.addQuest; window.tgAttr = window.tgAttr;
-    window.setRec = window.setRec; window.delQuest = window.delQuest;
-    window.cloneQuest = window.cloneQuest;
-    window.addBook = window.addBook; window.resetAll = window.resetAll;
-    window.openBookDetails = window.openBookDetails; window.closeBookModal = window.closeBookModal;
+    // --- GRIMÓRIO (NOVO) ---
+    window.addBook = function() {
+        const t = document.getElementById('bTitle').value;
+        const c = document.getElementById('bCover').value;
+        const x = parseInt(document.getElementById('bXp').value);
+        if(t) {
+            if(!playerData.library) playerData.library = [];
+            playerData.library.push({ title:t, cover:c, xpValue: x });
+            if(x > 0) {
+                playerData.xp += x;
+                let share = Math.floor(x/2);
+                playerData.stats[3]+=share; playerData.stats[4]+=share; 
+                let req = Math.min(playerData.level*100, 2500);
+                while(playerData.xp >= req) { playerData.xp -= req; playerData.level++; req = Math.min(playerData.level*100, 2500); alert("LEVEL UP!"); }
+            }
+            saveData();
+            document.getElementById('bTitle').value=""; document.getElementById('bCover').value="";
+            showSuccessPopup(); renderLibrary();
+        }
+    }
 
+    window.renderLibrary = function() {
+        const grid = document.getElementById('library-grid'); grid.innerHTML = '';
+        if(!playerData.library) return;
+        playerData.library.forEach((book, index) => {
+            const card = document.createElement('div'); card.className = 'book-card';
+            let img = book.cover || 'https://via.placeholder.com/100x140?text=S/Capa';
+            card.onclick = () => showBookDetails(index);
+            card.innerHTML = `<img src="${img}" class="book-cover"><div class="book-title-overlay">${book.title}</div>`;
+            grid.appendChild(card);
+        });
+    }
+
+    window.showBookDetails = function(i) {
+        const b = playerData.library[i];
+        const content = document.getElementById('bookDetailContent');
+        const img = b.cover || 'https://via.placeholder.com/100x140?text=S/Capa';
+        content.innerHTML = `<h3 style="color:var(--theme-color)">${b.title}</h3><img src="${img}" class="book-detail-cover"><div>XP: ${b.xpValue}</div><button class="btn-delete-book" onclick="delBook(${i})">EXCLUIR</button>`;
+        document.getElementById('bookPopup').style.display='flex';
+    }
+
+    window.delBook = function(i) {
+        if(confirm("Excluir?")) { playerData.library.splice(i, 1); saveData(); renderLibrary(); document.getElementById('bookPopup').style.display='none'; }
+    }
+
+    window.switchTab = function(tab) {
+        document.querySelectorAll('.tab-view').forEach(e => e.classList.remove('active-view'));
+        document.querySelectorAll('.nav-btn').forEach(e => e.classList.remove('active'));
+        document.getElementById('tab-'+tab).classList.add('active-view');
+        if(tab === 'home' && chartInstance) chartInstance.resize();
+    }
 </script>
+
 </body>
 </html>
