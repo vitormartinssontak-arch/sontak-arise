@@ -82,7 +82,7 @@
         .app-container {
             width: 100%; 
             max-width: 420px; 
-            height: 100%;     
+            height: 100%;      
             background: rgba(5, 5, 12, 0.90); 
             border-left: 1px solid var(--theme-color); 
             border-right: 1px solid var(--theme-color);
@@ -153,7 +153,7 @@
            5. CONTEÚDO (SCROLL)
            ========================================= */
         .content-area { 
-            flex: 1;          
+            flex: 1;           
             overflow-y: auto; 
             padding: 20px; 
             scroll-behavior: smooth;
@@ -249,16 +249,20 @@
         .btn-del { color: var(--danger); }
 
         /* =========================================
-           8. MENU INFERIOR (BOTÕES GRANDES)
+           8. MENU INFERIOR (AJUSTADO)
            ========================================= */
         .bottom-nav { 
-            height: 60px; 
+            height: auto; /* Altura automática para acomodar o padding */
+            min-height: 60px;
             background: rgba(2, 2, 2, 0.98); 
             border-top: 1px solid #333; 
             display: flex; 
             justify-content: space-between; 
-            align-items: stretch; /* Estica para ocupar altura */
-            flex-shrink: 0; z-index: 10;
+            align-items: stretch; 
+            flex-shrink: 0; 
+            z-index: 10;
+            /* AJUSTE PARA IPHONE (SAFE AREA) */
+            padding-bottom: env(safe-area-inset-bottom, 20px);
         }
 
         .nav-btn { 
@@ -270,11 +274,12 @@
             font-size: 14px; 
             text-transform: uppercase; 
             cursor: pointer; 
-            flex: 1; /* Ocupa largura igual */
+            flex: 1; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center;
+            padding: 10px 0; /* Espaçamento interno vertical */
         }
 
         .nav-btn.active { 
@@ -287,7 +292,7 @@
         .active-view { display: block; }
 
         /* =========================================
-           9. TELA DE LOGIN (FIX CORREÇÃO)
+           9. TELA DE LOGIN 
            ========================================= */
         #login-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -300,7 +305,6 @@
         .login-title { font-family: 'Share Tech Mono'; color: var(--theme-color); font-size: 28px; letter-spacing: 4px; margin-bottom: 5px; text-shadow: 0 0 20px var(--theme-color); animation: glitchFade 2s infinite alternate; }
         .login-sub { color: #ccc; font-size: 12px; margin-bottom: 30px; letter-spacing: 2px; text-shadow: 0 0 5px black; }
 
-        /* CORREÇÃO DA SENHA: Menos letter-spacing e fonte menor */
         .pass-display { 
             background: rgba(0, 0, 0, 0.8); 
             border: 2px solid var(--theme-color); 
@@ -310,12 +314,12 @@
             align-items: center; 
             justify-content: center; 
             font-family: 'Share Tech Mono'; 
-            font-size: 24px; /* Diminuído de 30px */
+            font-size: 24px; 
             color: #fff; 
-            letter-spacing: 5px; /* Diminuído de 12px */
+            letter-spacing: 5px; 
             border-radius: 15px; 
             box-shadow: 0 0 15px rgba(190, 0, 255, 0.3); 
-            white-space: nowrap; /* Impede quebra */
+            white-space: nowrap; 
         }
 
         .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 10px; }
@@ -343,6 +347,23 @@
         .popup-stat { font-size: 24px; font-weight: bold; color: white; text-shadow: 0 0 10px white; margin-bottom: 5px; }
         .popup-xp { font-size: 32px; color: var(--success); font-weight: bold; text-shadow: 0 0 15px var(--success); }
         .levelup-num { font-size: 80px; font-weight: 800; color: white; text-shadow: 0 0 30px var(--gold-color); margin: 10px 0; animation: pulse 0.8s infinite alternate; }
+
+        /* --- POPUP CONFIRM DELETE (NOVO) --- */
+        .confirm-box {
+            background: #000;
+            border: 1px solid var(--danger);
+            padding: 25px;
+            width: 85%;
+            max-width: 320px;
+            text-align: center;
+            box-shadow: 0 0 25px rgba(255, 68, 68, 0.3);
+            animation: zoomIn 0.2s;
+        }
+        .confirm-title { color: var(--danger); font-size: 20px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; }
+        .confirm-actions { display: flex; gap: 15px; justify-content: center; }
+        .btn-confirm-act { flex: 1; padding: 12px; font-weight: bold; border: none; cursor: pointer; font-family: 'Rajdhani'; font-size: 16px; }
+        .act-cancel { background: transparent; border: 1px solid #555; color: #aaa; }
+        .act-delete { background: var(--danger); color: black; box-shadow: 0 0 10px var(--danger); }
 
         .success-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: none; justify-content: center; align-items: center; z-index: 200; }
         .success-box { background: rgba(0,0,0,0.9); border: 2px solid var(--theme-color); padding: 20px 40px; text-align: center; box-shadow: 0 0 40px rgba(190, 0, 255, 0.4); animation: slideUp 0.4s ease-out; }
@@ -545,6 +566,16 @@
         </div>
     </div>
 
+    <div class="popup-overlay" id="deleteConfirmPopup" style="z-index: 300;">
+        <div class="confirm-box">
+            <div class="confirm-title">REMOVER TAREFA?</div>
+            <div class="confirm-actions">
+                <button class="btn-confirm-act act-cancel" onclick="closeDeleteModal()">CANCELAR</button>
+                <button class="btn-confirm-act act-delete" onclick="executeDelete()">REMOVER</button>
+            </div>
+        </div>
+    </div>
+
     <div class="success-overlay" id="successPopup">
         <div class="success-box">
             <div style="font-size:30px; color:var(--theme-color);">✔</div>
@@ -579,6 +610,7 @@
     const MAX_XP_REQUIREMENT = 2500; 
     const XP_FACTOR = 100; 
     let selectedAttrs = [];
+    let pendingDeleteIndex = null; // Para o modal de delete
     
     // MÚSICA
     const bgMusic = document.getElementById("bgMusic");
@@ -787,7 +819,28 @@
     window.closePopup = function() { document.getElementById('rewardPopup').style.display = 'none'; }
     window.closeLevelPopup = function() { document.getElementById('levelUpPopup').style.display = 'none'; }
 
-    window.deleteQuest = function(index) { if(confirm("Remover?")) { playerData.quests.splice(index, 1); saveData(); renderAll(); } }
+    // --- LOGICA DE DELETE ATUALIZADA (COM MODAL) ---
+    window.openDeleteModal = function(index) {
+        pendingDeleteIndex = index;
+        document.getElementById('deleteConfirmPopup').style.display = 'flex';
+    }
+
+    window.closeDeleteModal = function() {
+        document.getElementById('deleteConfirmPopup').style.display = 'none';
+        pendingDeleteIndex = null;
+    }
+
+    window.executeDelete = function() {
+        if(pendingDeleteIndex !== null) {
+            playerData.quests.splice(pendingDeleteIndex, 1);
+            saveData(); 
+            renderAll(); 
+            closeDeleteModal();
+        }
+    }
+
+    // Mantido por compatibilidade, mas o renderAll agora chama openDeleteModal
+    window.deleteQuest = function(index) { openDeleteModal(index); } 
 
     window.hardReset = function() {
         if(confirm("⚠ PERIGO: RESETAR TUDO?")) { 
@@ -819,19 +872,19 @@
                 homeList.appendChild(homeItem);
             }
             
-            // EDITOR LIST
+            // EDITOR LIST - ATUALIZADO PARA USAR O NOVO MODAL
             const editorItem = document.createElement('div');
             editorItem.className = 'quest-card'; editorItem.style.borderColor = quest.done ? '#00ff9d' : '#444';
             let typeLabel = '[ÚNICA]'; let labelColor = '#888';
             if(quest.recurrence === 'flexible') { typeLabel = '[RECORRENTE]'; labelColor = 'var(--flex-color)'; }
             if(quest.recurrence === 'mandatory') { typeLabel = '[OBRIGATÓRIA]'; labelColor = 'var(--mand-color)'; }
-            editorItem.innerHTML = `<div class="task-text" style="color:#ccc;"><span style="font-size:10px; color:${labelColor}">${typeLabel}</span> ${quest.text} <div style="margin-top:2px;">${attrsHtml} <span class="xp-tag">${quest.xpValue} XP</span></div></div><div class="action-container"><button class="action-btn btn-clone" onclick="cloneQuest(${index})">↺</button><button class="action-btn btn-del" onclick="deleteQuest(${index})">✖</button></div>`;
+            editorItem.innerHTML = `<div class="task-text" style="color:#ccc;"><span style="font-size:10px; color:${labelColor}">${typeLabel}</span> ${quest.text} <div style="margin-top:2px;">${attrsHtml} <span class="xp-tag">${quest.xpValue} XP</span></div></div><div class="action-container"><button class="action-btn btn-clone" onclick="cloneQuest(${index})">↺</button><button class="action-btn btn-del" onclick="openDeleteModal(${index})">✖</button></div>`;
             editorList.appendChild(editorItem);
         });
         if (homeList.innerHTML === '') homeList.innerHTML = '<div style="text-align:center; color:#555; margin-top:30px;">SEM MISSÕES ATIVAS.<br>DESCANSE, CAÇADOR.</div>';
     }
 
-    // --- GRIMÓRIO (NOVO) ---
+    // --- GRIMÓRIO (ATUALIZADO) ---
     window.addBook = function() {
         const t = document.getElementById('bTitle').value;
         const c = document.getElementById('bCover').value;
@@ -839,16 +892,30 @@
         if(t) {
             if(!playerData.library) playerData.library = [];
             playerData.library.push({ title:t, cover:c, xpValue: x });
+            
+            let leveledUp = false; // Flag para level up
+            
             if(x > 0) {
                 playerData.xp += x;
                 let share = Math.floor(x/2);
                 playerData.stats[3]+=share; playerData.stats[4]+=share; 
                 let req = Math.min(playerData.level*100, 2500);
-                while(playerData.xp >= req) { playerData.xp -= req; playerData.level++; req = Math.min(playerData.level*100, 2500); alert("LEVEL UP!"); }
+                while(playerData.xp >= req) { 
+                    playerData.xp -= req; 
+                    playerData.level++; 
+                    req = Math.min(playerData.level*100, 2500); 
+                    leveledUp = true; // Marcou que subiu
+                }
             }
             saveData();
             document.getElementById('bTitle').value=""; document.getElementById('bCover').value="";
-            showSuccessPopup(); renderLibrary();
+            showSuccessPopup(); 
+            renderLibrary();
+            
+            // Chama a tela bonita se subiu de nivel
+            if(leveledUp) {
+                showLevelUpPopup(playerData.level);
+            }
         }
     }
 
