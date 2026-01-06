@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SONTAK SYSTEM V7</title>
+    <title>SONTAK SYSTEM V6</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -78,7 +78,7 @@
             padding-bottom: 80px; 
         }
 
-        /* --- LOGIN (AJUSTADO PARA 4 DÍGITOS) --- */
+        /* --- LOGIN --- */
         #login-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.9); z-index: 20000;
@@ -87,14 +87,12 @@
         
         .pass-display {
             border: 2px solid var(--theme-color);
-            height: 50px; 
-            width: 220px; /* Largura ajustada */
+            height: 50px; width: 200px; 
             margin-bottom: 30px;
             display: flex; align-items: center; justify-content: center;
-            font-family: 'Share Tech Mono'; font-size: 28px; color: #fff;
-            letter-spacing: 12px; 
+            font-family: 'Share Tech Mono'; font-size: 24px; color: #fff;
+            letter-spacing: 8px; 
             border-radius: 10px;
-            white-space: nowrap; /* Impede quebra de linha */
         }
 
         .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
@@ -213,7 +211,7 @@
 
 <div id="login-overlay">
     <div style="font-family:'Share Tech Mono'; color:var(--theme-color); font-size:24px; margin-bottom:10px;">SONTAK SECURITY</div>
-    <div class="pass-display" id="passDisplay">_ _ _ _</div>
+    <div class="pass-display" id="passDisplay">______</div>
     <div class="keypad">
         <div class="key-btn" onclick="pk(1)">1</div><div class="key-btn" onclick="pk(2)">2</div><div class="key-btn" onclick="pk(3)">3</div>
         <div class="key-btn" onclick="pk(4)">4</div><div class="key-btn" onclick="pk(5)">5</div><div class="key-btn" onclick="pk(6)">6</div>
@@ -382,14 +380,12 @@
         aud.volume = n;
     }
 
-    // --- LOGIN (4 DIGITOS) ---
+    // --- LOGIN ---
     let p = "";
-    const CORRECT_PASS = "0706"; // SENHA ATUALIZADA
-
     window.pk = (n) => { if(p.length<4) { p+=n; uPass(); } }
     window.clp = () => { p=""; uPass(); }
     window.chp = () => {
-        if(p===CORRECT_PASS) {
+        if(p==="0706") {
             document.getElementById('login-overlay').style.display='none';
             document.getElementById('boot-screen').style.display='flex';
             aud.volume=0.5; aud.play().then(()=>{isPlay=true; document.getElementById('btnMus').innerText="PAUSE";}).catch(()=>{});
@@ -403,7 +399,7 @@
         }
     }
     function uPass() {
-        let s=""; for(let i=0;i<4;i++) s += (i<p.length) ? "● " : "_ ";
+        let s=""; for(let i=0;i<6;i++) s += (i<p.length) ? "● " : "_ ";
         document.getElementById('passDisplay').innerText = s;
     }
 
@@ -525,7 +521,7 @@
 
     window.delQuest = (i) => { if(confirm("Apagar?")) { data.quests.splice(i,1); save(); } }
 
-    // --- BOOKS ---
+    // --- BOOKS (NEW LOGIC) ---
     window.addBook = () => {
         const t = document.getElementById('bTitle').value;
         const c = document.getElementById('bCover').value;
@@ -537,9 +533,6 @@
                 data.xp += x;
                 let share = Math.floor(x/2);
                 data.stats[3]+=share; data.stats[4]+=share; // INT + SEN
-                
-                let req = Math.min(data.level*100, 2500);
-                while(data.xp >= req) { data.xp -= req; data.level++; req = Math.min(data.level*100, 2500); alert("LEVEL UP!"); }
             }
             save();
             document.getElementById('bTitle').value="";
@@ -555,6 +548,7 @@
         document.getElementById('modalBookCover').src = book.cover || 'https://via.placeholder.com/100x140?text=S/Capa';
         document.getElementById('modalBookXp').innerText = `XP: ${book.xpValue || 0}`;
         
+        // Configurar botão de delete
         document.getElementById('btnDeleteBook').onclick = () => {
             if(confirm("Remover este livro? (O XP ganho PERMANECE)")) {
                 data.library.splice(i, 1);
