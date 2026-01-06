@@ -638,10 +638,10 @@
 
     // LOGIN
     let currentPass = "";
-    const CORRECT_PASS = "010118";
+    const CORRECT_PASS = "0706";
 
     window.pressKey = function(num) {
-        if(currentPass.length < 6) { currentPass += num; updatePassDisplay(); }
+        if(currentPass.length < 4) { currentPass += num; updatePassDisplay(); }
     }
     window.clearPass = function() {
         currentPass = ""; updatePassDisplay(); document.getElementById('passDisplay').classList.remove('error-anim');
@@ -660,7 +660,7 @@
     }
 
     function unlockSystem() {
-        bgMusic.volume = 0.6;
+        bgMusic.volume = 0.3;
         bgMusic.play().then(() => { isPlaying = true; document.getElementById('btnPlayPause').innerText = "❚❚ PAUSE"; }).catch(e => console.log("Audio prevented"));
         document.getElementById('login-overlay').style.display = 'none';
         const bootScreen = document.getElementById('boot-screen');
