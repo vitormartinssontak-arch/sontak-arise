@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SONTAK SYSTEM V6</title>
+    <title>SONTAK SYSTEM V7.1</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -78,7 +78,7 @@
             padding-bottom: 80px; 
         }
 
-        /* --- LOGIN --- */
+        /* --- LOGIN (AJUSTADO PARA 4 DÍGITOS) --- */
         #login-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.9); z-index: 20000;
@@ -87,12 +87,14 @@
         
         .pass-display {
             border: 2px solid var(--theme-color);
-            height: 50px; width: 200px; 
+            height: 50px; 
+            width: 220px; 
             margin-bottom: 30px;
             display: flex; align-items: center; justify-content: center;
-            font-family: 'Share Tech Mono'; font-size: 24px; color: #fff;
-            letter-spacing: 8px; 
+            font-family: 'Share Tech Mono'; font-size: 28px; color: #fff;
+            letter-spacing: 12px; 
             border-radius: 10px;
+            white-space: nowrap; 
         }
 
         .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
@@ -119,12 +121,16 @@
         .stat-label { font-size: 10px; color: #888; display: block; }
         .stat-value { font-size: 16px; color: var(--theme-color); font-weight: bold; }
 
-        /* --- LISTAS --- */
+        /* --- LISTAS (CORES DIFERENCIADAS) --- */
         .quest-card {
             background: #111; border-left: 3px solid #444; padding: 15px; margin-bottom: 10px;
             display: flex; align-items: center; justify-content: space-between;
         }
+        /* COR: ÚNICA (Roxo) */
+        .quest-card.type-unique { border-color: var(--theme-color); background: rgba(190, 0, 255, 0.05); }
+        /* COR: RECORRENTE (Azul) */
         .quest-card.type-flexible { border-color: var(--flex-color); background: rgba(0, 210, 255, 0.05); }
+        /* COR: OBRIGATÓRIA (Laranja) */
         .quest-card.type-mandatory { border-color: var(--mand-color); background: rgba(255, 149, 0, 0.05); }
         
         .checkbox { width: 25px; height: 25px; border: 2px solid #666; margin-right: 15px; display: grid; place-items: center; }
@@ -160,14 +166,34 @@
         .rec-btn { flex: 1; background: #222; border: 1px solid #444; color: #888; padding: 10px; font-size: 11px; }
         .rec-btn.active-rec { background: var(--flex-color); color: black; } 
 
-        /* --- MENU --- */
+        /* --- BOTÕES DE AÇÃO NA LISTA --- */
+        .action-container { display: flex; gap: 10px; }
+        .action-btn { background: none; border: none; font-size: 18px; cursor: pointer; }
+        .btn-clone { color: var(--success); }
+        .btn-del { color: var(--danger); }
+
+        /* --- MENU INFERIOR (MELHORADO) --- */
         .bottom-nav {
             height: 60px; background: #0a0a0a; border-top: 1px solid #333;
-            display: flex; justify-content: space-around; align-items: center;
+            display: flex; 
+            justify-content: space-between; /* Distribui */
+            align-items: stretch; /* Estica altura */
             flex-shrink: 0; z-index: 50;
         }
-        .nav-btn { background: none; border: none; color: #555; font-weight: bold; font-size: 12px; }
-        .nav-btn.active { color: var(--theme-color); }
+        .nav-btn { 
+            background: none; 
+            border: none; 
+            color: #555; 
+            font-weight: bold; 
+            font-size: 12px;
+            flex: 1; /* Ocupa espaço igual */
+            height: 100%; /* Área clicável total */
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            flex-direction: column;
+        }
+        .nav-btn.active { color: var(--theme-color); background: rgba(190, 0, 255, 0.05); }
 
         .tab-view { display: none; }
         .active-view { display: block; }
@@ -211,7 +237,9 @@
 
 <div id="login-overlay">
     <div style="font-family:'Share Tech Mono'; color:var(--theme-color); font-size:24px; margin-bottom:10px;">SONTAK SECURITY</div>
-    <div class="pass-display" id="passDisplay">______</div>
+    
+    <div class="pass-display" id="passDisplay">_ _ _ _</div>
+    
     <div class="keypad">
         <div class="key-btn" onclick="pk(1)">1</div><div class="key-btn" onclick="pk(2)">2</div><div class="key-btn" onclick="pk(3)">3</div>
         <div class="key-btn" onclick="pk(4)">4</div><div class="key-btn" onclick="pk(5)">5</div><div class="key-btn" onclick="pk(6)">6</div>
@@ -399,7 +427,7 @@
         }
     }
     function uPass() {
-        let s=""; for(let i=0;i<6;i++) s += (i<p.length) ? "● " : "_ ";
+        let s=""; for(let i=0;i<4;i++) s += (i<p.length) ? "● " : "_ ";
         document.getElementById('passDisplay').innerText = s;
     }
 
@@ -438,14 +466,15 @@
         chart.data.datasets[0].data = vData;
         chart.update();
 
-        // Quests Home
+        // Quests Home (CORES APLICADAS AQUI)
         const hl = document.getElementById('home-quest-list');
         hl.innerHTML = "";
         data.quests.forEach((q, i) => {
             if(!q.done) {
-                let cl = "";
+                let cl = "type-unique"; // Default
                 if(q.rec==='flexible') cl = "type-flexible";
                 if(q.rec==='mandatory') cl = "type-mandatory";
+                
                 hl.innerHTML += `
                 <div class="quest-card ${cl}">
                     <div class="checkbox" onclick="doneQuest(${i})"></div>
@@ -462,7 +491,10 @@
             el.innerHTML += `
             <div class="quest-card">
                 <div class="task-text" style="color:#888">${q.text}</div>
-                <button onclick="delQuest(${i})" style="background:none;border:none;color:red;">X</button>
+                <div class="action-container">
+                    <button class="action-btn btn-clone" onclick="cloneQuest(${i})">↺</button>
+                    <button class="action-btn btn-del" onclick="delQuest(${i})">✖</button>
+                </div>
             </div>`;
         });
 
@@ -508,6 +540,20 @@
         } else alert("Preencha nome e atributos");
     }
 
+    // NOVA FUNÇÃO DE CLONE
+    window.cloneQuest = (i) => {
+        const original = data.quests[i];
+        data.quests.push({
+            text: original.text,
+            xp: original.xp,
+            attrs: [...original.attrs],
+            rec: original.rec,
+            done: false
+        });
+        save();
+        notify("TAREFA CLONADA!");
+    }
+
     window.tgAttr = (a, el) => {
         if(selAttrs.includes(a)) { selAttrs = selAttrs.filter(x=>x!==a); el.classList.remove('selected'); }
         else { selAttrs.push(a); el.classList.add('selected'); }
@@ -521,7 +567,7 @@
 
     window.delQuest = (i) => { if(confirm("Apagar?")) { data.quests.splice(i,1); save(); } }
 
-    // --- BOOKS (NEW LOGIC) ---
+    // --- BOOKS ---
     window.addBook = () => {
         const t = document.getElementById('bTitle').value;
         const c = document.getElementById('bCover').value;
@@ -533,6 +579,9 @@
                 data.xp += x;
                 let share = Math.floor(x/2);
                 data.stats[3]+=share; data.stats[4]+=share; // INT + SEN
+                
+                let req = Math.min(data.level*100, 2500);
+                while(data.xp >= req) { data.xp -= req; data.level++; req = Math.min(data.level*100, 2500); alert("LEVEL UP!"); }
             }
             save();
             document.getElementById('bTitle').value="";
@@ -548,7 +597,6 @@
         document.getElementById('modalBookCover').src = book.cover || 'https://via.placeholder.com/100x140?text=S/Capa';
         document.getElementById('modalBookXp').innerText = `XP: ${book.xpValue || 0}`;
         
-        // Configurar botão de delete
         document.getElementById('btnDeleteBook').onclick = () => {
             if(confirm("Remover este livro? (O XP ganho PERMANECE)")) {
                 data.library.splice(i, 1);
@@ -607,6 +655,7 @@
     window.tab = window.tab; window.doneQuest = window.doneQuest;
     window.addQuest = window.addQuest; window.tgAttr = window.tgAttr;
     window.setRec = window.setRec; window.delQuest = window.delQuest;
+    window.cloneQuest = window.cloneQuest;
     window.addBook = window.addBook; window.resetAll = window.resetAll;
     window.openBookDetails = window.openBookDetails; window.closeBookModal = window.closeBookModal;
 
