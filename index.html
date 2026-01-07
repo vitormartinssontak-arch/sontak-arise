@@ -166,7 +166,8 @@
         .xp-bar-bg { width: 100%; height: 8px; background: #222; border-radius: 4px; overflow: hidden; border: 1px solid #333; }
         .xp-bar-fill { width: 0%; height: 100%; background: var(--theme-color); transition: width 0.5s ease; box-shadow: 0 0 10px var(--theme-color); }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 25px; text-align: center; }
+        /* MUDANÇA: REPEAT 3 para acomodar 6 itens em 2 linhas */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 25px; text-align: center; }
         .stat-item { background: rgba(255,255,255,0.05); padding: 5px; border-radius: 4px; border: 1px solid #333; }
         .stat-label { font-size: 10px; font-weight: bold; color: #888; display: block; }
         .stat-value { font-size: 16px; font-weight: bold; color: var(--theme-color); font-family: 'Share Tech Mono'; }
@@ -215,7 +216,8 @@
         .xp-tag { font-size: 12px; background: #222; padding: 3px 6px; border-radius: 3px; color: #fff; border: 1px solid #444; font-weight: bold; }
         .attr-mini-tag { font-size: 9px; padding: 2px 4px; border-radius: 2px; font-weight: bold; color: black; margin-left: 3px; }
         
-        .bg-STR { background-color: #ff4444; } .bg-AGI { background-color: #00d2ff; } .bg-VIT { background-color: #00ff9d; } .bg-INT { background-color: #be00ff; } .bg-SEN { background-color: #ffd700; }
+        /* ADICIONADO .bg-DIS */
+        .bg-STR { background-color: #ff4444; } .bg-AGI { background-color: #00d2ff; } .bg-VIT { background-color: #00ff9d; } .bg-INT { background-color: #be00ff; } .bg-SEN { background-color: #ffd700; } .bg-DIS { background-color: #c0c0c0; color: black; }
         .tag-flex { font-size: 10px; background: rgba(0, 210, 255, 0.2); padding: 2px 5px; border-radius: 3px; color: var(--flex-color); border: 1px solid var(--flex-color); margin-right: 5px; font-weight: bold; }
         .tag-mand { font-size: 10px; background: rgba(255, 149, 0, 0.2); padding: 2px 5px; border-radius: 3px; color: var(--mand-color); border: 1px solid var(--mand-color); margin-right: 5px; font-weight: bold; }
 
@@ -227,10 +229,12 @@
         .sys-input, .sys-select { width: 100%; background: #050505; border: 1px solid #444; color: white; padding: 12px; font-family: 'Rajdhani'; font-size: 16px; outline: none; box-sizing: border-box; margin-bottom: 15px; }
         textarea.sys-input { resize: vertical; min-height: 80px; font-family: 'Share Tech Mono'; font-size: 14px; }
         
-        .attr-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 15px; }
+        /* MUDANÇA: REPEAT 3 para acomodar 6 itens */
+        .attr-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 15px; }
         .attr-btn { background: #111; border: 1px solid #333; color: #666; padding: 10px 0; text-align: center; cursor: pointer; font-size: 12px; font-weight: bold; transition: 0.2s; border-radius: 4px; }
         .attr-btn.selected { color: black; border-color: white; box-shadow: 0 0 10px currentColor; }
-        .attr-btn[data-type="STR"].selected { background: #ff4444; } .attr-btn[data-type="AGI"].selected { background: #00d2ff; } .attr-btn[data-type="VIT"].selected { background: #00ff9d; } .attr-btn[data-type="INT"].selected { background: #be00ff; } .attr-btn[data-type="SEN"].selected { background: #ffd700; }
+        /* ADICIONADO SELEÇÃO DE DIS */
+        .attr-btn[data-type="STR"].selected { background: #ff4444; } .attr-btn[data-type="AGI"].selected { background: #00d2ff; } .attr-btn[data-type="VIT"].selected { background: #00ff9d; } .attr-btn[data-type="INT"].selected { background: #be00ff; } .attr-btn[data-type="SEN"].selected { background: #ffd700; } .attr-btn[data-type="DIS"].selected { background: #c0c0c0; }
 
         .recurrence-selector { display: flex; gap: 5px; margin-bottom: 20px; }
         .rec-btn { flex: 1; background: #222; border: 1px solid #444; color: #888; padding: 10px 5px; font-family: 'Rajdhani'; font-weight: bold; font-size: 12px; cursor: pointer; transition: 0.3s; }
@@ -460,6 +464,7 @@
                 <div class="stat-item"><span class="stat-label">VIT</span><span class="stat-value" id="val-VIT">0</span></div>
                 <div class="stat-item"><span class="stat-label">INT</span><span class="stat-value" id="val-INT">0</span></div>
                 <div class="stat-item"><span class="stat-label">SEN</span><span class="stat-value" id="val-SEN">0</span></div>
+                <div class="stat-item"><span class="stat-label">DIS</span><span class="stat-value" id="val-DIS">0</span></div>
             </div>
             <div class="section-title">MISSÕES PENDENTES</div>
             <div id="home-quest-list"></div>
@@ -496,6 +501,7 @@
                     <div class="attr-btn" data-type="VIT" onclick="toggleAttr('VIT')">VIT</div>
                     <div class="attr-btn" data-type="INT" onclick="toggleAttr('INT')">INT</div>
                     <div class="attr-btn" data-type="SEN" onclick="toggleAttr('SEN')">SEN</div>
+                    <div class="attr-btn" data-type="DIS" onclick="toggleAttr('DIS')">DIS</div>
                 </div>
                 <label class="input-label">RECOMPENSA (XP)</label>
                 <select id="newQuestXP" class="sys-select">
@@ -604,8 +610,8 @@
     const db = getDatabase(app);
     const userRef = ref(db, 'usuarios/vitor');
 
-    // DADOS
-    let playerData = { level: 1, xp: 0, stats: [0, 0, 0, 0, 0], quests: [], library: [] };
+    // DADOS - MUDANÇA: ARRAY DE 6 POSIÇÕES
+    let playerData = { level: 1, xp: 0, stats: [0, 0, 0, 0, 0, 0], quests: [], library: [] };
     let chartInstance = null;
     const MAX_XP_REQUIREMENT = 2500; 
     const XP_FACTOR = 100; 
@@ -681,7 +687,10 @@
             if (data) {
                 playerData = data;
                 if(!playerData.quests) playerData.quests = [];
-                if(!playerData.stats) playerData.stats = [0,0,0,0,0];
+                // MUDANÇA: Se carregar dados antigos com 5 stats, adiciona o 6º
+                if(!playerData.stats) playerData.stats = [0,0,0,0,0,0];
+                if(playerData.stats.length < 6) playerData.stats.push(0);
+                
                 if(!playerData.library) playerData.library = [];
             } else { saveData(); }
             updateHeader(); updateStatsDisplay(); checkDailyQuests(); renderAll(); renderLibrary();
@@ -695,7 +704,8 @@
     function getAttrLevelFloat(xp) { return Math.sqrt(xp / XP_FACTOR); }
     
     window.updateStatsDisplay = function() {
-        const labels = ['STR', 'AGI', 'VIT', 'INT', 'SEN'];
+        // MUDANÇA: LISTA COM DIS
+        const labels = ['STR', 'AGI', 'VIT', 'INT', 'SEN', 'DIS'];
         playerData.stats.forEach((xp, i) => { document.getElementById(`val-${labels[i]}`).innerText = getAttrLevel(xp); });
     }
 
@@ -726,8 +736,9 @@
         chartInstance = new Chart(ctx, {
             type: 'radar',
             data: {
-                labels: ['FORÇA', 'AGILIDADE', 'VITALIDADE', 'INTELIGÊNCIA', 'SENTIDO'],
-                datasets: [{ data: [0,0,0,0,0], backgroundColor: 'rgba(190, 0, 255, 0.4)', borderColor: '#be00ff', borderWidth: 2, pointBackgroundColor: '#fff', pointBorderColor: '#be00ff' }]
+                // MUDANÇA: LISTA COM DISCIPLINA
+                labels: ['FORÇA', 'AGILIDADE', 'VITALIDADE', 'INTELIGÊNCIA', 'SENTIDO', 'DISCIPLINA'],
+                datasets: [{ data: [0,0,0,0,0,0], backgroundColor: 'rgba(190, 0, 255, 0.4)', borderColor: '#be00ff', borderWidth: 2, pointBackgroundColor: '#fff', pointBorderColor: '#be00ff' }]
             },
             options: {
                 scales: { r: { angleLines: { color: '#333' }, grid: { color: '#333' }, pointLabels: { color: '#fff', font: { family: 'Rajdhani', size: 12 } }, ticks: { display: false }, suggestedMin: 0, suggestedMax: 100 } },
@@ -796,7 +807,8 @@
         const xpPerStat = Math.floor(totalXp / typesToProcess.length);
         let rewardText = "";
         typesToProcess.forEach(type => {
-            let statIndex = ['STR','AGI','VIT','INT','SEN'].indexOf(type);
+            // MUDANÇA: LISTA COM DIS
+            let statIndex = ['STR','AGI','VIT','INT','SEN','DIS'].indexOf(type);
             if(statIndex > -1) playerData.stats[statIndex] += xpPerStat;
             rewardText += `+${xpPerStat} XP (${type})<br>`;
         });
@@ -846,7 +858,8 @@
         if(confirm("⚠ PERIGO: RESETAR TUDO?")) { 
             const password = prompt("SENHA DE ADM:");
             if (password === "Yasuo010118*") {
-                playerData = { level: 1, xp: 0, stats: [0, 0, 0, 0, 0], quests: [], library: [] };
+                // MUDANÇA: RESET COM 6 STATS
+                playerData = { level: 1, xp: 0, stats: [0, 0, 0, 0, 0, 0], quests: [], library: [] };
                 saveData(); location.reload(); 
             } else { alert("SENHA ERRADA."); }
         }
