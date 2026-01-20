@@ -25,6 +25,9 @@
             --dis-color: #c0c0c0;     
         }
 
+        /* Tira barra de rolagem geral feia */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
 
         body {
@@ -146,10 +149,10 @@
         .fab-add { background: var(--theme-color); color: black; border: none; width: 100%; padding: 15px; font-weight: bold; font-family: 'Rajdhani'; font-size: 16px; cursor: pointer; margin-bottom: 20px; text-transform: uppercase; box-shadow: 0 0 15px rgba(190,0,255,0.3); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); transition: 0.2s; }
         .fab-add:active { transform: scale(0.98); }
 
-        /* Filtros */
-        .fin-filters { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; }
-        .filter-btn { background: #222; border: 1px solid #444; color: #888; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; font-family: 'Rajdhani'; }
-        .filter-btn.active { background: var(--theme-color); color: black; border-color: var(--theme-color); }
+        /* Filtros Gamificados (Sem barra de rolagem) */
+        .filter-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .btn-filter-trigger { background: #222; border: 1px solid #444; color: var(--theme-color); font-size: 12px; font-weight: bold; font-family: 'Rajdhani'; padding: 5px 15px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .active-filter-label { font-size: 12px; color: #888; text-transform: uppercase; }
 
         /* Lista Financeira */
         .fin-list { display: flex; flex-direction: column; gap: 8px; padding-bottom: 50px; }
@@ -159,7 +162,7 @@
         .fin-type-income { border-left-color: var(--success); background: linear-gradient(90deg, rgba(0,255,157,0.05) 0%, transparent 100%); }
         
         .status-paid { opacity: 0.6; filter: grayscale(80%); }
-        .status-paid .fin-desc { text-decoration: line-through; }
+        .status-paid .fin-title { text-decoration: line-through; }
 
         .fin-info { flex: 1; margin-left: 10px; cursor: pointer; }
         .fin-title { font-size: 14px; font-weight: bold; color: white; }
@@ -177,14 +180,12 @@
         
         .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 15px; }
         .cat-btn { background: #111; border: 1px solid #333; color: #888; padding: 8px; font-size: 10px; text-align: center; cursor: pointer; border-radius: 4px; }
-        .cat-btn.selected { border-color: white; color: white; background: #333; }
+        .cat-btn.selected { border-color: white; color: white; background: #333; box-shadow: 0 0 5px rgba(255,255,255,0.2); }
 
         /* MODAIS E TELAS */
         #login-overlay, .popup-overlay, .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         #login-overlay { z-index: 20000; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); }
         .success-overlay { pointer-events: none; z-index: 200; display: none; }
-        
-        /* Ocultos por padrão */
         .popup-overlay { display: none; }
 
         .login-box, .popup-box, .levelup-box, .confirm-box, .success-box { background: rgba(0,0,0,0.95); border: 2px solid var(--theme-color); padding: 25px; text-align: center; box-shadow: 0 0 30px rgba(190,0,255,0.2); width: 85%; max-width: 350px; max-height: 85vh; overflow-y: auto; animation: zoomIn 0.3s; position: relative; }
@@ -207,6 +208,7 @@
 
         .btn-confirm-act { flex: 1; padding: 12px; font-weight: bold; border: none; cursor: pointer; font-family: 'Rajdhani'; font-size: 16px; }
         .act-cancel { background: transparent; border: 1px solid #555; color: #aaa; }
+        .act-edit { background: var(--flex-color); color: black; box-shadow: 0 0 10px var(--flex-color); margin-right:5px;}
         .act-delete { background: var(--danger); color: black; box-shadow: 0 0 10px var(--danger); }
         .act-pause { background: var(--warning); color: black; box-shadow: 0 0 10px var(--warning); }
 
@@ -225,7 +227,7 @@
         @keyframes slideUp { from {transform: translateY(20px); opacity:0;} to {transform: translateY(0); opacity:1;} }
 
         /* Full Extract List */
-        .full-extract-list { text-align: left; }
+        .full-extract-list { text-align: left; max-height: 400px; overflow-y: auto; }
         .extract-row { display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding: 8px 0; font-size: 13px; }
         .extract-cat { color: #888; font-size: 10px; display: block; }
 
@@ -350,16 +352,13 @@
 
             <button class="fab-add" onclick="openAddTransactionModal()">+ LANÇAR GASTO / GANHO</button>
 
-            <div class="section-title">FLUXO DO MÊS</div>
-            
-            <div class="fin-filters">
-                <button class="filter-btn active" onclick="applyFilter('all')" id="filter-all">TODOS</button>
-                <button class="filter-btn" onclick="applyFilter('income')" id="filter-income">GANHOS</button>
-                <button class="filter-btn" onclick="applyFilter('expense')" id="filter-expense">GASTOS</button>
-                <button class="filter-btn" onclick="applyFilter('alimentacao')" id="filter-alimentacao">ALIMENTAÇÃO</button>
-                <button class="filter-btn" onclick="applyFilter('transporte')" id="filter-transporte">TRANSPORTE</button>
-                <button class="filter-btn" onclick="applyFilter('contas')" id="filter-contas">CONTAS</button>
+            <div class="filter-header">
+                <div class="section-title" style="margin:0;">FLUXO DO MÊS</div>
+                <button class="btn-filter-trigger" onclick="document.getElementById('filterModal').style.display='flex'">
+                    <span>⚡ FILTRAR</span>
+                </button>
             </div>
+            <div class="active-filter-label" id="activeFilterLabel">TODOS</div>
 
             <div id="finance-list" class="fin-list">
                 </div>
@@ -459,9 +458,26 @@
         </div>
     </div>
 
+    <div class="popup-overlay" id="filterModal" style="z-index: 255;">
+        <div class="popup-box" style="text-align:center;">
+            <div class="section-title" style="margin-top:0;">SELECIONAR FILTRO</div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <button class="btn-toggle active" onclick="applyFilter('all')">TODOS</button>
+                <button class="btn-toggle" onclick="applyFilter('income')">GANHOS</button>
+                <button class="btn-toggle" onclick="applyFilter('expense')">GASTOS</button>
+                <button class="btn-toggle" onclick="applyFilter('alimentacao')">ALIMENTAÇÃO</button>
+                <button class="btn-toggle" onclick="applyFilter('transporte')">TRANSPORTE</button>
+                <button class="btn-toggle" onclick="applyFilter('contas')">CONTAS</button>
+                <button class="btn-toggle" onclick="applyFilter('lazer')">LAZER</button>
+                <button class="btn-toggle" onclick="applyFilter('saude')">SAÚDE</button>
+            </div>
+            <button class="btn-close" style="margin-top:15px;" onclick="document.getElementById('filterModal').style.display='none'">FECHAR</button>
+        </div>
+    </div>
+
     <div class="popup-overlay" id="addTransModal" style="z-index: 250;">
         <div class="popup-box" style="text-align:left;">
-            <div class="section-title" style="margin-top:0;">NOVA TRANSAÇÃO</div>
+            <div class="section-title" style="margin-top:0;" id="transModalTitle">NOVA TRANSAÇÃO</div>
             
             <label class="input-label">TIPO</label>
             <div class="modal-fin-grid">
@@ -531,7 +547,8 @@
             <div id="tdContent"></div>
             <div class="confirm-actions" style="margin-top:20px;">
                 <button class="btn-confirm-act act-cancel" onclick="document.getElementById('transDetailModal').style.display='none'">FECHAR</button>
-                <button class="btn-confirm-act act-pause" id="btnPauseRecurrence" style="display:none;" onclick="pauseRecurrence()">PAUSAR RECORRÊNCIA</button>
+                <button class="btn-confirm-act act-edit" onclick="editTransaction()">EDITAR</button>
+                <button class="btn-confirm-act act-pause" id="btnPauseRecurrence" style="display:none;" onclick="pauseRecurrence()">PAUSAR</button>
                 <button class="btn-confirm-act act-delete" onclick="deleteTransaction()">EXCLUIR</button>
             </div>
         </div>
@@ -595,7 +612,8 @@
     let newTransMethod = 'debit';
     let selectedCategory = 'outros';
     let currentFilter = 'all';
-    let currentTransId = null; // Para edição/detalhes
+    let currentTransId = null; 
+    let isEditing = false; // Flag para saber se esta editando
 
     const bgMusic = document.getElementById("bgMusic");
     let isPlaying = false;
@@ -787,6 +805,8 @@
     }
 
     window.openAddTransactionModal = function() {
+        isEditing = false;
+        document.getElementById('transModalTitle').innerText = "NOVA TRANSAÇÃO";
         document.getElementById('addTransModal').style.display = 'flex';
         document.getElementById('transTitle').value = '';
         document.getElementById('transDesc').value = '';
@@ -839,16 +859,44 @@
 
         if (!playerData.finance) playerData.finance = { balance: 0, transactions: [] };
 
+        // MODO EDIÇÃO
+        if (isEditing && currentTransId) {
+            const index = playerData.finance.transactions.findIndex(x => x.id == currentTransId);
+            if(index > -1) {
+                // Se estava pago, estorna o saldo antigo
+                const oldT = playerData.finance.transactions[index];
+                if(oldT.paid) {
+                    if(oldT.type === 'income') playerData.finance.balance -= oldT.val;
+                    else playerData.finance.balance += oldT.val;
+                }
+                
+                // Atualiza
+                playerData.finance.transactions[index].title = title;
+                playerData.finance.transactions[index].desc = desc;
+                playerData.finance.transactions[index].val = val;
+                playerData.finance.transactions[index].date = dateRaw;
+                playerData.finance.transactions[index].category = selectedCategory;
+                playerData.finance.transactions[index].type = newTransType;
+                playerData.finance.transactions[index].method = newTransType === 'income' ? 'debit' : newTransMethod;
+                playerData.finance.transactions[index].paid = false; // Ao editar, volta a não pago por segurança
+            }
+            isEditing = false;
+            saveData();
+            document.getElementById('addTransModal').style.display = 'none';
+            document.getElementById('transDetailModal').style.display = 'none';
+            return;
+        }
+
+        // MODO NOVO
         const isRecurrent = document.getElementById('chkRecurrent').checked;
         const recurrenceGroupId = isRecurrent ? Date.now() + 'REC' : null;
 
-        // PARCELAMENTO OU RECORRÊNCIA
         let iterations = 1;
         if (newTransType === 'expense' && newTransMethod === 'credit') {
             iterations = parseInt(document.getElementById('transInstallments').value);
-            val = val / iterations; // Valor da parcela
+            val = val / iterations; 
         } else if (isRecurrent) {
-            iterations = 12; // Gera para 1 ano
+            iterations = 12; // 1 ano
         }
 
         const baseDate = new Date(dateRaw);
@@ -882,11 +930,11 @@
         showSuccessPopup();
     }
 
-    // FILTROS
     window.applyFilter = function(filter) {
         currentFilter = filter;
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('filter-'+filter).classList.add('active');
+        document.getElementById('activeFilterLabel').innerText = filter.toUpperCase();
+        document.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active')); // Limpa visual do modal
+        document.getElementById('filterModal').style.display = 'none'; // Fecha modal
         renderFinanceTab();
     }
 
@@ -901,7 +949,7 @@
             const tDate = new Date(t.date);
             const parts = t.date.split('-');
             const isSameMonth = parseInt(parts[1]) - 1 === viewMonth && parseInt(parts[0]) === viewYear;
-            const isVisible = !t.paused; // Não mostra se estiver pausado
+            const isVisible = !t.paused; 
             return isSameMonth && isVisible;
         });
 
@@ -909,7 +957,6 @@
         let projectedBalance = currentBalance;
         let invoiceTotal = 0;
         
-        // Cálculos e Filtros
         const listEl = document.getElementById('finance-list');
         listEl.innerHTML = '';
         monthTrans.sort((a,b) => new Date(a.date) - new Date(b.date));
@@ -922,7 +969,6 @@
                 if (!t.paid && t.type === 'income') projectedBalance += t.val;
             }
 
-            // APLICAR FILTROS VISUAIS
             let passFilter = true;
             if (currentFilter !== 'all') {
                 if (currentFilter === 'income' && t.type !== 'income') passFilter = false;
@@ -930,12 +976,11 @@
                 else if (currentFilter !== 'income' && currentFilter !== 'expense' && t.category !== currentFilter) passFilter = false;
             }
 
-            if (passFilter && t.method !== 'credit') { // Lista principal não mostra crédito (está na fatura)
+            if (passFilter && t.method !== 'credit') { 
                 const div = document.createElement('div');
-                let statusClass = 'status-normal';
+                let statusClass = 'fin-type-expense';
                 if (t.paid) statusClass = 'status-paid';
                 else if (t.type === 'income') statusClass = 'fin-type-income';
-                else statusClass = 'fin-type-expense';
 
                 div.className = `fin-item ${statusClass}`;
                 const sign = t.type === 'income' ? '+' : '-';
@@ -968,7 +1013,7 @@
         if (listEl.innerHTML === '') listEl.innerHTML = '<div style="text-align:center; padding:20px; color:#555;">SEM MOVIMENTAÇÕES</div>';
     }
 
-    // MODAL DETALHES
+    // MODAL DETALHES & EDIÇÃO
     window.openTransactionDetails = function(id) {
         const t = playerData.finance.transactions.find(x => x.id == id);
         if (!t) return;
@@ -995,11 +1040,37 @@
         document.getElementById('transDetailModal').style.display = 'flex';
     }
 
+    window.editTransaction = function() {
+        const t = playerData.finance.transactions.find(x => x.id == currentTransId);
+        if (!t) return;
+        
+        isEditing = true;
+        document.getElementById('transDetailModal').style.display = 'none';
+        document.getElementById('addTransModal').style.display = 'flex';
+        document.getElementById('transModalTitle').innerText = "EDITAR TRANSAÇÃO";
+        
+        document.getElementById('transTitle').value = t.title;
+        document.getElementById('transDesc').value = t.desc;
+        // Formata valor para input ATM
+        document.getElementById('transVal').value = t.val.toFixed(2).replace('.',',');
+        document.getElementById('transDate').value = t.date;
+        
+        setTransType(t.type);
+        setTransMethod(t.method === 'debit' ? 'debit' : 'credit');
+        
+        // Selecionar Categoria Visualmente
+        const cats = ['alimentacao', 'transporte', 'contas', 'lazer', 'saude', 'outros'];
+        const index = cats.indexOf(t.category);
+        if(index > -1) setCategory(t.category, document.querySelectorAll('.cat-btn')[index]);
+        
+        // Desabilita recorrencia na edição simples
+        document.getElementById('chkRecurrent').checked = false; 
+    }
+
     window.deleteTransaction = function() {
-        if(confirm("Tem certeza? Isso afetará o saldo.")) {
+        if(confirm("Tem certeza? Isso recalculará o saldo.")) {
             const index = playerData.finance.transactions.findIndex(x => x.id == currentTransId);
             if(index > -1) {
-                // Se estava pago, estorna o saldo antes de deletar
                 const t = playerData.finance.transactions[index];
                 if(t.paid) {
                     if(t.type === 'income') playerData.finance.balance -= t.val;
@@ -1016,11 +1087,10 @@
         const t = playerData.finance.transactions.find(x => x.id == currentTransId);
         if(!t || !t.recurrenceId) return;
         
-        const newState = !t.paused; // Inverte
-        const confirmation = confirm(newState ? "Pausar recorrência futura? (Itens não aparecerão)" : "Retomar recorrência?");
+        const newState = !t.paused; 
+        const confirmation = confirm(newState ? "Pausar itens futuros?" : "Retomar itens futuros?");
         
         if(confirmation) {
-            // Afeta todos com o mesmo recurrenceId que tem data MAIOR ou IGUAL a este
             playerData.finance.transactions.forEach(x => {
                 if (x.recurrenceId === t.recurrenceId && new Date(x.date) >= new Date(t.date)) {
                     x.paused = newState;
@@ -1031,12 +1101,9 @@
         }
     }
 
-    // MODAL FATURA
     window.openCreditCardModal = function() {
         const list = document.getElementById('ccModalList');
         list.innerHTML = '';
-        
-        // Filtra itens do mês atual que são CREDIT e Expense
         const viewMonth = currentViewDate.getMonth();
         const viewYear = currentViewDate.getFullYear();
         let total = 0;
@@ -1065,11 +1132,9 @@
         document.getElementById('creditCardModal').style.display = 'flex';
     }
 
-    // MODAL EXTRATO (PAGOS)
     window.openExtractModal = function() {
         const list = document.getElementById('extractModalList');
         list.innerHTML = '';
-        
         const viewMonth = currentViewDate.getMonth();
         const viewYear = currentViewDate.getFullYear();
 
