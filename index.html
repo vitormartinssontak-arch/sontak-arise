@@ -25,7 +25,6 @@
             --dis-color: #c0c0c0;     
         }
 
-        /* Tira barra de rolagem geral feia */
         ::-webkit-scrollbar { width: 0px; background: transparent; }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
@@ -137,6 +136,7 @@
         .val-green { color: var(--success); text-shadow: 0 0 5px rgba(0, 255, 157, 0.3); }
         .val-red { color: var(--danger); text-shadow: 0 0 5px rgba(255, 68, 68, 0.3); }
         .val-yellow { color: var(--warning); }
+        .val-blue { color: var(--flex-color); text-shadow: 0 0 5px rgba(0, 210, 255, 0.3); }
 
         .credit-card-box { background: linear-gradient(135deg, #220000 0%, #000 100%); border: 1px solid var(--danger); padding: 15px; border-radius: 8px; margin-bottom: 20px; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.2s; }
         .credit-card-box:active { transform: scale(0.98); }
@@ -149,7 +149,7 @@
         .fab-add { background: var(--theme-color); color: black; border: none; width: 100%; padding: 15px; font-weight: bold; font-family: 'Rajdhani'; font-size: 16px; cursor: pointer; margin-bottom: 20px; text-transform: uppercase; box-shadow: 0 0 15px rgba(190,0,255,0.3); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); transition: 0.2s; }
         .fab-add:active { transform: scale(0.98); }
 
-        /* Filtros Gamificados (Sem barra de rolagem) */
+        /* Filtros Gamificados */
         .filter-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .btn-filter-trigger { background: #222; border: 1px solid #444; color: var(--theme-color); font-size: 12px; font-weight: bold; font-family: 'Rajdhani'; padding: 5px 15px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
         .active-filter-label { font-size: 12px; color: #888; text-transform: uppercase; }
@@ -160,6 +160,7 @@
         
         .fin-type-expense { border-left-color: var(--danger); background: linear-gradient(90deg, rgba(255,68,68,0.05) 0%, transparent 100%); }
         .fin-type-income { border-left-color: var(--success); background: linear-gradient(90deg, rgba(0,255,157,0.05) 0%, transparent 100%); }
+        .fin-type-previous { border-left-color: var(--flex-color); background: linear-gradient(90deg, rgba(0,210,255,0.05) 0%, transparent 100%); margin-bottom: 10px; }
         
         .status-paid { opacity: 0.6; filter: grayscale(80%); }
         .status-paid .fin-title { text-decoration: line-through; }
@@ -334,11 +335,11 @@
 
             <div class="finance-panel">
                 <div class="fin-card">
-                    <div class="fin-label">SALDO REAL</div>
+                    <div class="fin-label">SALDO REAL (HOJE)</div>
                     <div class="fin-value val-green" id="finBalance">R$ 0,00</div>
                 </div>
                 <div class="fin-card">
-                    <div class="fin-label">PREVISÃO (FIM DO MÊS)</div>
+                    <div class="fin-label">PREVISÃO (FIM MÊS)</div>
                     <div class="fin-value val-yellow" id="finProjected">R$ 0,00</div>
                 </div>
             </div>
@@ -613,7 +614,7 @@
     let selectedCategory = 'outros';
     let currentFilter = 'all';
     let currentTransId = null; 
-    let isEditing = false; // Flag para saber se esta editando
+    let isEditing = false; 
 
     const bgMusic = document.getElementById("bgMusic");
     let isPlaying = false;
@@ -811,7 +812,14 @@
         document.getElementById('transTitle').value = '';
         document.getElementById('transDesc').value = '';
         document.getElementById('transVal').value = '';
-        document.getElementById('transDate').valueAsDate = new Date();
+        
+        // PADRÃO: DATA DO MÊS VISUALIZADO (DIA 1)
+        const d = new Date(currentViewDate.getFullYear(), currentViewDate.getMonth(), 1);
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        document.getElementById('transDate').value = `${yyyy}-${mm}-${dd}`;
+
         document.getElementById('chkRecurrent').checked = false;
         setTransType('expense');
         setCategory('outros', document.querySelectorAll('.cat-btn')[5]);
@@ -837,7 +845,6 @@
         elem.classList.add('selected');
     }
 
-    // INPUT ATM 
     window.formatCurrencyInput = function(input) {
         let val = input.value.replace(/\D/g, ''); 
         val = (parseInt(val) / 100).toFixed(2) + '';
@@ -851,7 +858,7 @@
         const title = document.getElementById('transTitle').value;
         const desc = document.getElementById('transDesc').value;
         const valStr = document.getElementById('transVal').value;
-        const dateRaw = document.getElementById('transDate').value;
+        const dateRaw = document.getElementById('transDate').value; // YYYY-MM-DD
         
         let val = parseFloat(valStr.replace(/\./g, '').replace(',', '.'));
 
@@ -859,18 +866,12 @@
 
         if (!playerData.finance) playerData.finance = { balance: 0, transactions: [] };
 
-        // MODO EDIÇÃO
         if (isEditing && currentTransId) {
             const index = playerData.finance.transactions.findIndex(x => x.id == currentTransId);
             if(index > -1) {
-                // Se estava pago, estorna o saldo antigo
                 const oldT = playerData.finance.transactions[index];
-                if(oldT.paid) {
-                    if(oldT.type === 'income') playerData.finance.balance -= oldT.val;
-                    else playerData.finance.balance += oldT.val;
-                }
+                // NÃO REMOVE DO SALDO AQUI, POIS RENDER VAI RECALCULAR
                 
-                // Atualiza
                 playerData.finance.transactions[index].title = title;
                 playerData.finance.transactions[index].desc = desc;
                 playerData.finance.transactions[index].val = val;
@@ -878,7 +879,6 @@
                 playerData.finance.transactions[index].category = selectedCategory;
                 playerData.finance.transactions[index].type = newTransType;
                 playerData.finance.transactions[index].method = newTransType === 'income' ? 'debit' : newTransMethod;
-                playerData.finance.transactions[index].paid = false; // Ao editar, volta a não pago por segurança
             }
             isEditing = false;
             saveData();
@@ -887,7 +887,6 @@
             return;
         }
 
-        // MODO NOVO
         const isRecurrent = document.getElementById('chkRecurrent').checked;
         const recurrenceGroupId = isRecurrent ? Date.now() + 'REC' : null;
 
@@ -896,14 +895,26 @@
             iterations = parseInt(document.getElementById('transInstallments').value);
             val = val / iterations; 
         } else if (isRecurrent) {
-            iterations = 12; // 1 ano
+            iterations = 12; // 12 meses
         }
 
-        const baseDate = new Date(dateRaw);
+        // CORREÇÃO DATA: Lidar com timezone
+        // Criar data como UTC para garantir dia
+        const parts = dateRaw.split('-');
+        const baseYear = parseInt(parts[0]);
+        const baseMonth = parseInt(parts[1]) - 1; // JS 0-11
+        const baseDay = parseInt(parts[2]);
 
         for (let i = 0; i < iterations; i++) {
-            let pDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + i, baseDate.getDate());
-            let pDateStr = pDate.toISOString().split('T')[0];
+            // Avança mês sem pular
+            let targetMonth = baseMonth + i;
+            let targetYear = baseYear + Math.floor(targetMonth / 12);
+            targetMonth = targetMonth % 12;
+
+            // Formata YYYY-MM-DD
+            let mm = String(targetMonth + 1).padStart(2, '0');
+            let dd = String(baseDay).padStart(2, '0');
+            let pDateStr = `${targetYear}-${mm}-${dd}`;
             
             let finalTitle = title;
             if (newTransType === 'expense' && newTransMethod === 'credit' && iterations > 1) {
@@ -933,11 +944,12 @@
     window.applyFilter = function(filter) {
         currentFilter = filter;
         document.getElementById('activeFilterLabel').innerText = filter.toUpperCase();
-        document.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active')); // Limpa visual do modal
-        document.getElementById('filterModal').style.display = 'none'; // Fecha modal
+        document.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active'));
+        document.getElementById('filterModal').style.display = 'none';
         renderFinanceTab();
     }
 
+    // RENDERIZAÇÃO INTELIGENTE (SALDO ANTERIOR + MÊS)
     window.renderFinanceTab = function() {
         const monthNames = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
         const viewMonth = currentViewDate.getMonth();
@@ -945,30 +957,73 @@
 
         document.getElementById('finDateDisplay').innerText = `${monthNames[viewMonth]} ${viewYear}`;
 
-        const monthTrans = playerData.finance.transactions.filter(t => {
+        const listEl = document.getElementById('finance-list');
+        listEl.innerHTML = '';
+
+        // 1. CALCULAR SALDO ANTERIOR (Tudo antes do dia 1 do mês atual)
+        // Lógica: Soma todas as entradas PAGAS e saídas PAGAS de meses anteriores
+        let previousBalance = 0;
+        playerData.finance.transactions.forEach(t => {
             const tDate = new Date(t.date);
+            const parts = t.date.split('-');
+            // Verifica se é mês/ano anterior
+            if ( (parseInt(parts[0]) < viewYear) || (parseInt(parts[0]) === viewYear && parseInt(parts[1]) - 1 < viewMonth) ) {
+                if (t.paid) {
+                    if (t.type === 'income') previousBalance += t.val;
+                    else if (t.type === 'expense') previousBalance -= t.val;
+                }
+            }
+        });
+
+        // Exibir Saldo Anterior na Lista se não for 0
+        if (previousBalance !== 0) {
+            const divPrev = document.createElement('div');
+            divPrev.className = 'fin-item fin-type-previous';
+            divPrev.innerHTML = `
+                <div style="width:24px;"></div>
+                <div class="fin-info">
+                    <div class="fin-title" style="color:var(--flex-color)">SALDO ANTERIOR</div>
+                    <div class="fin-meta">Acumulado até dia 01</div>
+                </div>
+                <div class="fin-amount" style="color:${previousBalance >= 0 ? 'var(--success)' : 'var(--danger)'}">R$ ${previousBalance.toFixed(2)}</div>
+            `;
+            listEl.appendChild(divPrev);
+        }
+
+        // 2. FILTRAR ITENS DO MÊS
+        const monthTrans = playerData.finance.transactions.filter(t => {
             const parts = t.date.split('-');
             const isSameMonth = parseInt(parts[1]) - 1 === viewMonth && parseInt(parts[0]) === viewYear;
             const isVisible = !t.paused; 
             return isSameMonth && isVisible;
         });
 
-        let currentBalance = playerData.finance.balance; 
-        let projectedBalance = currentBalance;
+        // 3. CALCULAR PROJEÇÃO DO MÊS
+        let monthProjectedBalance = previousBalance; // Começa com o que tinha
+        let realCurrentBalance = 0; // Soma global de tudo pago no banco
+        
+        // Recalcular saldo total real do jogador (Independente da view)
+        playerData.finance.transactions.forEach(t => {
+            if(t.paid) {
+                if(t.type === 'income') realCurrentBalance += t.val;
+                else realCurrentBalance -= t.val;
+            }
+        });
+
         let invoiceTotal = 0;
         
-        const listEl = document.getElementById('finance-list');
-        listEl.innerHTML = '';
         monthTrans.sort((a,b) => new Date(a.date) - new Date(b.date));
 
         monthTrans.forEach(t => {
             if (t.type === 'expense' && t.method === 'credit') {
                 invoiceTotal += t.val;
             } else {
-                if (!t.paid && t.type === 'expense') projectedBalance -= t.val;
-                if (!t.paid && t.type === 'income') projectedBalance += t.val;
+                // Para projeção do mês: Soma/Subtrai valor do item
+                if (t.type === 'income') monthProjectedBalance += t.val;
+                else monthProjectedBalance -= t.val;
             }
 
+            // RENDER LISTA
             let passFilter = true;
             if (currentFilter !== 'all') {
                 if (currentFilter === 'income' && t.type !== 'income') passFilter = false;
@@ -1001,16 +1056,19 @@
             }
         });
 
+        // ATUALIZA UI
         const elBal = document.getElementById('finBalance');
-        elBal.innerText = currentBalance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        elBal.className = currentBalance >= 0 ? 'fin-value val-green' : 'fin-value val-red';
+        elBal.innerText = realCurrentBalance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        elBal.className = realCurrentBalance >= 0 ? 'fin-value val-green' : 'fin-value val-red';
 
-        document.getElementById('finProjected').innerText = projectedBalance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        // Previsão = Saldo Anterior + (Ganhos Mês - Gastos Mês)
+        document.getElementById('finProjected').innerText = monthProjectedBalance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        
         document.getElementById('ccInvoice').innerText = invoiceTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         let ccPercent = Math.min((invoiceTotal / 2000) * 100, 100); 
         document.getElementById('ccBar').style.width = ccPercent + '%';
         
-        if (listEl.innerHTML === '') listEl.innerHTML = '<div style="text-align:center; padding:20px; color:#555;">SEM MOVIMENTAÇÕES</div>';
+        if (listEl.innerHTML === '' && previousBalance === 0) listEl.innerHTML = '<div style="text-align:center; padding:20px; color:#555;">SEM MOVIMENTAÇÕES</div>';
     }
 
     // MODAL DETALHES & EDIÇÃO
@@ -1058,12 +1116,10 @@
         setTransType(t.type);
         setTransMethod(t.method === 'debit' ? 'debit' : 'credit');
         
-        // Selecionar Categoria Visualmente
         const cats = ['alimentacao', 'transporte', 'contas', 'lazer', 'saude', 'outros'];
         const index = cats.indexOf(t.category);
         if(index > -1) setCategory(t.category, document.querySelectorAll('.cat-btn')[index]);
         
-        // Desabilita recorrencia na edição simples
         document.getElementById('chkRecurrent').checked = false; 
     }
 
@@ -1071,11 +1127,7 @@
         if(confirm("Tem certeza? Isso recalculará o saldo.")) {
             const index = playerData.finance.transactions.findIndex(x => x.id == currentTransId);
             if(index > -1) {
-                const t = playerData.finance.transactions[index];
-                if(t.paid) {
-                    if(t.type === 'income') playerData.finance.balance -= t.val;
-                    else playerData.finance.balance += t.val;
-                }
+                // Não precisa estornar saldo manualmente, pois o render recalcula tudo do zero
                 playerData.finance.transactions.splice(index, 1);
                 saveData();
                 document.getElementById('transDetailModal').style.display = 'none';
@@ -1168,15 +1220,12 @@
 
         if (t.paid) {
             t.paid = false;
-            if (t.type === 'income') playerData.finance.balance -= t.val;
-            else playerData.finance.balance += t.val; 
+            // Saldo é recalculado no render, não precisa mexer aqui
         } else {
             t.paid = true;
             if (t.type === 'income') {
-                playerData.finance.balance += t.val;
                 showReward("RECEBIMENTO CONFIRMADO", 0);
             } else {
-                playerData.finance.balance -= t.val;
                 giveXp(30, ['DIS']);
             }
         }
