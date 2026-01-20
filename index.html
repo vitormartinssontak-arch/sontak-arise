@@ -10,246 +10,123 @@
     
     <style>
         /* =========================================
-           1. VARIÁVEIS DO SISTEMA (CORES)
+           1. VARIÁVEIS DO SISTEMA
            ========================================= */
         :root {
-            --theme-color: #be00ff;   /* Roxo Principal (Sontak) */
-            --flex-color: #00d2ff;    /* Azul (Missões Flexíveis) */
-            --mand-color: #ff9500;    /* Laranja (Missões Obrigatórias) */
-            --bg-dark: #050505;       /* Fundo Preto Profundo */
-            --text-main: #fff;        /* Texto Branco */
-            --success: #00ff9d;       /* Verde Neon (Sucesso/XP) */
-            --danger: #ff4444;        /* Vermelho (Erro/Perigo) */
-            --warning: #ffe600;       /* Amarelo (Atenção) */
-            --gold-color: #ffd700;    /* Dourado (Level Up) */
-            --dis-color: #c0c0c0;     /* Prata (Disciplina) */
+            --theme-color: #be00ff;   
+            --flex-color: #00d2ff;    
+            --mand-color: #ff9500;    
+            --bg-dark: #050505;       
+            --text-main: #fff;        
+            --success: #00ff9d;       
+            --danger: #ff4444;        
+            --warning: #ffe600;       
+            --gold-color: #ffd700;    
+            --dis-color: #c0c0c0;     
         }
 
-        /* Reset Básico */
-        * {
-            box-sizing: border-box;
-            outline: none;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
 
-        /* =========================================
-           2. CONFIGURAÇÃO GERAL DA PÁGINA
-           ========================================= */
         body {
-            background-color: black;
-            color: var(--text-main);
-            font-family: 'Rajdhani', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            height: 100vh; 
-            height: 100dvh; 
-            overflow: hidden; 
-            user-select: none; 
-            position: relative;
-            z-index: 1;
+            background-color: black; color: var(--text-main); font-family: 'Rajdhani', sans-serif;
+            margin: 0; padding: 0; display: flex; justify-content: center;
+            height: 100vh; height: 100dvh; overflow: hidden; user-select: none;
+            position: relative; z-index: 1;
         }
 
-        /* --- IMAGEM DE FUNDO (ANIME) --- */
         body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('./Fundo.jpg.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0.45; 
-            z-index: -1;   
-            filter: grayscale(10%); 
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('./Fundo.jpg.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;
+            opacity: 0.45; z-index: -1; filter: grayscale(10%);
         }
-
         body::after {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 30%, black 100%);
-            z-index: -1;
-            pointer-events: none;
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 30%, black 100%); z-index: -1; pointer-events: none;
         }
 
-        /* =========================================
-           3. CONTAINER PRINCIPAL
-           ========================================= */
         .app-container {
-            width: 100%; 
-            max-width: 420px; 
-            height: 100%;      
-            background: rgba(5, 5, 12, 0.90); 
-            border-left: 1px solid var(--theme-color); 
-            border-right: 1px solid var(--theme-color);
+            width: 100%; max-width: 420px; height: 100%;
+            background: rgba(5, 5, 12, 0.90);
+            border-left: 1px solid var(--theme-color); border-right: 1px solid var(--theme-color);
             box-shadow: 0 0 30px rgba(190, 0, 255, 0.15);
-            display: none; 
-            flex-direction: column; 
-            position: relative;
-            opacity: 0; 
-            animation: showApp 1s ease forwards 0.5s;
-            backdrop-filter: blur(10px); 
+            display: none; flex-direction: column; position: relative;
+            opacity: 0; animation: showApp 1s ease forwards 0.5s;
+            backdrop-filter: blur(10px);
         }
-
         @keyframes showApp { to { opacity: 1; } }
 
-        /* =========================================
-           4. CABEÇALHO (FIXO)
-           ========================================= */
-        .header-container {
-            flex-shrink: 0; 
-            border-bottom: 1px solid var(--theme-color);
-            background: rgba(0,0,0,0.6);
-            z-index: 20;
-        }
-
-        .header { 
-            padding: 15px 20px 5px 20px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-
-        .header h1 { 
-            margin: 0; 
-            font-size: 22px; 
-            color: var(--theme-color); 
-            text-shadow: 0 0 8px var(--theme-color); 
-            letter-spacing: 1px; 
-        }
-
+        /* HEADER */
+        .header-container { flex-shrink: 0; border-bottom: 1px solid var(--theme-color); background: rgba(0,0,0,0.6); z-index: 20; }
+        .header { padding: 15px 20px 5px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { margin: 0; font-size: 22px; color: var(--theme-color); text-shadow: 0 0 8px var(--theme-color); letter-spacing: 1px; }
         .lvl-badge { font-size: 14px; color: #aaa; text-align: right; }
         .lvl-number { font-size: 24px; color: var(--theme-color); font-weight: bold; }
-
-        .music-controls {
-            display: flex; align-items: center; justify-content: center;
-            padding: 5px 0 10px 0; gap: 15px;
-        }
-
-        .music-btn {
-            background: none; border: 1px solid #444; color: var(--flex-color);
-            border-radius: 5px; padding: 5px 15px; cursor: pointer;
-            font-family: 'Share Tech Mono'; font-size: 12px; transition: 0.2s;
-        }
-
+        .music-controls { display: flex; align-items: center; justify-content: center; padding: 5px 0 10px 0; gap: 15px; }
+        .music-btn { background: none; border: 1px solid #444; color: var(--flex-color); border-radius: 5px; padding: 5px 15px; cursor: pointer; font-family: 'Share Tech Mono'; font-size: 12px; transition: 0.2s; }
         .music-btn:active { background: var(--flex-color); color: black; }
 
-        /* =========================================
-           5. CONTEÚDO (SCROLL)
-           ========================================= */
-        .content-area { 
-            flex: 1; overflow-y: auto; padding: 20px; 
-            scroll-behavior: smooth; padding-bottom: 80px; 
-        }
+        /* CONTENT */
+        .content-area { flex: 1; overflow-y: auto; padding: 20px; scroll-behavior: smooth; padding-bottom: 80px; }
 
-        /* GRÁFICOS */
+        /* GRAPHS & STATS */
         .chart-wrapper { position: relative; height: 260px; width: 100%; margin-bottom: 10px; }
         .xp-box { margin-bottom: 20px; }
         .xp-bar-bg { width: 100%; height: 8px; background: #222; border-radius: 4px; overflow: hidden; border: 1px solid #333; }
         .xp-bar-fill { width: 0%; height: 100%; background: var(--theme-color); transition: width 0.5s ease; box-shadow: 0 0 10px var(--theme-color); }
-
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 25px; text-align: center; }
         .stat-item { background: rgba(255,255,255,0.05); padding: 5px; border-radius: 4px; border: 1px solid #333; }
         .stat-label { font-size: 10px; font-weight: bold; color: #888; display: block; }
         .stat-value { font-size: 16px; font-weight: bold; color: var(--theme-color); font-family: 'Share Tech Mono'; }
 
-        /* =========================================
-           6. LISTA DE MISSÕES
-           ========================================= */
-        .section-title { 
-            color: var(--theme-color); border-left: 4px solid var(--theme-color); 
-            padding-left: 10px; margin: 25px 0 15px 0; 
-            font-size: 18px; font-weight: bold; text-transform: uppercase; 
-        }
-
-        .quest-card {
-            background: linear-gradient(90deg, rgba(30,30,30,0.7) 0%, transparent 100%);
-            border-left: 2px solid #444; padding: 12px; margin-bottom: 8px;
-            display: flex; align-items: center; justify-content: space-between; transition: 0.3s;
-        }
-
+        /* QUESTS */
+        .section-title { color: var(--theme-color); border-left: 4px solid var(--theme-color); padding-left: 10px; margin: 25px 0 15px 0; font-size: 18px; font-weight: bold; text-transform: uppercase; }
+        .quest-card { background: linear-gradient(90deg, rgba(30,30,30,0.7) 0%, transparent 100%); border-left: 2px solid #444; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; transition: 0.3s; }
         .quest-card.type-flexible { background: linear-gradient(90deg, rgba(0, 210, 255, 0.2) 0%, transparent 100%); border-left-color: var(--flex-color); }
         .quest-card.type-mandatory { background: linear-gradient(90deg, rgba(255, 149, 0, 0.2) 0%, transparent 100%); border-left-color: var(--mand-color); box-shadow: inset 5px 0 10px -5px rgba(255, 149, 0, 0.3); }
-
         .checkbox { width: 22px; height: 22px; border: 1px solid #666; margin-right: 15px; cursor: pointer; display: grid; place-items: center; flex-shrink: 0; }
         .checked { background: var(--theme-color); border-color: var(--theme-color); box-shadow: 0 0 10px var(--theme-color); }
         .task-text { color: white; font-size: 16px; flex: 1; cursor: pointer; }
-        
         .tags-container { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
         .xp-tag { font-size: 12px; background: #222; padding: 3px 6px; border-radius: 3px; color: #fff; border: 1px solid #444; font-weight: bold; }
         .attr-mini-tag { font-size: 9px; padding: 2px 4px; border-radius: 2px; font-weight: bold; color: black; margin-left: 3px; }
-        
         .bg-STR { background-color: #ff4444; } .bg-AGI { background-color: #00d2ff; } .bg-VIT { background-color: #00ff9d; } .bg-INT { background-color: #be00ff; } .bg-SEN { background-color: #ffd700; } .bg-DIS { background-color: #c0c0c0; color: black; }
         .tag-flex { font-size: 10px; background: rgba(0, 210, 255, 0.2); padding: 2px 5px; border-radius: 3px; color: var(--flex-color); border: 1px solid var(--flex-color); margin-right: 5px; font-weight: bold; }
         .tag-mand { font-size: 10px; background: rgba(255, 149, 0, 0.2); padding: 2px 5px; border-radius: 3px; color: var(--mand-color); border: 1px solid var(--mand-color); margin-right: 5px; font-weight: bold; }
 
-        /* =========================================
-           7. EDITOR E FORMULÁRIOS
-           ========================================= */
+        /* EDITOR */
         .editor-box { background: rgba(16, 10, 22, 0.9); border: 1px solid #333; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
         .input-label { font-size: 12px; color: var(--theme-color); margin-bottom: 5px; display: block; font-weight: bold; text-transform: uppercase; }
         .sys-input, .sys-select { width: 100%; background: #050505; border: 1px solid #444; color: white; padding: 12px; font-family: 'Rajdhani'; font-size: 16px; outline: none; box-sizing: border-box; margin-bottom: 15px; }
         textarea.sys-input { resize: vertical; min-height: 80px; font-family: 'Share Tech Mono'; font-size: 14px; }
-        
         .attr-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 15px; }
         .attr-btn { background: #111; border: 1px solid #333; color: #666; padding: 10px 0; text-align: center; cursor: pointer; font-size: 12px; font-weight: bold; transition: 0.2s; border-radius: 4px; }
         .attr-btn.selected { color: black; border-color: white; box-shadow: 0 0 10px currentColor; }
         .attr-btn[data-type="STR"].selected { background: #ff4444; } .attr-btn[data-type="AGI"].selected { background: #00d2ff; } .attr-btn[data-type="VIT"].selected { background: #00ff9d; } .attr-btn[data-type="INT"].selected { background: #be00ff; } .attr-btn[data-type="SEN"].selected { background: #ffd700; } .attr-btn[data-type="DIS"].selected { background: #c0c0c0; }
-
         .recurrence-selector { display: flex; gap: 5px; margin-bottom: 20px; }
         .rec-btn { flex: 1; background: #222; border: 1px solid #444; color: #888; padding: 10px 5px; font-family: 'Rajdhani'; font-weight: bold; font-size: 12px; cursor: pointer; transition: 0.3s; }
         .rec-btn.selected-none { background: #444; color: white; border-color: #666; }
         .rec-btn.selected-flex { background: rgba(0, 210, 255, 0.2); color: var(--flex-color); border-color: var(--flex-color); }
         .rec-btn.selected-mand { background: rgba(255, 149, 0, 0.2); color: var(--mand-color); border-color: var(--mand-color); }
-
         .btn-add { background: var(--theme-color); color: black; border: none; font-weight: bold; padding: 15px; width: 100%; cursor: pointer; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
         .btn-add:active { transform: scale(0.98); }
         .btn-reset { background: #220000; color: var(--danger); border: 1px solid var(--danger); padding: 10px; width: 100%; margin-top: 50px; cursor: pointer; font-family: 'Rajdhani'; transition: 0.3s; }
-
         .action-container { display: flex; gap: 10px; }
         .action-btn { background: none; border: none; font-weight: bold; font-size: 20px; cursor: pointer; transition: transform 0.2s; }
         .action-btn:hover { transform: scale(1.2); }
         .btn-clone { color: var(--success); }
         .btn-del { color: var(--danger); }
 
-        /* =========================================
-           8. MENU INFERIOR
-           ========================================= */
-        .bottom-nav { 
-            height: auto; min-height: 60px;
-            background: rgba(2, 2, 2, 0.98); border-top: 1px solid #333; 
-            display: flex; justify-content: space-between; align-items: stretch; 
-            flex-shrink: 0; z-index: 10;
-            padding-bottom: env(safe-area-inset-bottom, 20px);
-        }
+        /* NAV */
+        .bottom-nav { height: auto; min-height: 60px; background: rgba(2, 2, 2, 0.98); border-top: 1px solid #333; display: flex; justify-content: space-between; align-items: stretch; flex-shrink: 0; z-index: 10; padding-bottom: env(safe-area-inset-bottom, 20px); }
+        .nav-btn { background: none; border: none; color: #666; font-family: 'Rajdhani'; font-weight: bold; font-size: 12px; text-transform: uppercase; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 0; }
+        .nav-btn.active { color: var(--theme-color); text-shadow: 0 0 5px var(--theme-color); background: rgba(190, 0, 255, 0.05); }
+        .tab-view { display: none; } .active-view { display: block; }
 
-        .nav-btn { 
-            background: none; border: none; color: #666; 
-            font-family: 'Rajdhani'; font-weight: bold; font-size: 12px; 
-            text-transform: uppercase; cursor: pointer; flex: 1; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 10px 0; 
-        }
-
-        .nav-btn.active { 
-            color: var(--theme-color); text-shadow: 0 0 5px var(--theme-color); 
-            background: rgba(190, 0, 255, 0.05);
-        }
-
-        .tab-view { display: none; }
-        .active-view { display: block; }
-
-        /* =========================================
-           9. FINANÇAS (ESTILO COMPLETO)
-           ========================================= */
-        /* Navegação de Data */
+        /* FINANCEIRO */
         .date-nav { display: flex; align-items: center; justify-content: space-between; background: #111; padding: 10px; border-radius: 5px; border: 1px solid #333; margin-bottom: 20px; }
         .date-btn { background: none; border: none; color: var(--theme-color); font-size: 20px; cursor: pointer; font-weight: bold; }
-        .date-display { color: white; font-family: 'Share Tech Mono'; font-size: 18px; text-transform: uppercase; }
-
-        /* Painel de Saldos */
+        .date-display { color: white; font-family: 'Share Tech Mono'; font-size: 18px; text-transform: uppercase; cursor: pointer; border-bottom: 1px dashed #666; }
+        
         .finance-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .fin-card { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 5px; text-align: center; border: 1px solid #333; }
         .fin-label { font-size: 10px; color: #888; text-transform: uppercase; }
@@ -258,111 +135,87 @@
         .val-red { color: var(--danger); text-shadow: 0 0 5px rgba(255, 68, 68, 0.3); }
         .val-yellow { color: var(--warning); }
 
-        /* Fatura do Cartão */
-        .credit-card-box { background: linear-gradient(135deg, #220000 0%, #000 100%); border: 1px solid var(--danger); padding: 15px; border-radius: 8px; margin-bottom: 20px; cursor: pointer; position: relative; overflow: hidden; }
+        .credit-card-box { background: linear-gradient(135deg, #220000 0%, #000 100%); border: 1px solid var(--danger); padding: 15px; border-radius: 8px; margin-bottom: 20px; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.2s; }
+        .credit-card-box:active { transform: scale(0.98); }
         .cc-title { color: var(--danger); font-size: 12px; font-weight: bold; text-transform: uppercase; display: flex; justify-content: space-between; }
         .cc-val { font-size: 28px; color: white; font-family: 'Share Tech Mono'; margin: 5px 0; }
         .cc-bar-bg { width: 100%; height: 4px; background: #330000; margin-top: 5px; }
         .cc-bar-fill { height: 100%; background: var(--danger); width: 0%; box-shadow: 0 0 10px var(--danger); }
         .cc-detail { font-size: 10px; color: #aaa; margin-top: 5px; }
 
-        /* Botão Adicionar */
         .fab-add { background: var(--theme-color); color: black; border: none; width: 100%; padding: 15px; font-weight: bold; font-family: 'Rajdhani'; font-size: 16px; cursor: pointer; margin-bottom: 20px; text-transform: uppercase; box-shadow: 0 0 15px rgba(190,0,255,0.3); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); transition: 0.2s; }
         .fab-add:active { transform: scale(0.98); }
 
-        /* Lista de Contas */
-        .fin-list { display: flex; flex-direction: column; gap: 8px; padding-bottom: 50px; }
-        .fin-item { background: rgba(20,20,20,0.8); border-left: 3px solid #444; padding: 12px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
-        
-        /* Cores de Estado das Contas */
-        .status-normal { border-left-color: #666; }
-        .status-warning { border-left-color: var(--warning); background: rgba(255, 230, 0, 0.05); }
-        .status-critical { border-left-color: var(--danger); background: rgba(255, 0, 0, 0.05); animation: pulseRed 2s infinite; }
-        .status-paid { border-left-color: var(--success); opacity: 0.5; text-decoration: line-through; }
+        /* Filtros */
+        .fin-filters { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; }
+        .filter-btn { background: #222; border: 1px solid #444; color: #888; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; font-family: 'Rajdhani'; }
+        .filter-btn.active { background: var(--theme-color); color: black; border-color: var(--theme-color); }
 
-        .fin-info { flex: 1; margin-left: 10px; }
-        .fin-desc { font-size: 14px; font-weight: bold; color: white; }
-        .fin-meta { font-size: 10px; color: #888; font-family: 'Share Tech Mono'; }
-        .fin-amount { font-family: 'Share Tech Mono'; font-size: 14px; font-weight: bold; }
+        /* Lista Financeira */
+        .fin-list { display: flex; flex-direction: column; gap: 8px; padding-bottom: 50px; }
+        .fin-item { background: rgba(20,20,20,0.8); border-left: 3px solid #444; padding: 12px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; position: relative; }
         
-        .fin-check { width: 24px; height: 24px; border: 1px solid #555; background: black; cursor: pointer; display: grid; place-items: center; }
+        .fin-type-expense { border-left-color: var(--danger); background: linear-gradient(90deg, rgba(255,68,68,0.05) 0%, transparent 100%); }
+        .fin-type-income { border-left-color: var(--success); background: linear-gradient(90deg, rgba(0,255,157,0.05) 0%, transparent 100%); }
+        
+        .status-paid { opacity: 0.6; filter: grayscale(80%); }
+        .status-paid .fin-desc { text-decoration: line-through; }
+
+        .fin-info { flex: 1; margin-left: 10px; cursor: pointer; }
+        .fin-title { font-size: 14px; font-weight: bold; color: white; }
+        .fin-meta { font-size: 10px; color: #888; font-family: 'Share Tech Mono'; display: flex; gap: 5px; align-items: center; }
+        .fin-cat { background: #333; color: #ccc; padding: 1px 4px; border-radius: 3px; font-size: 9px; }
+        .fin-amount { font-family: 'Share Tech Mono'; font-size: 14px; font-weight: bold; cursor: pointer;}
+        
+        .fin-check { width: 24px; height: 24px; border: 1px solid #555; background: black; cursor: pointer; display: grid; place-items: center; border-radius: 3px; }
         .fin-checked { background: var(--success); border-color: var(--success); color: black; }
 
-        @keyframes pulseRed { 0% { box-shadow: inset 0 0 0 transparent; } 50% { box-shadow: inset 5px 0 15px -5px rgba(255,0,0,0.5); } 100% { box-shadow: inset 0 0 0 transparent; } }
-
-        /* Modal Financeiro */
+        /* Modal Finanças */
         .modal-fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .btn-toggle { background: #222; color: #666; border: 1px solid #444; padding: 10px; cursor: pointer; font-family: 'Rajdhani'; font-weight: bold; }
         .btn-toggle.active { background: var(--theme-color); color: black; border-color: var(--theme-color); }
+        
+        .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 15px; }
+        .cat-btn { background: #111; border: 1px solid #333; color: #888; padding: 8px; font-size: 10px; text-align: center; cursor: pointer; border-radius: 4px; }
+        .cat-btn.selected { border-color: white; color: white; background: #333; }
 
-        /* =========================================
-           10. TELA DE LOGIN & POPUPS
-           ========================================= */
-        #login-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6); z-index: 20000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            backdrop-filter: blur(3px);
-        }
+        /* MODAIS E TELAS */
+        #login-overlay, .popup-overlay, .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        #login-overlay { z-index: 20000; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); }
+        .success-overlay { pointer-events: none; z-index: 200; display: none; }
+        
+        /* Ocultos por padrão */
+        .popup-overlay { display: none; }
 
-        .login-box { width: 90%; max-width: 350px; text-align: center; }
-        .login-title { font-family: 'Share Tech Mono'; color: var(--theme-color); font-size: 28px; letter-spacing: 4px; margin-bottom: 5px; text-shadow: 0 0 20px var(--theme-color); animation: glitchFade 2s infinite alternate; }
-        .login-sub { color: #ccc; font-size: 12px; margin-bottom: 30px; letter-spacing: 2px; text-shadow: 0 0 5px black; }
+        .login-box, .popup-box, .levelup-box, .confirm-box, .success-box { background: rgba(0,0,0,0.95); border: 2px solid var(--theme-color); padding: 25px; text-align: center; box-shadow: 0 0 30px rgba(190,0,255,0.2); width: 85%; max-width: 350px; max-height: 85vh; overflow-y: auto; animation: zoomIn 0.3s; position: relative; }
+        .levelup-box { border-color: var(--gold-color); box-shadow: 0 0 50px rgba(255,215,0,0.4); }
+        .confirm-box { border-color: var(--danger); box-shadow: 0 0 25px rgba(255,68,68,0.3); }
+        
+        .login-title { font-family: 'Share Tech Mono'; color: var(--theme-color); font-size: 28px; letter-spacing: 4px; animation: glitchFade 2s infinite alternate; }
+        .pass-display { background: rgba(0,0,0,0.8); border: 2px solid var(--theme-color); height: 60px; margin: 30px 0; display: flex; align-items: center; justify-content: center; font-family: 'Share Tech Mono'; font-size: 24px; color: #fff; letter-spacing: 5px; border-radius: 15px; box-shadow: 0 0 15px rgba(190,0,255,0.3); }
+        
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .key-btn { background: #000; border: 2px solid var(--theme-color); color: #fff; padding: 20px 0; font-size: 22px; font-family: 'Share Tech Mono'; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .key-btn:active { transform: scale(0.95); background: var(--theme-color); color: black; }
+        .error-anim { animation: shake 0.4s ease-in-out; border-color: var(--danger); color: var(--danger); }
 
-        .pass-display { 
-            background: rgba(0, 0, 0, 0.8); border: 2px solid var(--theme-color); 
-            height: 60px; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; 
-            font-family: 'Share Tech Mono'; font-size: 24px; color: #fff; letter-spacing: 5px; 
-            border-radius: 15px; box-shadow: 0 0 15px rgba(190, 0, 255, 0.3); white-space: nowrap; 
-        }
-
-        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 10px; }
-        .key-btn { background-color: #000; border: 2px solid var(--theme-color); color: #fff; padding: 20px 0; font-size: 22px; font-family: 'Share Tech Mono'; font-weight: bold; border-radius: 50%; cursor: pointer; transition: 0.1s; box-shadow: 0 0 10px rgba(190, 0, 255, 0.2); aspect-ratio: 1; display: flex; align-items: center; justify-content: center; }
-        .key-btn:active { transform: scale(0.95); background: var(--theme-color); color: #000; box-shadow: 0 0 25px var(--theme-color); }
-        .key-action { border-radius: 15px; aspect-ratio: auto; }
-        .key-clear { border-color: var(--danger); color: var(--danger); }
-        .key-enter { border-color: var(--success); color: var(--success); }
-        .error-anim { animation: shake 0.4s ease-in-out; border-color: var(--danger); color: var(--danger); box-shadow: 0 0 20px var(--danger); }
-
-        #boot-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; font-family: 'Share Tech Mono'; overflow: hidden; }
+        #boot-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; font-family: 'Share Tech Mono'; }
         .boot-text { color: var(--flex-color); font-size: 16px; margin-bottom: 10px; opacity: 0; animation: fadeInText 0.5s forwards; }
-        .boot-title { font-size: 32px; color: var(--theme-color); font-weight: bold; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 20px var(--theme-color); opacity: 0; animation: glitchFade 0.8s forwards 1.5s; text-align: center; margin: 20px 0; }
+        .boot-title { font-size: 32px; color: var(--theme-color); font-weight: bold; opacity: 0; animation: glitchFade 0.8s forwards 1.5s; margin: 20px 0; }
         .loader-line { width: 0%; height: 4px; background: var(--theme-color); box-shadow: 0 0 10px var(--theme-color); margin-top: 20px; animation: loadProgress 2.5s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
-        .scanlines { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2)); background-size: 100% 4px; pointer-events: none; z-index: 10000; }
         .fade-out-screen { opacity: 0; pointer-events: none; transition: opacity 0.8s ease-out; }
 
-        .popup-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); }
-        .popup-box { background: rgba(0,0,0,0.95); border: 2px solid var(--theme-color); padding: 30px; text-align: center; box-shadow: 0 0 50px var(--theme-color); animation: zoomIn 0.3s; width: 80%; max-height: 80vh; overflow-y: auto; }
-        .levelup-box { background: rgba(0,0,0,0.95); border: 2px solid var(--gold-color); padding: 40px 20px; text-align: center; box-shadow: 0 0 60px rgba(255, 215, 0, 0.5); animation: zoomIn 0.3s; width: 85%; }
-        
-        .popup-stat { font-size: 24px; font-weight: bold; color: white; text-shadow: 0 0 10px white; margin-bottom: 5px; }
-        .popup-xp { font-size: 32px; color: var(--success); font-weight: bold; text-shadow: 0 0 15px var(--success); }
-        .levelup-num { font-size: 80px; font-weight: 800; color: white; text-shadow: 0 0 30px var(--gold-color); margin: 10px 0; animation: pulse 0.8s infinite alternate; }
-
-        .confirm-box { background: #000; border: 1px solid var(--danger); padding: 25px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 0 25px rgba(255, 68, 68, 0.3); animation: zoomIn 0.2s; }
-        .confirm-title { color: var(--danger); font-size: 20px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; }
-        .confirm-actions { display: flex; gap: 15px; justify-content: center; }
         .btn-confirm-act { flex: 1; padding: 12px; font-weight: bold; border: none; cursor: pointer; font-family: 'Rajdhani'; font-size: 16px; }
         .act-cancel { background: transparent; border: 1px solid #555; color: #aaa; }
         .act-delete { background: var(--danger); color: black; box-shadow: 0 0 10px var(--danger); }
+        .act-pause { background: var(--warning); color: black; box-shadow: 0 0 10px var(--warning); }
 
-        .success-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: none; justify-content: center; align-items: center; z-index: 200; }
-        .success-box { background: rgba(0,0,0,0.9); border: 2px solid var(--theme-color); padding: 20px 40px; text-align: center; box-shadow: 0 0 40px rgba(190, 0, 255, 0.4); animation: slideUp 0.4s ease-out; }
-        .success-msg { color: var(--theme-color); font-weight: bold; font-size: 18px; letter-spacing: 2px; text-transform: uppercase; }
-
-        .detail-title { font-size: 22px; color: var(--theme-color); font-weight: bold; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 10px; text-align: left;}
-        .detail-desc { font-family: 'Share Tech Mono'; font-size: 14px; color: #ccc; text-align: left; white-space: pre-wrap; margin-bottom: 20px; line-height: 1.5; }
-        .btn-close { background: #333; color: white; border: 1px solid #555; padding: 10px 20px; cursor: pointer; width: 100%; font-family: 'Rajdhani'; font-weight: bold;}
-
-        .library-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding-bottom: 20px; }
-        .book-card { background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 8px; overflow: hidden; text-align: center; transition: 0.3s; position: relative; height: 160px; }
+        .book-card { background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 8px; overflow: hidden; position: relative; height: 160px; text-align: center; }
         .book-cover { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
-        .book-info { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.8); color: #fff; font-size: 10px; padding: 5px; }
-        
-        .book-detail-cover { width: 150px; border: 2px solid #444; border-radius: 5px; margin-bottom: 15px; }
-        .btn-delete-book { background: #330000; color: #ff5555; border: 1px solid red; width: 100%; padding: 10px; margin-top: 15px; font-weight: bold; cursor: pointer; }
+        .book-info { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.8); color: white; font-size: 10px; padding: 5px; }
+        .library-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
 
-        /* Animações Globais */
+        /* Animações */
         @keyframes zoomIn { from {transform: scale(0.5); opacity:0;} to {transform: scale(1); opacity:1;} }
         @keyframes pulse { from {transform: scale(1);} to {transform: scale(1.1);} }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
@@ -370,6 +223,11 @@
         @keyframes fadeInText { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes glitchFade { 0% { opacity: 0; transform: scale(0.9); } 20% { opacity: 1; transform: scale(1.1); filter: blur(2px); } 40% { opacity: 0.8; transform: scale(1); filter: blur(0); } 100% { opacity: 1; transform: scale(1); } }
         @keyframes slideUp { from {transform: translateY(20px); opacity:0;} to {transform: translateY(0); opacity:1;} }
+
+        /* Full Extract List */
+        .full-extract-list { text-align: left; }
+        .extract-row { display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding: 8px 0; font-size: 13px; }
+        .extract-cat { color: #888; font-size: 10px; display: block; }
 
     </style>
 </head>
@@ -468,7 +326,7 @@
         <div id="tab-finance" class="tab-view">
             <div class="date-nav">
                 <button class="date-btn" onclick="changeFinanceMonth(-1)">&#8249;</button>
-                <div class="date-display" id="finDateDisplay">JANEIRO 2026</div>
+                <div class="date-display" id="finDateDisplay" onclick="openExtractModal()">JANEIRO 2026</div>
                 <button class="date-btn" onclick="changeFinanceMonth(1)">&#8250;</button>
             </div>
 
@@ -483,18 +341,26 @@
                 </div>
             </div>
 
-            <div class="credit-card-box" onclick="toggleCreditDetails()">
+            <div class="credit-card-box" onclick="openCreditCardModal()">
                 <div class="cc-title"><span>FATURA DO CARTÃO</span> <span id="ccDate">VENC 10/01</span></div>
                 <div class="cc-val" id="ccInvoice">R$ 0,00</div>
                 <div class="cc-bar-bg"><div class="cc-bar-fill" id="ccBar"></div></div>
                 <div class="cc-detail">Toque para ver detalhes</div>
-                <div id="cc-details-list" style="display:none; margin-top:10px; border-top:1px solid #333; padding-top:5px; font-size:12px; color:#ccc;">
-                    </div>
             </div>
 
             <button class="fab-add" onclick="openAddTransactionModal()">+ LANÇAR GASTO / GANHO</button>
 
             <div class="section-title">FLUXO DO MÊS</div>
+            
+            <div class="fin-filters">
+                <button class="filter-btn active" onclick="applyFilter('all')" id="filter-all">TODOS</button>
+                <button class="filter-btn" onclick="applyFilter('income')" id="filter-income">GANHOS</button>
+                <button class="filter-btn" onclick="applyFilter('expense')" id="filter-expense">GASTOS</button>
+                <button class="filter-btn" onclick="applyFilter('alimentacao')" id="filter-alimentacao">ALIMENTAÇÃO</button>
+                <button class="filter-btn" onclick="applyFilter('transporte')" id="filter-transporte">TRANSPORTE</button>
+                <button class="filter-btn" onclick="applyFilter('contas')" id="filter-contas">CONTAS</button>
+            </div>
+
             <div id="finance-list" class="fin-list">
                 </div>
         </div>
@@ -517,14 +383,9 @@
                 <select id="newQuestXP" class="sys-select">
                     <option value="50">50 XP</option>
                     <option value="100">100 XP</option>
-                    <option value="150">150 XP</option>
                     <option value="200">200 XP</option>
-                    <option value="250">250 XP</option>
                     <option value="300">300 XP</option>
-                    <option value="350">350 XP</option>
-                    <option value="400">400 XP</option>
                     <option value="500">500 XP</option>
-                    <option value="750">750 XP</option>
                     <option value="1000">1.000 XP</option>
                     <option value="2500">2.500 XP</option>
                 </select>
@@ -608,17 +469,35 @@
                 <button class="btn-toggle" id="btnTypeIncome" onclick="setTransType('income')">GANHO (+)</button>
             </div>
 
-            <label class="input-label">DESCRIÇÃO</label>
-            <input type="text" id="transDesc" class="sys-input" placeholder="Ex: Mercado, Salário">
+            <label class="input-label">TÍTULO (RESUMO)</label>
+            <input type="text" id="transTitle" class="sys-input" placeholder="Ex: Mercado, Salário">
+
+            <label class="input-label">DESCRIÇÃO (DETALHES)</label>
+            <textarea id="transDesc" class="sys-input" placeholder="Detalhes opcionais..." style="min-height:60px;"></textarea>
+
+            <label class="input-label">CATEGORIA</label>
+            <div class="cat-grid" id="catGrid">
+                <div class="cat-btn" onclick="setCategory('alimentacao', this)">ALIMENTAÇÃO</div>
+                <div class="cat-btn" onclick="setCategory('transporte', this)">TRANSPORTE</div>
+                <div class="cat-btn" onclick="setCategory('contas', this)">CONTAS</div>
+                <div class="cat-btn" onclick="setCategory('lazer', this)">LAZER</div>
+                <div class="cat-btn" onclick="setCategory('saude', this)">SAÚDE</div>
+                <div class="cat-btn" onclick="setCategory('outros', this)">OUTROS</div>
+            </div>
 
             <label class="input-label">VALOR (R$)</label>
-            <input type="number" id="transVal" class="sys-input" placeholder="0.00" step="0.01">
+            <input type="tel" id="transVal" class="sys-input" placeholder="0,00" onkeyup="formatCurrencyInput(this)">
 
             <div id="expenseOptions">
                 <label class="input-label">MÉTODO</label>
                 <div class="modal-fin-grid">
                     <button class="btn-toggle active" id="btnMethodDebit" onclick="setTransMethod('debit')">DÉBITO / PIX</button>
                     <button class="btn-toggle" id="btnMethodCredit" onclick="setTransMethod('credit')">CARTÃO CRÉDITO</button>
+                </div>
+
+                <div style="margin:10px 0; display:flex; align-items:center;">
+                    <input type="checkbox" id="chkRecurrent" class="checkbox" style="margin-right:10px;">
+                    <label for="chkRecurrent" style="color:white; font-size:14px;">FIXA MENSAL (Recorrente)</label>
                 </div>
 
                 <div id="installmentsDiv" style="display:none;">
@@ -646,6 +525,36 @@
         </div>
     </div>
 
+    <div class="popup-overlay" id="transDetailModal" style="z-index: 260;">
+        <div class="popup-box" style="text-align:left;">
+            <div class="section-title" style="margin-top:0;">DETALHES</div>
+            <div id="tdContent"></div>
+            <div class="confirm-actions" style="margin-top:20px;">
+                <button class="btn-confirm-act act-cancel" onclick="document.getElementById('transDetailModal').style.display='none'">FECHAR</button>
+                <button class="btn-confirm-act act-pause" id="btnPauseRecurrence" style="display:none;" onclick="pauseRecurrence()">PAUSAR RECORRÊNCIA</button>
+                <button class="btn-confirm-act act-delete" onclick="deleteTransaction()">EXCLUIR</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="popup-overlay" id="creditCardModal" style="z-index: 255;">
+        <div class="popup-box">
+            <div class="section-title" style="margin-top:0; color:var(--danger)">FATURA DETALHADA</div>
+            <div style="text-align:center; font-size:32px; font-family:'Share Tech Mono'; margin-bottom:20px;" id="ccModalTotal">R$ 0,00</div>
+            <div class="full-extract-list" id="ccModalList"></div>
+            <button class="btn-close" style="margin-top:20px;" onclick="document.getElementById('creditCardModal').style.display='none'">FECHAR</button>
+        </div>
+    </div>
+
+    <div class="popup-overlay" id="extractModal" style="z-index: 255;">
+        <div class="popup-box">
+            <div class="section-title" style="margin-top:0; color:var(--success)">EXTRATO DE PAGAMENTOS</div>
+            <div style="font-size:12px; color:#aaa; margin-bottom:10px;">ITENS CONCLUÍDOS NESTE MÊS</div>
+            <div class="full-extract-list" id="extractModalList"></div>
+            <button class="btn-close" style="margin-top:20px;" onclick="document.getElementById('extractModal').style.display='none'">FECHAR</button>
+        </div>
+    </div>
+
     <div class="success-overlay" id="successPopup">
         <div class="success-box">
             <div style="font-size:30px; color:var(--theme-color);">✔</div>
@@ -659,7 +568,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-    // CONFIG FIREBASE
     const firebaseConfig = {
       apiKey: "AIzaSyDnTgThcU_lVdXASbg9ufMeUEE_x2uaYfQ",
       authDomain: "sontak-arise.firebaseapp.com",
@@ -674,8 +582,6 @@
     const db = getDatabase(app);
     const userRef = ref(db, 'usuarios/vitor');
 
-    // DADOS
-    // Finance: { balance: 0, transactions: [] }
     let playerData = { level: 1, xp: 0, stats: [0, 0, 0, 0, 0, 0], quests: [], library: [], finance: { balance: 0, transactions: [] } };
     let chartInstance = null;
     const MAX_XP_REQUIREMENT = 2500; 
@@ -683,26 +589,21 @@
     let selectedAttrs = [];
     let pendingDeleteIndex = null; 
     
-    // VARIÁVEIS DO FINANCEIRO
-    let currentViewDate = new Date(); // Data que estamos "olhando" no app
+    // VARIÁVEIS FINANCEIRAS
+    let currentViewDate = new Date();
     let newTransType = 'expense';
     let newTransMethod = 'debit';
+    let selectedCategory = 'outros';
+    let currentFilter = 'all';
+    let currentTransId = null; // Para edição/detalhes
 
-    // MÚSICA
     const bgMusic = document.getElementById("bgMusic");
     let isPlaying = false;
     
     window.toggleMusic = function() {
         const btn = document.getElementById('btnPlayPause');
-        if (isPlaying) {
-            bgMusic.pause();
-            btn.innerText = "► PLAY";
-            btn.style.color = "#888"; btn.style.borderColor = "#444";
-        } else {
-            bgMusic.play();
-            btn.innerText = "❚❚ PAUSE";
-            btn.style.color = "var(--flex-color)"; btn.style.borderColor = "var(--flex-color)";
-        }
+        if (isPlaying) { bgMusic.pause(); btn.innerText = "► PLAY"; btn.style.color = "#888"; btn.style.borderColor = "#444"; } 
+        else { bgMusic.play(); btn.innerText = "❚❚ PAUSE"; btn.style.color = "var(--flex-color)"; btn.style.borderColor = "var(--flex-color)"; }
         isPlaying = !isPlaying;
     }
 
@@ -712,16 +613,11 @@
         bgMusic.volume = newVol;
     }
 
-    // LOGIN
     let currentPass = "";
     const CORRECT_PASS = "0706";
 
-    window.pressKey = function(num) {
-        if(currentPass.length < 4) { currentPass += num; updatePassDisplay(); }
-    }
-    window.clearPass = function() {
-        currentPass = ""; updatePassDisplay(); document.getElementById('passDisplay').classList.remove('error-anim');
-    }
+    window.pressKey = function(num) { if(currentPass.length < 4) { currentPass += num; updatePassDisplay(); } }
+    window.clearPass = function() { currentPass = ""; updatePassDisplay(); document.getElementById('passDisplay').classList.remove('error-anim'); }
     window.checkPass = function() {
         if(currentPass === CORRECT_PASS) { unlockSystem(); } 
         else {
@@ -757,33 +653,23 @@
             if (data) {
                 playerData = data;
                 if(!playerData.quests) playerData.quests = [];
-                // STATS SAFETY
                 if(!playerData.stats) playerData.stats = [0,0,0,0,0,0];
                 if(playerData.stats.length < 6) playerData.stats.push(0);
-                
                 if(!playerData.library) playerData.library = [];
-
-                // FINANCE SAFETY
                 if(!playerData.finance) playerData.finance = { balance: 0, transactions: [] };
                 if(!playerData.finance.transactions) playerData.finance.transactions = [];
-
             } else { saveData(); }
             updateHeader(); updateStatsDisplay(); checkDailyQuests(); 
             renderAll(); renderLibrary(); 
-            renderFinanceTab(); // Renderiza finanças
+            renderFinanceTab(); 
             if(chartInstance) updateChartData();
         });
     }
 
-    // LÓGICA GERAL
     window.saveData = function() { set(userRef, playerData); updateHeader(); updateStatsDisplay(); if(chartInstance) updateChartData(); renderFinanceTab(); }
     window.getAttrLevel = function(xp) { return Math.floor(Math.sqrt(xp / XP_FACTOR)); }
     function getAttrLevelFloat(xp) { return Math.sqrt(xp / XP_FACTOR); }
-    
-    window.updateStatsDisplay = function() {
-        const labels = ['STR', 'AGI', 'VIT', 'INT', 'SEN', 'DIS'];
-        playerData.stats.forEach((xp, i) => { document.getElementById(`val-${labels[i]}`).innerText = getAttrLevel(xp); });
-    }
+    window.updateStatsDisplay = function() { const labels = ['STR', 'AGI', 'VIT', 'INT', 'SEN', 'DIS']; playerData.stats.forEach((xp, i) => { document.getElementById(`val-${labels[i]}`).innerText = getAttrLevel(xp); }); }
 
     window.checkDailyQuests = function() {
         const today = new Date().toDateString(); 
@@ -798,7 +684,6 @@
     }
 
     window.getXpNeeded = function(level) { return Math.min(level * 100, MAX_XP_REQUIREMENT); }
-
     window.updateHeader = function() {
         const xpNeeded = getXpNeeded(playerData.level);
         document.getElementById('displayLevel').innerText = playerData.level;
@@ -893,31 +778,29 @@
     }
 
     // ==========================================
-    // SISTEMA FINANCEIRO COMPLEXO
+    // SISTEMA FINANCEIRO 
     // ==========================================
 
-    // Mudar Mês de Visualização
     window.changeFinanceMonth = function(delta) {
         currentViewDate.setMonth(currentViewDate.getMonth() + delta);
         renderFinanceTab();
     }
 
-    // Funções do Modal de Adicionar Transação
     window.openAddTransactionModal = function() {
         document.getElementById('addTransModal').style.display = 'flex';
-        // Reset inputs
+        document.getElementById('transTitle').value = '';
         document.getElementById('transDesc').value = '';
         document.getElementById('transVal').value = '';
         document.getElementById('transDate').valueAsDate = new Date();
-        setTransType('expense'); // Padrão
+        document.getElementById('chkRecurrent').checked = false;
+        setTransType('expense');
+        setCategory('outros', document.querySelectorAll('.cat-btn')[5]);
     }
 
     window.setTransType = function(type) {
         newTransType = type;
         document.getElementById('btnTypeExpense').className = type === 'expense' ? 'btn-toggle active' : 'btn-toggle';
         document.getElementById('btnTypeIncome').className = type === 'income' ? 'btn-toggle active' : 'btn-toggle';
-        
-        // Se for ganho, esconde opções de gasto
         document.getElementById('expenseOptions').style.display = type === 'expense' ? 'block' : 'none';
     }
 
@@ -925,51 +808,72 @@
         newTransMethod = method;
         document.getElementById('btnMethodDebit').className = method === 'debit' ? 'btn-toggle active' : 'btn-toggle';
         document.getElementById('btnMethodCredit').className = method === 'credit' ? 'btn-toggle active' : 'btn-toggle';
-        
-        // Se for Crédito, mostra parcelas
         document.getElementById('installmentsDiv').style.display = method === 'credit' ? 'block' : 'none';
     }
 
-    window.saveTransaction = function() {
-        const desc = document.getElementById('transDesc').value;
-        const val = parseFloat(document.getElementById('transVal').value);
-        const dateRaw = document.getElementById('transDate').value; // YYYY-MM-DD
+    window.setCategory = function(cat, elem) {
+        selectedCategory = cat;
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+        elem.classList.add('selected');
+    }
 
-        if (!desc || isNaN(val) || !dateRaw) { alert("Preencha todos os campos!"); return; }
+    // INPUT ATM 
+    window.formatCurrencyInput = function(input) {
+        let val = input.value.replace(/\D/g, ''); 
+        val = (parseInt(val) / 100).toFixed(2) + '';
+        val = val.replace(".", ",");
+        val = val.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+        if(val === 'NaN' || val === '0,00') input.value = '';
+        else input.value = val;
+    }
+
+    window.saveTransaction = function() {
+        const title = document.getElementById('transTitle').value;
+        const desc = document.getElementById('transDesc').value;
+        const valStr = document.getElementById('transVal').value;
+        const dateRaw = document.getElementById('transDate').value;
+        
+        let val = parseFloat(valStr.replace(/\./g, '').replace(',', '.'));
+
+        if (!title || isNaN(val) || !dateRaw) { alert("Preencha título, valor e data!"); return; }
 
         if (!playerData.finance) playerData.finance = { balance: 0, transactions: [] };
 
-        // LÓGICA DE PARCELAMENTO E RECORRÊNCIA
+        const isRecurrent = document.getElementById('chkRecurrent').checked;
+        const recurrenceGroupId = isRecurrent ? Date.now() + 'REC' : null;
+
+        // PARCELAMENTO OU RECORRÊNCIA
+        let iterations = 1;
         if (newTransType === 'expense' && newTransMethod === 'credit') {
-            const parcels = parseInt(document.getElementById('transInstallments').value);
-            const valPerParcel = val / parcels;
-            const baseDate = new Date(dateRaw);
+            iterations = parseInt(document.getElementById('transInstallments').value);
+            val = val / iterations; // Valor da parcela
+        } else if (isRecurrent) {
+            iterations = 12; // Gera para 1 ano
+        }
 
-            for (let i = 0; i < parcels; i++) {
-                // Cria uma data para cada mês subsequente
-                let pDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + i, baseDate.getDate());
-                let pDateStr = pDate.toISOString().split('T')[0];
+        const baseDate = new Date(dateRaw);
 
-                playerData.finance.transactions.push({
-                    id: Date.now() + Math.random(),
-                    type: 'expense',
-                    method: 'credit',
-                    desc: `${desc} (${i+1}/${parcels})`,
-                    val: valPerParcel,
-                    date: pDateStr,
-                    paid: false // Crédito começa não pago (vai pra fatura)
-                });
+        for (let i = 0; i < iterations; i++) {
+            let pDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + i, baseDate.getDate());
+            let pDateStr = pDate.toISOString().split('T')[0];
+            
+            let finalTitle = title;
+            if (newTransType === 'expense' && newTransMethod === 'credit' && iterations > 1) {
+                finalTitle += ` (${i+1}/${iterations})`;
             }
-        } else {
-            // Débito ou Ganho (Entrada Única)
+
             playerData.finance.transactions.push({
-                id: Date.now(),
+                id: Date.now() + Math.random(),
                 type: newTransType,
-                method: 'debit', // Ganho sempre tratamos como "conta"
+                method: newTransType === 'income' ? 'debit' : newTransMethod,
+                title: finalTitle,
                 desc: desc,
+                category: selectedCategory,
                 val: val,
-                date: dateRaw,
-                paid: false // Contas a pagar começam abertas. Ganhos também (confirmar recebimento)
+                date: pDateStr,
+                paid: false,
+                recurrenceId: recurrenceGroupId,
+                paused: false
             });
         }
 
@@ -978,153 +882,253 @@
         showSuccessPopup();
     }
 
-    // Renderizar a Aba Finanças
+    // FILTROS
+    window.applyFilter = function(filter) {
+        currentFilter = filter;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('filter-'+filter).classList.add('active');
+        renderFinanceTab();
+    }
+
     window.renderFinanceTab = function() {
         const monthNames = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
         const viewMonth = currentViewDate.getMonth();
         const viewYear = currentViewDate.getFullYear();
 
-        // 1. Atualizar Navegação
         document.getElementById('finDateDisplay').innerText = `${monthNames[viewMonth]} ${viewYear}`;
 
-        // 2. Filtrar Transações do Mês Visualizado
         const monthTrans = playerData.finance.transactions.filter(t => {
             const tDate = new Date(t.date);
-            // Ajuste de fuso horario simples (pegando partes da string para evitar erro de dia -1)
             const parts = t.date.split('-');
-            return parseInt(parts[1]) - 1 === viewMonth && parseInt(parts[0]) === viewYear;
+            const isSameMonth = parseInt(parts[1]) - 1 === viewMonth && parseInt(parts[0]) === viewYear;
+            const isVisible = !t.paused; // Não mostra se estiver pausado
+            return isSameMonth && isVisible;
         });
 
-        // 3. Calcular Totais
-        let currentBalance = playerData.finance.balance; // Saldo REAL (Banco de dados)
+        let currentBalance = playerData.finance.balance; 
         let projectedBalance = currentBalance;
         let invoiceTotal = 0;
-        let invoiceDetails = [];
+        
+        // Cálculos e Filtros
+        const listEl = document.getElementById('finance-list');
+        listEl.innerHTML = '';
+        monthTrans.sort((a,b) => new Date(a.date) - new Date(b.date));
 
         monthTrans.forEach(t => {
-            if (t.type === 'expense') {
-                if (t.method === 'credit') {
-                    invoiceTotal += t.val; // Soma na fatura
-                    invoiceDetails.push(t);
-                } else {
-                    // Débito não pago afeta projeção
-                    if (!t.paid) projectedBalance -= t.val;
-                }
-            } else if (t.type === 'income') {
-                if (!t.paid) projectedBalance += t.val;
+            if (t.type === 'expense' && t.method === 'credit') {
+                invoiceTotal += t.val;
+            } else {
+                if (!t.paid && t.type === 'expense') projectedBalance -= t.val;
+                if (!t.paid && t.type === 'income') projectedBalance += t.val;
+            }
+
+            // APLICAR FILTROS VISUAIS
+            let passFilter = true;
+            if (currentFilter !== 'all') {
+                if (currentFilter === 'income' && t.type !== 'income') passFilter = false;
+                else if (currentFilter === 'expense' && t.type !== 'expense') passFilter = false;
+                else if (currentFilter !== 'income' && currentFilter !== 'expense' && t.category !== currentFilter) passFilter = false;
+            }
+
+            if (passFilter && t.method !== 'credit') { // Lista principal não mostra crédito (está na fatura)
+                const div = document.createElement('div');
+                let statusClass = 'status-normal';
+                if (t.paid) statusClass = 'status-paid';
+                else if (t.type === 'income') statusClass = 'fin-type-income';
+                else statusClass = 'fin-type-expense';
+
+                div.className = `fin-item ${statusClass}`;
+                const sign = t.type === 'income' ? '+' : '-';
+                const checkClass = t.paid ? 'fin-check fin-checked' : 'fin-check';
+
+                div.innerHTML = `
+                    <div class="${checkClass}" onclick="toggleTransaction('${t.id}')">✔</div>
+                    <div class="fin-info" onclick="openTransactionDetails('${t.id}')">
+                        <div class="fin-title">${t.title}</div>
+                        <div class="fin-meta">
+                            <span class="fin-cat">${t.category.toUpperCase()}</span>
+                            ${t.date.split('-').reverse().join('/')}
+                        </div>
+                    </div>
+                    <div class="fin-amount">${sign} R$ ${t.val.toFixed(2)}</div>
+                `;
+                listEl.appendChild(div);
             }
         });
 
-        // Atualizar Displays
         const elBal = document.getElementById('finBalance');
         elBal.innerText = currentBalance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         elBal.className = currentBalance >= 0 ? 'fin-value val-green' : 'fin-value val-red';
 
-        const elProj = document.getElementById('finProjected');
-        elProj.innerText = projectedBalance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        
-        // Fatura
+        document.getElementById('finProjected').innerText = projectedBalance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         document.getElementById('ccInvoice').innerText = invoiceTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        // Barra da fatura (Visual: enche até 2000 reais como exemplo de limite)
         let ccPercent = Math.min((invoiceTotal / 2000) * 100, 100); 
         document.getElementById('ccBar').style.width = ccPercent + '%';
         
-        // Detalhes da fatura (populado mas oculto)
-        const ccList = document.getElementById('cc-details-list');
-        ccList.innerHTML = '';
-        invoiceDetails.forEach(item => {
-            ccList.innerHTML += `<div>${item.date.substr(8,2)}/${item.date.substr(5,2)} - ${item.desc}: R$ ${item.val.toFixed(2)}</div>`;
+        if (listEl.innerHTML === '') listEl.innerHTML = '<div style="text-align:center; padding:20px; color:#555;">SEM MOVIMENTAÇÕES</div>';
+    }
+
+    // MODAL DETALHES
+    window.openTransactionDetails = function(id) {
+        const t = playerData.finance.transactions.find(x => x.id == id);
+        if (!t) return;
+        currentTransId = id;
+        
+        const content = document.getElementById('tdContent');
+        const color = t.type === 'income' ? 'var(--success)' : 'var(--danger)';
+        const btnPause = document.getElementById('btnPauseRecurrence');
+        
+        if (t.recurrenceId) {
+            btnPause.style.display = 'block';
+            btnPause.innerText = t.paused ? "RETOMAR RECORRÊNCIA" : "PAUSAR RECORRÊNCIA";
+        } else {
+            btnPause.style.display = 'none';
+        }
+
+        content.innerHTML = `
+            <div style="font-size:18px; font-weight:bold; color:${color}; margin-bottom:10px;">${t.title}</div>
+            <div style="font-family:'Share Tech Mono'; color:#ccc; margin-bottom:5px;">VALOR: R$ ${t.val.toFixed(2)}</div>
+            <div style="font-family:'Share Tech Mono'; color:#888; margin-bottom:15px;">DATA: ${t.date.split('-').reverse().join('/')}</div>
+            <div style="background:#222; padding:10px; border-radius:5px; font-size:14px; color:#ddd;">${t.desc || 'Sem descrição.'}</div>
+            <div style="margin-top:10px; font-size:12px; color:#666;">CATEGORIA: ${t.category.toUpperCase()} | TIPO: ${t.type.toUpperCase()}</div>
+        `;
+        document.getElementById('transDetailModal').style.display = 'flex';
+    }
+
+    window.deleteTransaction = function() {
+        if(confirm("Tem certeza? Isso afetará o saldo.")) {
+            const index = playerData.finance.transactions.findIndex(x => x.id == currentTransId);
+            if(index > -1) {
+                // Se estava pago, estorna o saldo antes de deletar
+                const t = playerData.finance.transactions[index];
+                if(t.paid) {
+                    if(t.type === 'income') playerData.finance.balance -= t.val;
+                    else playerData.finance.balance += t.val;
+                }
+                playerData.finance.transactions.splice(index, 1);
+                saveData();
+                document.getElementById('transDetailModal').style.display = 'none';
+            }
+        }
+    }
+
+    window.pauseRecurrence = function() {
+        const t = playerData.finance.transactions.find(x => x.id == currentTransId);
+        if(!t || !t.recurrenceId) return;
+        
+        const newState = !t.paused; // Inverte
+        const confirmation = confirm(newState ? "Pausar recorrência futura? (Itens não aparecerão)" : "Retomar recorrência?");
+        
+        if(confirmation) {
+            // Afeta todos com o mesmo recurrenceId que tem data MAIOR ou IGUAL a este
+            playerData.finance.transactions.forEach(x => {
+                if (x.recurrenceId === t.recurrenceId && new Date(x.date) >= new Date(t.date)) {
+                    x.paused = newState;
+                }
+            });
+            saveData();
+            document.getElementById('transDetailModal').style.display = 'none';
+        }
+    }
+
+    // MODAL FATURA
+    window.openCreditCardModal = function() {
+        const list = document.getElementById('ccModalList');
+        list.innerHTML = '';
+        
+        // Filtra itens do mês atual que são CREDIT e Expense
+        const viewMonth = currentViewDate.getMonth();
+        const viewYear = currentViewDate.getFullYear();
+        let total = 0;
+
+        const items = playerData.finance.transactions.filter(t => {
+            const parts = t.date.split('-');
+            return parseInt(parts[1]) - 1 === viewMonth && parseInt(parts[0]) === viewYear && t.method === 'credit' && t.type === 'expense' && !t.paused;
         });
 
-        // 4. Renderizar Lista Principal (Contas a pagar / Receber)
-        const listEl = document.getElementById('finance-list');
-        listEl.innerHTML = '';
+        items.sort((a,b) => new Date(a.date) - new Date(b.date));
 
-        // Ordenar por dia
-        monthTrans.sort((a,b) => new Date(a.date) - new Date(b.date));
+        items.forEach(t => {
+            total += t.val;
+            list.innerHTML += `
+                <div class="extract-row" onclick="openTransactionDetails('${t.id}')">
+                    <div style="flex:1;">
+                        <div style="font-weight:bold; color:white;">${t.title}</div>
+                        <span class="extract-cat">${t.date.split('-').reverse().join('/')} • ${t.category.toUpperCase()}</span>
+                    </div>
+                    <div style="font-family:'Share Tech Mono'; color:var(--danger)">R$ ${t.val.toFixed(2)}</div>
+                </div>`;
+        });
 
-        monthTrans.forEach(t => {
-            // Se for Crédito, não aparece na lista principal (está dentro da fatura), a menos que queira ver tudo.
-            // Para simplificar: Lista Principal = Débitos e Ganhos. Fatura = Créditos.
-            if (t.method === 'credit') return;
+        document.getElementById('ccModalTotal').innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        if(items.length === 0) list.innerHTML = "<div style='text-align:center; padding:20px; color:#555'>FATURA VAZIA</div>";
+        document.getElementById('creditCardModal').style.display = 'flex';
+    }
 
-            const div = document.createElement('div');
-            // Check status (Visual)
-            let statusClass = 'status-normal';
-            const today = new Date();
-            const tDate = new Date(t.date);
-            const diffTime = tDate - today;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+    // MODAL EXTRATO (PAGOS)
+    window.openExtractModal = function() {
+        const list = document.getElementById('extractModalList');
+        list.innerHTML = '';
+        
+        const viewMonth = currentViewDate.getMonth();
+        const viewYear = currentViewDate.getFullYear();
 
-            if (t.paid) statusClass = 'status-paid';
-            else if (diffDays < 0) statusClass = 'status-critical'; // Atrasado
-            else if (diffDays <= 3) statusClass = 'status-warning'; // Perto
+        const items = playerData.finance.transactions.filter(t => {
+            const parts = t.date.split('-');
+            return parseInt(parts[1]) - 1 === viewMonth && parseInt(parts[0]) === viewYear && t.paid && !t.paused;
+        });
 
-            div.className = `fin-item ${statusClass}`;
+        items.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+        items.forEach(t => {
+            const color = t.type === 'income' ? 'var(--success)' : 'var(--danger)';
             const sign = t.type === 'income' ? '+' : '-';
-            const color = t.type === 'income' ? 'var(--success)' : 'white';
-            const checkClass = t.paid ? 'fin-check fin-checked' : 'fin-check';
-
-            div.innerHTML = `
-                <div class="${checkClass}" onclick="toggleTransaction('${t.id}')">✔</div>
-                <div class="fin-info">
-                    <div class="fin-desc" style="color:${color}">${t.desc}</div>
-                    <div class="fin-meta">${t.date.split('-').reverse().join('/')} • ${t.type === 'income' ? 'RECEITA' : 'CONTA'}</div>
-                </div>
-                <div class="fin-amount">${sign} R$ ${t.val.toFixed(2)}</div>
-            `;
-            listEl.appendChild(div);
+            list.innerHTML += `
+                <div class="extract-row">
+                    <div style="flex:1;">
+                        <div style="font-weight:bold; color:white;">${t.title}</div>
+                        <span class="extract-cat">${t.date.split('-').reverse().join('/')} • ${t.category.toUpperCase()}</span>
+                    </div>
+                    <div style="font-family:'Share Tech Mono'; color:${color}">${sign} R$ ${t.val.toFixed(2)}</div>
+                </div>`;
         });
 
-        if (listEl.innerHTML === '') listEl.innerHTML = '<div style="text-align:center; padding:20px; color:#555;">SEM MOVIMENTAÇÕES (DÉBITO)</div>';
+        if(items.length === 0) list.innerHTML = "<div style='text-align:center; padding:20px; color:#555'>NENHUM PAGAMENTO EFETUADO</div>";
+        document.getElementById('extractModal').style.display = 'flex';
     }
 
-    // Toggle para ver detalhes da fatura
-    window.toggleCreditDetails = function() {
-        const d = document.getElementById('cc-details-list');
-        d.style.display = d.style.display === 'none' ? 'block' : 'none';
-    }
-
-    // Ação de Pagar/Receber
     window.toggleTransaction = function(id) {
         const t = playerData.finance.transactions.find(x => x.id == id);
         if (!t) return;
 
-        // Se estava pago, estorna. Se não estava, paga.
         if (t.paid) {
             t.paid = false;
             if (t.type === 'income') playerData.finance.balance -= t.val;
-            else playerData.finance.balance += t.val; // Devolve dinheiro
+            else playerData.finance.balance += t.val; 
         } else {
             t.paid = true;
             if (t.type === 'income') {
                 playerData.finance.balance += t.val;
-                showReward("RECEBIMENTO CONFIRMADO", 0); // Sem XP pra receber, só dinheiro
+                showReward("RECEBIMENTO CONFIRMADO", 0);
             } else {
                 playerData.finance.balance -= t.val;
-                // Ganha XP em Disciplina por pagar conta
                 giveXp(30, ['DIS']);
             }
         }
         saveData();
     }
 
-    // Função Auxiliar para dar XP sem task
     function giveXp(amount, types) {
         playerData.xp += amount;
         const xpPerStat = Math.floor(amount / types.length);
         let rewardText = "CONTA PAGA<br>";
-        
         types.forEach(type => {
             let statIndex = ['STR','AGI','VIT','INT','SEN','DIS'].indexOf(type);
             if(statIndex > -1) playerData.stats[statIndex] += xpPerStat;
             rewardText += `+${xpPerStat} XP (${type})<br>`;
         });
-
-        let xpNeeded = getXpNeeded(playerData.level);
-        let leveledUp = false;
+        let xpNeeded = getXpNeeded(playerData.level); let leveledUp = false;
         while(playerData.xp >= xpNeeded) { playerData.xp -= xpNeeded; playerData.level++; xpNeeded = getXpNeeded(playerData.level); leveledUp = true; }
-        
         showReward(rewardText, amount);
         if(leveledUp) showLevelUpPopup(playerData.level);
     }
@@ -1142,27 +1146,9 @@
     window.closePopup = function() { document.getElementById('rewardPopup').style.display = 'none'; }
     window.closeLevelPopup = function() { document.getElementById('levelUpPopup').style.display = 'none'; }
 
-    // --- LOGICA DE DELETE ATUALIZADA (COM MODAL) ---
-    window.openDeleteModal = function(index) {
-        pendingDeleteIndex = index;
-        document.getElementById('deleteConfirmPopup').style.display = 'flex';
-    }
-
-    window.closeDeleteModal = function() {
-        document.getElementById('deleteConfirmPopup').style.display = 'none';
-        pendingDeleteIndex = null;
-    }
-
-    window.executeDelete = function() {
-        if(pendingDeleteIndex !== null) {
-            playerData.quests.splice(pendingDeleteIndex, 1);
-            saveData(); 
-            renderAll(); 
-            closeDeleteModal();
-        }
-    }
-
-    // Mantido por compatibilidade
+    window.openDeleteModal = function(index) { pendingDeleteIndex = index; document.getElementById('deleteConfirmPopup').style.display = 'flex'; }
+    window.closeDeleteModal = function() { document.getElementById('deleteConfirmPopup').style.display = 'none'; pendingDeleteIndex = null; }
+    window.executeDelete = function() { if(pendingDeleteIndex !== null) { playerData.quests.splice(pendingDeleteIndex, 1); saveData(); renderAll(); closeDeleteModal(); } }
     window.deleteQuest = function(index) { openDeleteModal(index); } 
 
     window.hardReset = function() {
@@ -1182,8 +1168,6 @@
         playerData.quests.forEach((quest, index) => {
             const typesArr = quest.types || [quest.type];
             let attrsHtml = ''; typesArr.forEach(t => { attrsHtml += `<span class="attr-mini-tag bg-${t}">${t}</span>`; });
-            
-            // HOME LIST
             if(!quest.done) {
                 const homeItem = document.createElement('div');
                 let cardClass = 'quest-card active-card';
@@ -1194,8 +1178,6 @@
                 homeItem.innerHTML = `<div style="display:flex; align-items:center; width:100%;"><div class="checkbox" onclick="completeQuest(${index})"></div><div class="task-text" onclick="openTaskDetails(${index})" title="Ver Detalhes">${tagHtml}${quest.text}</div><div class="tags-container"><div class="xp-tag">+${quest.xpValue} XP</div><div>${attrsHtml}</div></div></div>`;
                 homeList.appendChild(homeItem);
             }
-            
-            // EDITOR LIST
             const editorItem = document.createElement('div');
             editorItem.className = 'quest-card'; editorItem.style.borderColor = quest.done ? '#00ff9d' : '#444';
             let typeLabel = '[ÚNICA]'; let labelColor = '#888';
@@ -1207,7 +1189,6 @@
         if (homeList.innerHTML === '') homeList.innerHTML = '<div style="text-align:center; color:#555; margin-top:30px;">SEM MISSÕES ATIVAS.<br>DESCANSE, CAÇADOR.</div>';
     }
 
-    // --- GRIMÓRIO ---
     window.addBook = function() {
         const t = document.getElementById('bTitle').value;
         const c = document.getElementById('bCover').value;
@@ -1215,29 +1196,19 @@
         if(t) {
             if(!playerData.library) playerData.library = [];
             playerData.library.push({ title:t, cover:c, xpValue: x });
-            
             let leveledUp = false;
-            
             if(x > 0) {
                 playerData.xp += x;
                 let share = Math.floor(x/2);
                 playerData.stats[3]+=share; playerData.stats[4]+=share; 
                 let req = Math.min(playerData.level*100, 2500);
-                while(playerData.xp >= req) { 
-                    playerData.xp -= req; 
-                    playerData.level++; 
-                    req = Math.min(playerData.level*100, 2500); 
-                    leveledUp = true; 
-                }
+                while(playerData.xp >= req) { playerData.xp -= req; playerData.level++; req = Math.min(playerData.level*100, 2500); leveledUp = true; }
             }
             saveData();
             document.getElementById('bTitle').value=""; document.getElementById('bCover').value="";
             showSuccessPopup(); 
             renderLibrary();
-            
-            if(leveledUp) {
-                showLevelUpPopup(playerData.level);
-            }
+            if(leveledUp) showLevelUpPopup(playerData.level);
         }
     }
 
@@ -1261,9 +1232,7 @@
         document.getElementById('bookPopup').style.display='flex';
     }
 
-    window.delBook = function(i) {
-        if(confirm("Excluir?")) { playerData.library.splice(i, 1); saveData(); renderLibrary(); document.getElementById('bookPopup').style.display='none'; }
-    }
+    window.delBook = function(i) { if(confirm("Excluir?")) { playerData.library.splice(i, 1); saveData(); renderLibrary(); document.getElementById('bookPopup').style.display='none'; } }
 
     window.switchTab = function(tab) {
         document.querySelectorAll('.tab-view').forEach(e => e.classList.remove('active-view'));
